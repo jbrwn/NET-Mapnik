@@ -11,12 +11,12 @@ using namespace System::Security::Permissions;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly:AssemblyTitleAttribute("mapnik_csharp")];
+[assembly:AssemblyTitleAttribute("NETMapnik")];
 [assembly:AssemblyDescriptionAttribute("")];
 [assembly:AssemblyConfigurationAttribute("")];
-[assembly:AssemblyCompanyAttribute("Microsoft")];
-[assembly:AssemblyProductAttribute("mapnik_csharp")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c) Microsoft 2014")];
+[assembly:AssemblyCompanyAttribute("")];
+[assembly:AssemblyProductAttribute("NETMapnik")];
+[assembly:AssemblyCopyrightAttribute("Copyright (c) 2014")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
