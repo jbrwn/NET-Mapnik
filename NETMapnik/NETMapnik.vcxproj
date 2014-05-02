@@ -65,12 +65,12 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;HAVE_LIBXML2;MAPNIK_LOG;MAPNIK_THREADSAFE;NDEBUG;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_WINDOWS;BOOST_THREAD_USE_DLL;BOOST_LIB_DIAGNOSTIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>D:\mapnik-v2.2.0\include;D:\mapnik-v2.2.0\include\mapnik\agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\mapnik-v2.2.0\include;..\..\mapnik-v2.2.0\include\mapnik\agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>mapnik.lib;icuuc.lib;icuin.lib;cairo.lib;libboost_system-vc100-mt-1_49.lib;boost_thread-vc100-mt-1_49.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\mapnik-v2.2.0\lib;D:\boost\lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\mapnik-v2.2.0\lib;..\..\boost\lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
