@@ -30,6 +30,12 @@
     <ClInclude Include="font_engine_freetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mapnik_grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NET_grid_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -45,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="font_engine_freetype.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapnik_grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NET_grid_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
