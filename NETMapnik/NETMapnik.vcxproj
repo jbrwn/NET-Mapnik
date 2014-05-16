@@ -79,9 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DatasourceCache.h" />
-    <ClInclude Include="font_engine_freetype.h" />
-    <ClInclude Include="Map.h" />
+    <ClInclude Include="mapnik_datasource_cache.h" />
+    <ClInclude Include="mapnik_font_engine_freetype.h" />
+    <ClInclude Include="mapnik_map.h" />
     <ClInclude Include="mapnik_grid.h" />
     <ClInclude Include="NET_grid_utils.h" />
     <ClInclude Include="resource.h" />
@@ -89,9 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="DatasourceCache.cpp" />
-    <ClCompile Include="font_engine_freetype.cpp" />
-    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="mapnik_datasource_cache.cpp" />
+    <ClCompile Include="mapnik_font_engine_freetype.cpp" />
+    <ClCompile Include="mapnik_map.cpp" />
     <ClCompile Include="mapnik_grid.cpp" />
     <ClCompile Include="NET_grid_utils.cpp" />
     <ClCompile Include="Stdafx.cpp">

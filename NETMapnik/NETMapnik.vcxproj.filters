@@ -21,19 +21,19 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DatasourceCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="font_engine_freetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mapnik_grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NET_grid_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapnik_datasource_cache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapnik_font_engine_freetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapnik_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,19 +44,19 @@
     <ClCompile Include="Stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DatasourceCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="font_engine_freetype.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mapnik_grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NET_grid_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapnik_map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapnik_font_engine_freetype.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapnik_datasource_cache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

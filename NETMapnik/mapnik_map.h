@@ -15,21 +15,21 @@ namespace NETMapnik
 		//Destructor
 		~Map();
 
-		property System::UInt32 width
+		property System::UInt32 Width
 		{
 			System::UInt32 get();
 			void set(System::UInt32 value);
 		}
-		property System::UInt32 height
+		property System::UInt32 Height
 		{
 			System::UInt32 get();
 			void set(System::UInt32 value);
 		}
 
-		void load_map(System::String^ path);
-		void zoom_to_box(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
-		array<System::Byte>^ save_to_bytes(System::String^ format);
-		void save_to_file(System::String^ path, System::String^ format);
+		void LoadMap(System::String^ path);
+		void ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
+		array<System::Byte>^ SaveToBytes(System::String^ format);
+		void SaveToFile(System::String^ path, System::String^ format);
 		void RenderLayer(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields);
 
 	private:

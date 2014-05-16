@@ -2,7 +2,7 @@
 
 namespace NETMapnik
 {
-	public ref class freetype_engine abstract sealed
+	public ref class FreetypeEngine abstract sealed
 	{
 	public:
 		static bool RegisterFonts(System::String^ dir, bool recurse);

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "font_engine_freetype.h"
+#include "mapnik_font_engine_freetype.h"
 
 // mapnik
 #include <mapnik\font_engine_freetype.hpp>
@@ -10,7 +10,7 @@
 
 namespace NETMapnik
 {	
-	bool freetype_engine::RegisterFonts(System::String^ dir, bool recurse)
+	bool FreetypeEngine::RegisterFonts(System::String^ dir, bool recurse)
 	{
 		std::string unmanagedDir = msclr::interop::marshal_as<std::string>(dir);
 		try
@@ -25,7 +25,7 @@ namespace NETMapnik
 		return true;
 	}
 
-	void freetype_engine::RegisterFont(System::String^ file_name)
+	void FreetypeEngine::RegisterFont(System::String^ file_name)
 	{
 		std::string unmanagedFileName = msclr::interop::marshal_as<std::string>(file_name);
 		try

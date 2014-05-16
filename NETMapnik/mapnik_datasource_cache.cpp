@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "DatasourceCache.h"
+#include "mapnik_datasource_cache.h"
 
 // mapnik
 #include <mapnik\datasource_cache.hpp>
