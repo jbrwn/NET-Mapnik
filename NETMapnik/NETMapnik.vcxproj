@@ -72,6 +72,11 @@
       <AdditionalDependencies>mapnik.lib;icuuc.lib;icuin.lib;cairo.lib;libboost_system-vc100-mt-1_49.lib;boost_thread-vc100-mt-1_49.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\mapnik-v2.2.0\lib;..\..\boost\lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y ..\lib\mapnik-v2.2.0\lib\*.dll $(OutDir)
+xcopy /y ..\lib\boost\*.dll $(OutDir)
+xcopy /y /e /i ..\lib\mapnik-v2.2.0\lib\mapnik $(OutDir)mapnik</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="System" />
