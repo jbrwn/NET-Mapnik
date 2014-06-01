@@ -5,6 +5,8 @@ Minimal .NET bindings for mapnik.  The following features are supported:
 
   - Create map object
   - Load mapnik xml
+  - Register datasources
+  - Register fonts
   - Render to file
   - Render to bytes
   - Render to UTFGrid
@@ -34,6 +36,12 @@ using NETMapnik;
     {
         public void CreateMap()
         {
+            // Register Datasources
+            DatasourceCache.RegisterDatasources(@"mapnik\input");
+
+            // Register Fonts
+            FreetypeEngine.RegisterFonts(@"mapnik\fonts", false);
+            
             Map m = new Map();
             m.LoadMap(@"map.xml");
             m.ZoomToBox(-20037508.3428, -20037508.3428, 20037508.3428, 20037508.3428);
