@@ -17,7 +17,7 @@ I'm currently only building from visual studio 2012.
 Requirements:
   - Visual studio 2012 IDE
   - Visual studio 2010 platform toolset (mapnik 2.2.0 sdk targets MSVC2010)
-  - [Build dependencies](lib\README.md)
+  - [Build dependencies](lib/README.md)
 
 Build:
   - Open NETMapnik.sln in Visual Studio
