@@ -36,6 +36,9 @@
     <ClInclude Include="mapnik_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mapnik_vector_tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -57,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapnik_datasource_cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapnik_vector_tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\mapnik-vector-tile\src\vector_tile.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

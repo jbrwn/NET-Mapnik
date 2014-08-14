@@ -10,6 +10,10 @@
 #include <mapnik\grid\grid_renderer.hpp>
 #include <mapnik\grid\grid_util.hpp>
 
+// vector output api
+#include "vector_tile_processor.hpp"
+#include "vector_tile_backend_pbf.hpp"
+
 #include <msclr\marshal_cppstd.h>
 
 namespace NETMapnik
@@ -68,6 +72,12 @@ namespace NETMapnik
 	void Map::ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy)
 	{
 		_map->zoom_to_box(mapnik::box2d<double>(minx,miny,maxx,maxy));
+	}
+
+	//zoom all
+	void Map::ZoomAll()
+	{
+		_map->zoom_all();
 	}
 
 	//save to byte array
@@ -147,6 +157,29 @@ namespace NETMapnik
 		mapnik::grid_renderer<mapnik::grid> ren(*_map,*g,1.0,0,0);
 		mapnik::layer const& layer = layers[layerIdx];
 		ren.apply(layer,attributes);
+
+	}
+
+	void Map::Render(VectorTile^ tile)
+	{
+		typedef mapnik::vector::backend_pbf backend_type;
+		typedef mapnik::vector::processor<backend_type> renderer_type;
+
+		mapnik::vector::tile* vTile = tile->NativeObject();
+		backend_type backend(*vTile, 16);
+		mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+		renderer_type ren(
+			backend,
+			*_map,
+			m_req,
+			1.0,
+			0U,
+			0U,
+			1U,
+			"jpeg",
+			mapnik::SCALING_NEAR
+		);
+		ren.apply(0);
 
 	}
 }
