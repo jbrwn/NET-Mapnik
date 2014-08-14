@@ -63,7 +63,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_WINDOWS;HAVE_JPEG;HAVE_PNG;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;HAVE_JPEG;HAVE_PNG;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;BOOST_THREAD_USE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\lib\mapnik-v2.3.0\include;..\lib\mapnik-v2.3.0\include\mapnik\agg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
