@@ -85,9 +85,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y $(ProjectDir)..\lib\mapnik-v2.2.0\lib\*.dll $(ProjectDir)$(OutDir)
-xcopy /y $(ProjectDir)..\lib\boost\*.dll $(ProjectDir)$(OutDir)
-xcopy /y /e /i $(ProjectDir)..\lib\mapnik-v2.2.0\lib\mapnik $(ProjectDir)$(OutDir)mapnik</PostBuildEvent>
+    <PostBuildEvent>xcopy /y $(ProjectDir)..\lib\mapnik-v2.3.0\lib\*.dll $(ProjectDir)$(OutDir)
+xcopy /y /e /i $(ProjectDir)..\lib\mapnik-v2.3.0\lib\mapnik $(ProjectDir)$(OutDir)mapnik</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
