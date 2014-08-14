@@ -17,8 +17,7 @@ Build Instrucitons
 I'm currently only building from visual studio 2012.
 
 Requirements:
-  - Visual studio 2012 IDE
-  - Visual studio 2010 platform toolset (mapnik 2.2.0 sdk targets MSVC2010)
+  - Visual studio 2012
   - [Build dependencies](lib/readme.md)
 
 Build:
