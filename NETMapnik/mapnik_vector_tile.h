@@ -9,6 +9,7 @@ namespace NETMapnik
 		VectorTile();
 		~VectorTile();
 		array<System::Byte>^ GetBytes();
+		void SetBytes(array<System::Byte>^ data);
 	internal:
 		mapnik::vector::tile *NativeObject();
 

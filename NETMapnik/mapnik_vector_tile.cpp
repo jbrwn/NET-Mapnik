@@ -25,12 +25,18 @@ namespace NETMapnik
 
 	array<System::Byte>^ VectorTile::GetBytes()
 	{
-		
 		std::string s;
 		_tile->SerializeToString(&s);
 		array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
 		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
 		return data;
+	}
+
+	void VectorTile::SetBytes(array<System::Byte>^ data)
+	{
+		pin_ptr<unsigned char> pData = &data[0];
+		std::string s = std::string(reinterpret_cast<char*>(pData), data->Length);
+		_tile->ParseFromString(s);
 	}
 
 }
