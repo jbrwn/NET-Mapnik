@@ -158,3 +158,5 @@ $RECYCLE.BIN/
 #external libs
 lib/boost
 lib/mapnik*
+lib/mapnik-vector-tile
+lib/protobuf*
