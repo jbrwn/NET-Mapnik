@@ -17,11 +17,12 @@ Build Instrucitons
 I'm currently only building from visual studio 2012.
 
 Requirements:
-  - Visual studio 2012
+  - Visual studio 2013
   - [Build dependencies](lib/readme.md)
 
 Build:
   - Open NETMapnik.sln in Visual Studio
+  - Set build to release
   - Build solution
   - Binary and all mapnik dependencies will be copied to .\Release
 
