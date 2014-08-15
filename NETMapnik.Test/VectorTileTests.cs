@@ -11,25 +11,16 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_Creation()
         {
+            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Map m = new Map();
+            m.Width = 256;
+            m.Height = 256;
+            m.LoadMap(@"..\..\data\test.xml");
+            m.ZoomAll();
             VectorTile v = new VectorTile();
+            m.Render(v);
+            Assert.AreNotEqual(v.GetBytes().Length, 0);
+
         }
-
-        //[TestMethod]
-        //[DeploymentItem(@"data\test.xml")]
-        //public void VectorTile_Output()
-        //{
-        //    DatasourceCache.RegisterDatasources(@"C:\mapnik-v2.3.0\lib\mapnik\input");
-        //    Map m = new Map();
-        //    m.Width = 256;
-        //    m.Height = 256;
-
-        //    m.LoadMap(Path.Combine(Path.GetFullPath("."),"test.xml"));
-        //    m.ZoomAll();
-
-        //    VectorTile v = new VectorTile();
-        //    m.Render(v);
-        //    byte[] b = v.GetBytes();
-        //    int i = b.Length;
-        //}
     }
 }
