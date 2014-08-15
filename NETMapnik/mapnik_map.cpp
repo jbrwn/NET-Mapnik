@@ -122,7 +122,7 @@ namespace NETMapnik
 		mapnik::save_to_file(buf,unmanagedPath,unmanagedFormat);
 	}
 
-	void Map::RenderLayer(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields)
+	void Map::Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields)
 	{
 		mapnik::grid* g = grid->NativeObject();
 		
@@ -156,8 +156,16 @@ namespace NETMapnik
 
 		mapnik::grid_renderer<mapnik::grid> ren(*_map,*g,1.0,0,0);
 		mapnik::layer const& layer = layers[layerIdx];
-		ren.apply(layer,attributes);
 
+		try
+		{
+			ren.apply(layer, attributes);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 
 	void Map::Render(VectorTile^ tile)

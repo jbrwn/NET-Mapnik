@@ -32,7 +32,7 @@ namespace NETMapnik
 		void ZoomAll();
 		array<System::Byte>^ SaveToBytes(System::String^ format);
 		void SaveToFile(System::String^ path, System::String^ format);
-		void RenderLayer(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields);
+		void Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields);
 		void Render(VectorTile^ tile);
 
 	private:
