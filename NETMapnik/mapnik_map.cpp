@@ -30,6 +30,11 @@ namespace NETMapnik
 			delete _map;
 	}
 
+	mapnik::Map *Map::NativeObject()
+	{
+		return _map;
+	}
+
 	//width property
 	System::UInt32 Map::Width::get()
 	{

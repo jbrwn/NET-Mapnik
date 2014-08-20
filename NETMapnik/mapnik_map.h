@@ -36,6 +36,9 @@ namespace NETMapnik
 		void Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields);
 		void Render(VectorTile^ tile);
 
+	internal:
+		mapnik::Map *NativeObject();
+
 	private:
 		//Unmanaged instance of mapnik::map
 		mapnik::Map* _map;

@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "mapnik_vector_tile.h"
 
+#include <mapnik\map.hpp>
+#include <mapnik\graphics.hpp>
+#include <mapnik\request.hpp>
+#include <mapnik\agg_renderer.hpp>
 
 namespace NETMapnik
 {
@@ -39,4 +43,15 @@ namespace NETMapnik
 		_tile->ParseFromString(s);
 	}
 
+	void VectorTile::Render(Map^ map, Image^ image)
+	{
+		//Unwrap native objects
+		mapnik::Map *m = map->NativeObject();
+		mapnik::image_32 *i = image->NativeObject();
+
+		mapnik::request m_req(m->width(), m->height(),m->get_current_extent());
+		mapnik::agg_renderer<mapnik::image_32> ren(*m, m_req, *i, 1.0, 0U, 0U);
+		ren.apply(0);
+
+	}
 }
