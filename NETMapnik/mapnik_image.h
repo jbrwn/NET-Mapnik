@@ -1,6 +1,6 @@
-#include <mapnik\graphics.hpp>
-
 #pragma once
+
+#include <mapnik\graphics.hpp>
 
 namespace NETMapnik
 {

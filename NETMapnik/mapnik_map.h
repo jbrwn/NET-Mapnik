@@ -1,10 +1,10 @@
+#pragma once
+
 #include "mapnik_grid.h"
 #include "mapnik_vector_tile.h"
 #include "mapnik_image.h"
 
 #include <mapnik\map.hpp>
-
-#pragma once
 
 namespace NETMapnik
 {
