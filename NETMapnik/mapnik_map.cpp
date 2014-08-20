@@ -4,7 +4,6 @@
 #include <mapnik\map.hpp>
 #include <mapnik\load_map.hpp>
 #include <mapnik\agg_renderer.hpp>
-#include <mapnik\image_util.hpp>
 #include <mapnik\grid\grid.hpp>
 #include <mapnik\grid\grid_view.hpp>
 #include <mapnik\grid\grid_renderer.hpp>
@@ -80,46 +79,27 @@ namespace NETMapnik
 		_map->zoom_all();
 	}
 
-	//save to byte array
-	array<System::Byte>^ Map::SaveToBytes(System::String^ format)
+	void Map::Render(Image^ image)
 	{
-		std::string unmanagedFormat = msclr::interop::marshal_as<std::string>(format);
-
-		mapnik::image_32 buf(_map->width(),_map->height());
-		mapnik::agg_renderer<mapnik::image_32> ren(*_map,buf);
 		try
 		{
-			ren.apply();
+			mapnik::image_32* i = image->NativeObject();
+			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			mapnik::agg_renderer<mapnik::image_32> ren(
+				*_map, 
+				m_req, 
+				*i,
+				1.0,
+				0U,
+				0U
+			);
+			ren.apply(0);
 		}
 		catch (const std::exception& ex)
 		{
 			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
 			throw gcnew System::Exception(managedException);
 		}
-		std::string s = save_to_string(buf,unmanagedFormat);
-		array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
-		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
-		return data;
-	}
-
-	//save to file
-	void Map::SaveToFile(System::String^ path, System::String^ format)
-	{
-		std::string unmanagedPath = msclr::interop::marshal_as<std::string>(path);
-		std::string unmanagedFormat = msclr::interop::marshal_as<std::string>(format);
-
-		mapnik::image_32 buf(_map->width(),_map->height());
-		mapnik::agg_renderer<mapnik::image_32> ren(*_map,buf);
-		try
-		{
-			ren.apply();
-		}
-		catch (const std::exception& ex)
-		{
-			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
-			throw gcnew System::Exception(managedException);
-		}
-		mapnik::save_to_file(buf,unmanagedPath,unmanagedFormat);
 	}
 
 	void Map::Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields)
@@ -173,22 +153,23 @@ namespace NETMapnik
 		typedef mapnik::vector::backend_pbf backend_type;
 		typedef mapnik::vector::processor<backend_type> renderer_type;
 
-		mapnik::vector::tile* vTile = tile->NativeObject();
-		backend_type backend(*vTile, 16);
-		mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
-		renderer_type ren(
-			backend,
-			*_map,
-			m_req,
-			1.0,
-			0U,
-			0U,
-			1U,
-			"jpeg",
-			mapnik::SCALING_NEAR
-		);
 		try
 		{
+			mapnik::vector::tile* vTile = tile->NativeObject();
+			backend_type backend(*vTile, 16);
+			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			renderer_type ren(
+				backend,
+				*_map,
+				m_req,
+				1.0,
+				0U,
+				0U,
+				1U,
+				"jpeg",
+				mapnik::SCALING_NEAR
+			);
+
 			ren.apply(0);
 		}
 		catch (const std::exception& ex)

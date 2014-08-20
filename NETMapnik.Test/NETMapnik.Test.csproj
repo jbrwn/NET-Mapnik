@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="MapTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ImageTests.cs" />
     <Compile Include="UTFGridTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>
