@@ -187,7 +187,16 @@ namespace NETMapnik
 			"jpeg",
 			mapnik::SCALING_NEAR
 		);
-		ren.apply(0);
+		try
+		{
+			ren.apply(0);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+
 
 	}
 }
