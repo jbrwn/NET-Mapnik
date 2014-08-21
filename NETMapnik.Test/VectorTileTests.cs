@@ -15,7 +15,7 @@ namespace NETMapnik.Test
             Map m = new Map();
             m.Width = 256;
             m.Height = 256;
-            m.LoadMap(@"..\..\data\test.xml");
+            m.LoadMap(@"..\..\data\layer.xml");
             m.ZoomAll();
             VectorTile v = new VectorTile();
             m.Render(v);
@@ -23,24 +23,26 @@ namespace NETMapnik.Test
 
         }
 
-        [TestMethod]
-        public void VectorTile_Render()
-        {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
-            m.Width = 256;
-            m.Height = 256;
-            m.LoadMap(@"..\..\data\test.xml");
-            m.ZoomAll();
-            VectorTile v = new VectorTile();
-            m.Render(v);
+        //[TestMethod]
+        //public void VectorTile_Render()
+        //{
+        //    DatasourceCache.RegisterDatasources(@".\mapnik\input");
+        //    Map m = new Map();
+        //    m.Width = 256;
+        //    m.Height = 256;
+        //    m.LoadMap(@"..\..\data\layer.xml");
+        //    m.ZoomAll();
+        //    VectorTile v = new VectorTile();
+        //    m.Render(v);
 
-            Map m2 = new Map();
-            m2.Width = 256;
-            m2.Height = 256;
-            Image i = new Image(256, 256);
-            v.Render(m2, i);
-            i.Save(@"d:\tile.png", "png");
-        }
+        //    Map m2 = new Map();
+        //    m2.Width = 256;
+        //    m2.Height = 256;
+        //    m2.LoadMap(@"..\..\data\style.xml");
+        //    m2.ZoomToBox(-200000,-200000,200000,200000);
+        //    Image i = new Image(256, 256);
+        //    v.Render(m2, i);
+        //    i.Save(@"c:\tile.png", "png");
+        //}
     }
 }

@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "mapnik_map.h"
+#include "mapnik_grid.h"
+#include "mapnik_image.h"
+#include "mapnik_vector_tile.h"
 
 #include <mapnik\map.hpp>
 #include <mapnik\load_map.hpp>

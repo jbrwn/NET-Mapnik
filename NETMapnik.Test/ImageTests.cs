@@ -15,7 +15,7 @@ namespace NETMapnik.Test
             m.Height = 256;
             m.LoadMap(@"..\..\data\test.xml");
             m.ZoomAll();
-            Image i = new Image(2000, 2000);
+            Image i = new Image(256, 256);
             m.Render(i);
             Assert.AreNotEqual(i.Encode("jpeg").Length, 0);
         }

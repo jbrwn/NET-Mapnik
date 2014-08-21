@@ -79,6 +79,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data\layer.xml" />
+    <Content Include="data\style.xml" />
     <Content Include="data\test.xml" />
     <None Include="test.runsettings" />
   </ItemGroup>

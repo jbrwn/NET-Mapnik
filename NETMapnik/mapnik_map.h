@@ -1,13 +1,13 @@
 #pragma once
 
-#include "mapnik_grid.h"
-#include "mapnik_vector_tile.h"
-#include "mapnik_image.h"
-
 #include <mapnik\map.hpp>
 
 namespace NETMapnik
 {
+	//Forward Declare
+	ref class Image;
+	ref class Grid;
+	ref class VectorTile;
 
 	public ref class Map
 	{
