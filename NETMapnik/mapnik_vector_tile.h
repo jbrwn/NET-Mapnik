@@ -14,16 +14,22 @@ namespace NETMapnik
 	public ref class VectorTile
 	{
 	public:
-		VectorTile();
+		VectorTile(System::Int32 Z, System::Int32 X, System::Int32 Y, System::UInt32 Width, System::UInt32 Height);
 		~VectorTile();
 		array<System::Byte>^ GetBytes();
 		void SetBytes(array<System::Byte>^ data);
 		void Render(Map^ map, Image^ image);
+
 	internal:
 		mapnik::vector::tile *NativeObject();
 
 	private:
 		mapnik::vector::tile* _tile;
+		int _z;
+		int _x;
+		int _y;
+		unsigned _width;
+		unsigned _height;
 
 	};
 
@@ -33,8 +39,13 @@ namespace NETMapnik
 		mapnik::projection const& map_proj,
 		std::vector<mapnik::layer> const& layers,
 		double scale_denom,
-		mapnik::vector::tile const& tiledata,
-
+				mapnik::vector::tile const& tiledata,
+		//		vector_tile_render_baton_t *closure,
+		//VectorTile vTile,
+		int z,
+		int x,
+		int y,
+		unsigned width,
 		mapnik::box2d<double> const& map_extent);
 
 }

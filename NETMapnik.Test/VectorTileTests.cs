@@ -16,10 +16,12 @@ namespace NETMapnik.Test
             m.Width = 256;
             m.Height = 256;
             m.LoadMap(@"..\..\data\layer.xml");
-            m.ZoomAll();
-            VectorTile v = new VectorTile();
+            //m.ZoomAll();
+            m.ZoomToBox(-10037508, -10037508, 10037508, 10037508);
+            VectorTile v = new VectorTile(0,0,0,256,256);
             m.Render(v);
-            Assert.AreNotEqual(v.GetBytes().Length, 0);
+            int byteCount = v.GetBytes().Length;
+            Assert.AreNotEqual(byteCount, 0);
 
         }
 
@@ -31,17 +33,20 @@ namespace NETMapnik.Test
         //    m.Width = 256;
         //    m.Height = 256;
         //    m.LoadMap(@"..\..\data\layer.xml");
-        //    m.ZoomAll();
-        //    VectorTile v = new VectorTile();
+        //    //m.ZoomAll();
+        //    m.ZoomToBox(-10037508, -10037508, 10037508, 10037508);
+        //    VectorTile v = new VectorTile(0, 0, 0, 256, 256);
         //    m.Render(v);
 
+        //    VectorTile v2 = new VectorTile(5, 6, 0, 256, 256);
+        //    v2.SetBytes(v.GetBytes());
         //    Map m2 = new Map();
-        //    m2.Width = 256;
-        //    m2.Height = 256;
+        //    //m2.Width = 256;
+        //    //m2.Height = 256;
         //    m2.LoadMap(@"..\..\data\style.xml");
-        //    m2.ZoomToBox(-200000,-200000,200000,200000);
-        //    Image i = new Image(256, 256);
-        //    v.Render(m2, i);
+        //    //m2.ZoomToBox(-200000, -200000, 200000, 200000);
+        //    Image i = new Image(512, 512);
+        //    v2.Render(m2, i);
         //    i.Save(@"c:\tile.png", "png");
         //}
     }

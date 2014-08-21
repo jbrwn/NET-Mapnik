@@ -161,24 +161,34 @@ namespace NETMapnik
 		typedef mapnik::vector::backend_pbf backend_type;
 		typedef mapnik::vector::processor<backend_type> renderer_type;
 
+		unsigned tolerance = 1;
+		unsigned path_multiplier = 16;
+		int buffer_size = 0;
+		double scale_factor = 1.0;
+		double scale_denominator = 0.0;
+		unsigned offset_x = 0;
+		unsigned offset_y = 0;
+		std::string image_format = "jpeg";
+		mapnik::scaling_method_e scaling_method = mapnik::SCALING_NEAR;
+
 		try
 		{
 			mapnik::vector::tile* vTile = tile->NativeObject();
-			backend_type backend(*vTile, 16);
+			backend_type backend(*vTile, path_multiplier);
 			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
 			renderer_type ren(
 				backend,
 				*_map,
 				m_req,
-				1.0,
-				0U,
-				0U,
-				1U,
-				"jpeg",
-				mapnik::SCALING_NEAR
+				scale_factor,
+				offset_x,
+				offset_y,
+				tolerance,
+				image_format,
+				scaling_method
 			);
 
-			ren.apply(0);
+			ren.apply(scale_denominator);
 		}
 		catch (const std::exception& ex)
 		{
