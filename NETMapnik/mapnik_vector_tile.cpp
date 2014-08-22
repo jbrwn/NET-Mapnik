@@ -76,8 +76,9 @@ namespace NETMapnik
 		mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
 
 		//create request
-		// use width and height from image and extent from vector tile
-		mapnik::request m_req(i->width(),i->height(), map_extent);
+		// use width, height, and extent from map object to allow over zooming
+		//mapnik::request m_req(i->width(),i->height(), map_extent);
+		mapnik::request m_req(m->width(), m->height(), m->get_current_extent());
 		m_req.set_buffer_size(buffer_size);
 
 		//get map projection from map object
@@ -138,7 +139,8 @@ namespace NETMapnik
 							z,
 							tileSize
 							);
-						ds->set_envelope(m_req.get_buffered_extent());
+						//ds->set_envelope(m_req.get_buffered_extent());
+						ds->set_envelope(map_extent);
 						lyr_copy.set_datasource(ds);
 						std::set<std::string> names;
 						ren.apply_to_layer(lyr_copy,

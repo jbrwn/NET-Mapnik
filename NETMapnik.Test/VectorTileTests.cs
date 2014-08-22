@@ -43,6 +43,8 @@ namespace NETMapnik.Test
             m2.Width = 256;
             m2.Height = 256;
             m2.LoadMap(@"..\..\data\style.xml");
+            //Zoom in past 0/0/0 to "overzoom" vector tile
+            m2.ZoomToBox(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
             Image i = new Image(256, 256);
             v2.Render(m2, i);
             int byteCount = i.Encode("png").Length;
