@@ -39,13 +39,12 @@ namespace NETMapnik
 		mapnik::projection const& map_proj,
 		std::vector<mapnik::layer> const& layers,
 		double scale_denom,
-				mapnik::vector::tile const& tiledata,
-		//		vector_tile_render_baton_t *closure,
-		//VectorTile vTile,
+		double scale_factor,
+		mapnik::vector::tile const& tiledata,
 		int z,
 		int x,
 		int y,
-		unsigned width,
+		unsigned tileSize,
 		mapnik::box2d<double> const& map_extent);
 
 }
