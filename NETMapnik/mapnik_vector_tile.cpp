@@ -9,9 +9,6 @@
 #include <mapnik\agg_renderer.hpp>
 #include <mapnik\scale_denominator.hpp>
 
-#include <mapnik\image_util.hpp>
-#include <mapnik\load_map.hpp>
-
 #include "vector_tile_datasource.hpp"
 
 namespace NETMapnik
