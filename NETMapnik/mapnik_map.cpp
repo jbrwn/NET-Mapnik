@@ -60,6 +60,17 @@ namespace NETMapnik
 		_map->set_height(value);
 	}
 
+	//buffer
+	System::Int32 Map::Buffer::get()
+	{
+		return _map->buffer_size();
+	}
+
+	void Map::Buffer::set(System::Int32 value)
+	{
+		_map->set_buffer_size(value);
+	}
+
 	//load map
 	void Map::LoadMap(System::String^ path)
 	{
@@ -93,6 +104,7 @@ namespace NETMapnik
 		{
 			mapnik::image_32* i = image->NativeObject();
 			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			m_req.set_buffer_size(_map->buffer_size());
 			mapnik::agg_renderer<mapnik::image_32> ren(
 				*_map, 
 				m_req, 
@@ -176,6 +188,7 @@ namespace NETMapnik
 			mapnik::vector::tile* vTile = tile->NativeObject();
 			backend_type backend(*vTile, path_multiplier);
 			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			m_req.set_buffer_size(_map->buffer_size());
 			renderer_type ren(
 				backend,
 				*_map,

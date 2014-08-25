@@ -28,6 +28,12 @@ namespace NETMapnik
 			void set(System::UInt32 value);
 		}
 
+		property System::Int32 Buffer
+		{
+			System::Int32 get();
+			void set(System::Int32 value);
+		}
+
 		void LoadMap(System::String^ path);
 		void ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
 		void ZoomAll();
