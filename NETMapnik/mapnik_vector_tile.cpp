@@ -11,6 +11,8 @@
 
 #include "vector_tile_datasource.hpp"
 
+#include <msclr\marshal_cppstd.h>
+
 namespace NETMapnik
 {
 	VectorTile::VectorTile(System::Int32 Z, System::Int32 X, System::Int32 Y, System::UInt32 Width, System::UInt32 Height)
@@ -39,60 +41,84 @@ namespace NETMapnik
 
 	array<System::Byte>^ VectorTile::GetBytes()
 	{
-		std::string s;
-		_tile->SerializeToString(&s);
-		array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
-		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
-		return data;
+		try
+		{
+			std::string s;
+			_tile->SerializeToString(&s);
+			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
+			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
+			return data;
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 
 	void VectorTile::SetBytes(array<System::Byte>^ data)
 	{
-		pin_ptr<unsigned char> pData = &data[0];
-		std::string s = std::string(reinterpret_cast<char*>(pData), data->Length);
-		_tile->ParseFromString(s);
+		if (data->Length > 0)
+		{
+			try
+			{
+				pin_ptr<unsigned char> pData = &data[0];
+				std::string s = std::string(reinterpret_cast<char*>(pData), data->Length);
+				_tile->ParseFromString(s);
+			}
+			catch (const std::exception& ex)
+			{
+				System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+				throw gcnew System::Exception(managedException);
+			}
+		}
 	}
 
 	void VectorTile::Render(Map^ map, Image^ image)
 	{
-
 		//See - https://github.com/mapnik/node-mapnik/blob/master/src/mapnik_vector_tile.cpp
+		try
+		{
+			//Unwrap native objects
+			mapnik::Map *m = map->NativeObject();
+			mapnik::image_32 *i = image->NativeObject();
 
-		//Unwrap native objects
-		mapnik::Map *m = map->NativeObject();
-		mapnik::image_32 *i = image->NativeObject();
+			unsigned offset_x = 0;
+			unsigned offset_y = 0;
+			int buffer_size = 0;
+			double scale_factor = 1.0; 
+			double scale_denom = 0.0;
 
-		unsigned offset_x = 0;
-		unsigned offset_y = 0;
-		int buffer_size = 0;
-		double scale_factor = 1.0; 
-		double scale_denom = 0.0;
+			//get vtile extent
+			//TO DO: offload to method once box2d is exposed as .NET object?
+			mapnik::vector::spherical_mercator merc(_width);
+			double minx, miny, maxx, maxy;
+			merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
+			mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
 
-		//get vtile extent
-		//TO DO: offload to method once box2d is exposed as .NET object?
-		mapnik::vector::spherical_mercator merc(_width);
-		double minx, miny, maxx, maxy;
-		merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
-		mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
+			//create request
+			// use width, height, and extent from map object to allow over zooming
+			//mapnik::request m_req(i->width(),i->height(), map_extent);
+			mapnik::request m_req(m->width(), m->height(), m->get_current_extent());
+			m_req.set_buffer_size(buffer_size);
 
-		//create request
-		// use width, height, and extent from map object to allow over zooming
-		//mapnik::request m_req(i->width(),i->height(), map_extent);
-		mapnik::request m_req(m->width(), m->height(), m->get_current_extent());
-		m_req.set_buffer_size(buffer_size);
+			//get map projection from map object
+			mapnik::projection map_proj(m->srs(), true);
 
-		//get map projection from map object
-		mapnik::projection map_proj(m->srs(), true);
+			//get map layers
+			std::vector<mapnik::layer> const& layers = m->layers();
 
-		//get map layers
-		std::vector<mapnik::layer> const& layers = m->layers();
-
-		//start rendering
-		mapnik::agg_renderer<mapnik::image_32> ren(*m,m_req,*i,scale_factor,offset_x,offset_y);
-		ren.start_map_processing(*m);
-		process_layers(ren, m_req, map_proj, layers, scale_denom, scale_factor,*_tile,_z,_x,_y,_width, map_extent);
-		ren.end_map_processing(*m);
-
+			//start rendering
+			mapnik::agg_renderer<mapnik::image_32> ren(*m,m_req,*i,scale_factor,offset_x,offset_y);
+			ren.start_map_processing(*m);
+			process_layers(ren, m_req, map_proj, layers, scale_denom, scale_factor,*_tile,_z,_x,_y,_width, map_extent);
+			ren.end_map_processing(*m);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 
 	template <typename Renderer>
