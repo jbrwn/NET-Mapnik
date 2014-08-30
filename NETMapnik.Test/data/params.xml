@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Map>
+  <Parameters>
+    <Parameter name="words" type="string">wat up</Parameter>
+    <Parameter name="num" type="int">1</Parameter>
+    <Parameter name="decimal" type="float">.123</Parameter>
+  </Parameters>
+</Map>

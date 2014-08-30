@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NETMapnik;
 
@@ -21,6 +22,17 @@ namespace NETMapnik.Test
             m.Width = 256;
             Assert.AreEqual(m.Height, 256U);
             Assert.AreEqual(m.Width, 256U);
+        }
+
+        [TestMethod]
+        public void Map_GetParamaters()
+        {
+            Map m = new Map();
+            m.LoadMap(@"..\..\data\params.xml");
+            Dictionary<string,object> prms = m.Parameters;
+            Assert.AreEqual("wat up",(string)prms["words"]);
+            Assert.AreEqual(1, (int)prms["num"]);
+            Assert.AreEqual(.123, (double)prms["decimal"]);
         }
 
 

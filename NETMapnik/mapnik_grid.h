@@ -1,6 +1,6 @@
-#include <mapnik\grid\grid.hpp>
-
 #pragma once
+
+#include <mapnik\grid\grid.hpp>
 
 namespace NETMapnik
 {

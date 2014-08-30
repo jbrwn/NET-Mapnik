@@ -1,6 +1,6 @@
 Build dependencies
 ==================
 
-* Mapnik windows sdk (http://mapnik.s3.amazonaws.com/dist/v2.2.0/mapnik-win-sdk-v2.2.0.zip)
-* boost_thread-vc100-mt-1_49.dll
-* boost_thread-vc100-mt-1_49.lib
+* mapnik windows sdk (https://mapnik.s3.amazonaws.com/dist/dev/mapnik-v2.3.0-WinSDK-32bit-7c7da1a2fd.7z)
+* libprotobuf
+* mapnik-vector-tile
