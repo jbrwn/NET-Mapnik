@@ -3,7 +3,9 @@
 #include "mapnik_grid.h"
 #include "mapnik_image.h"
 #include "mapnik_vector_tile.h"
+#include "mapnik_value_converter.h"
 
+#include <mapnik\params.hpp>
 #include <mapnik\map.hpp>
 #include <mapnik\load_map.hpp>
 #include <mapnik\agg_renderer.hpp>
@@ -69,6 +71,25 @@ namespace NETMapnik
 	void Map::Buffer::set(System::Int32 value)
 	{
 		_map->set_buffer_size(value);
+	}
+
+	//parameters
+	// TO DO: implement paramaters class with get and set
+	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Map::Parameters::get()
+	{
+		
+		mapnik::parameters const& params = _map->get_extra_parameters();
+		mapnik::parameters::const_iterator it = params.begin();
+		mapnik::parameters::const_iterator end = params.end();
+		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ paramsDictionary = gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>();
+		for (; it != end; ++it)
+		{
+			System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
+			mapnik::value_holder valueHolder = it->second;
+			mapnik_value_holder_to_managed *c = new mapnik_value_holder_to_managed();
+			paramsDictionary[key] = c->convert(valueHolder);
+		}
+		return paramsDictionary;
 	}
 
 	//load map

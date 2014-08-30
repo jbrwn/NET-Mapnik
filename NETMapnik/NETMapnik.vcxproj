@@ -88,6 +88,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClInclude Include="mapnik_image.h" />
     <ClInclude Include="mapnik_map.h" />
     <ClInclude Include="mapnik_grid.h" />
+    <ClInclude Include="mapnik_value_converter.h" />
     <ClInclude Include="mapnik_vector_tile.h" />
     <ClInclude Include="NET_grid_utils.h" />
     <ClInclude Include="resource.h" />

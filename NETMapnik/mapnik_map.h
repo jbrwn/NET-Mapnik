@@ -34,6 +34,11 @@ namespace NETMapnik
 			void set(System::Int32 value);
 		}
 
+		property System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Parameters
+		{
+			System::Collections::Generic::Dictionary<System::String^, System::Object^>^ get();
+		}
+
 		void LoadMap(System::String^ path);
 		void ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
 		void ZoomAll();
