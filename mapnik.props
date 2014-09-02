@@ -1,0 +1,15 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup>
+      <None Include="$(MsBuildThisFileDirectory)\..\..\native\x86\*.dll" Condition="$(PlatformTarget) == 'x86'" >
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Include="$(MsBuildThisFileDirectory)\..\..\native\x86\mapnik\input\*" Condition="$(PlatformTarget) == 'x86'" >
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <Link>mapnik\input\%(FileName).%(Extension)</Link>
+      </None>
+      <None Include="$(MsBuildThisFileDirectory)\..\..\native\x86\mapnik\fonts\*" Condition="$(PlatformTarget) == 'x86'" >
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <Link>mapnik\fonts\%(FileName).%(Extension)</Link>
+      </None>
+    </ItemGroup>
+</Project>
