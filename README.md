@@ -1,7 +1,9 @@
 NET-Mapnik
 ==========
 
-.NET bindings for [mapnik](https://github.com/mapnik/mapnik). 
+.NET bindings for [mapnik](https://github.com/mapnik/mapnik).
+
+[![](http://img.shields.io/nuget/v/mapnik.svg?style=flat-square)](https://www.nuget.org/packages/mapnik/)
 
 Usage
 -------
@@ -43,6 +45,15 @@ using NETMapnik;
         }
     }
 ```
+
+Install
+-------
+Install the nuget package:
+```
+PM> Install-Package mapnik
+```
+The package includes a .NET assembly wrapper for mapnik - NETMapnik.dll - and the native x86 mapnik windows sdk.
+
 
 Build Instrucitons
 ------------------
