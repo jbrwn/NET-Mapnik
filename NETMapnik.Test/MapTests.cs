@@ -35,7 +35,14 @@ namespace NETMapnik.Test
             Assert.AreEqual(.123, (double)prms["decimal"]);
         }
 
-
+        [TestMethod]
+        public void Map_FromString()
+        {
+            Map m = new Map();
+            string mapString = @"<Map buffer-size=""20""></Map>";
+            m.FromString(mapString);
+            Assert.AreEqual(m.Buffer, 20);
+        }
 
 
     }

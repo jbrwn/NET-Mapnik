@@ -40,6 +40,7 @@ namespace NETMapnik
 		}
 
 		void LoadMap(System::String^ path);
+		void FromString(System::String^ str);
 		void ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
 		void ZoomAll();
 

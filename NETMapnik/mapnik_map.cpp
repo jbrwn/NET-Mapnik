@@ -107,6 +107,20 @@ namespace NETMapnik
 		}
 	}
 
+	void Map::FromString(System::String^ str)
+	{
+		std::string unmanagedStr = msclr::interop::marshal_as<std::string>(str);
+		try
+		{
+			mapnik::load_map_string(*_map, unmanagedStr);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+	}
+
 	//zoom_to_box
 	void Map::ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy)
 	{
