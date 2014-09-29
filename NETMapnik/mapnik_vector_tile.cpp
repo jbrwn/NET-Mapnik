@@ -18,15 +18,24 @@
 
 namespace NETMapnik
 {
-	VectorTile::VectorTile(System::Int32 Z, System::Int32 X, System::Int32 Y, System::UInt32 Width, System::UInt32 Height)
+	VectorTile::VectorTile(System::Int32 z, System::Int32 x, System::Int32 y)
 	{
 		_tile = new mapnik::vector::tile();
-		_z = Z;
-		_x = X;
-		_y = Y;
-		_width = Width;
-		_height = Height;
+		_z = z;
+		_x = x;
+		_y = y;
+		_width = 256;
+		_height = 256;
+	}
 
+	VectorTile::VectorTile(System::Int32 z, System::Int32 x, System::Int32 y, System::UInt32 width, System::UInt32 height)
+	{
+		_tile = new mapnik::vector::tile();
+		_z = z;
+		_x = x;
+		_y = y;
+		_width = width;
+		_height = height;
 	}
 
 	VectorTile::~VectorTile()
@@ -77,18 +86,64 @@ namespace NETMapnik
 		}
 	}
 
+	System::Collections::Generic::IEnumerable<System::String^>^ VectorTile::Names()
+	{
+		System::Collections::Generic::List<System::String^>^ names = gcnew System::Collections::Generic::List<System::String^>();
+		for (int i = 0; i < _tile->layers_size(); ++i)
+		{
+			mapnik::vector::tile_layer const& layer =  _tile->layers(i);
+			names->Add(msclr::interop::marshal_as<System::String^>(layer.name().c_str()));
+		}
+		return names;
+	}
+
+	System::Boolean VectorTile::Empty()
+	{
+		if (_tile->layers_size() == 0) 
+		{
+			return true;
+		}
+		else 
+		{
+			for (int i = 0; i < _tile->layers_size(); ++i)
+			{
+				mapnik::vector::tile_layer const& layer = _tile->layers(i);
+				if (layer.features_size()) 
+				{
+					return false;
+				}
+			}
+		}
+	}
+
 	void VectorTile::Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles)
 	{
+		Composite(vTiles, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
+	}
+
+	void VectorTile::Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	{
+		// set defaults
+		unsigned path_multiplier = 16;
+		int buffer_size = 0;
+		double scale_factor = 1.0;
+		unsigned offset_x = 0;
+		unsigned offset_y = 0;
+		unsigned tolerance = 1;
+		double scale_denominator = 0.0;
+
+		// get options
+		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
+		optionsParser->TryGet<int>("BufferSize", buffer_size);
+		optionsParser->TryGet<double>("Scale", scale_factor);
+		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
+		optionsParser->TryGet<unsigned>("Tolernace", tolerance);
+		optionsParser->TryGet<unsigned>("PathMultiplier", path_multiplier);
+
 		try
 		{
-			unsigned path_multiplier = 16;
-			int buffer_size = 0;
-			double scale_factor = 1.0;
-			unsigned offset_x = 0;
-			unsigned offset_y = 0;
-			unsigned tolerance = 1;
-			double scale_denominator = 0.0;
-
 			mapnik::box2d<double> max_extent(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
 			std::string merc_srs("+init=epsg:3857");
 

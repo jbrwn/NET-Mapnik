@@ -14,10 +14,16 @@ namespace NETMapnik
 	public ref class VectorTile
 	{
 	public:
-		VectorTile(System::Int32 Z, System::Int32 X, System::Int32 Y, System::UInt32 Width, System::UInt32 Height);
+		VectorTile(System::Int32 z, System::Int32 x, System::Int32 y);
+		VectorTile(System::Int32 z, System::Int32 x, System::Int32 y, System::UInt32 width, System::UInt32 height);
 		~VectorTile();
 		array<System::Byte>^ GetBytes();
 		void SetBytes(array<System::Byte>^ data);
+
+		System::Collections::Generic::IEnumerable<System::String^>^ Names();
+		System::Boolean Empty();
+
+		void Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		void Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles);
 		
 		void Render(Map^ map, Image^ image);
