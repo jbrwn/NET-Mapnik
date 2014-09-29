@@ -78,88 +78,96 @@ namespace NETMapnik
 
 	void VectorTile::Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles)
 	{
-		unsigned path_multiplier = 16;
-		int buffer_size = 0;
-		double scale_factor = 1.0;
-		unsigned offset_x = 0;
-		unsigned offset_y = 0;
-		unsigned tolerance = 1;
-		double scale_denominator = 0.0;
-
-		mapnik::box2d<double> max_extent(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
-		std::string merc_srs("+init=epsg:3857");
-
-		for each (VectorTile^ vTile in vTiles)
+		try
 		{
-			//get native tile object
-			mapnik::vector::tile const *vt = vTile->NativeObject();
+			unsigned path_multiplier = 16;
+			int buffer_size = 0;
+			double scale_factor = 1.0;
+			unsigned offset_x = 0;
+			unsigned offset_y = 0;
+			unsigned tolerance = 1;
+			double scale_denominator = 0.0;
 
-			if (_z == vTile->_z &&
-				_x == vTile->_x &&
-				_y == vTile->_y)
+			mapnik::box2d<double> max_extent(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+			std::string merc_srs("+init=epsg:3857");
+
+			for each (VectorTile^ vTile in vTiles)
 			{
-				// merge 
-				_tile->MergeFrom(*vt);
-			}
-			else
-			{
-				// set up to render to new vtile
-				typedef mapnik::vector::backend_pbf backend_type;
-				typedef mapnik::vector::processor<backend_type> renderer_type;
-				mapnik::vector::tile new_tiledata;
-				backend_type backend(new_tiledata,
-					path_multiplier);
+				//get native tile object
+				mapnik::vector::tile const *vt = vTile->NativeObject();
 
-				// get mercator extent of target tile
-				mapnik::vector::spherical_mercator merc(_width);
-				double minx, miny, maxx, maxy;
-				merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
-				mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
-				// create request
-				mapnik::request m_req(_width, _height, map_extent);
-				m_req.set_buffer_size(buffer_size);
-				// create map
-				mapnik::Map map(_width, _height, merc_srs);
-				map.set_maximum_extent(max_extent);
-
-				// source tile properties
-				unsigned x = vTile->_x;
-				unsigned y = vTile->_y;
-				unsigned z = vTile->_y;
-				unsigned width = vTile->_width;
-
-				unsigned num_layers = vt->layers_size();
-				if (num_layers > 0)
+				if (_z == vTile->_z &&
+					_x == vTile->_x &&
+					_y == vTile->_y)
 				{
-					for (int i = 0; i < vt->layers_size(); ++i)
-					{
-						mapnik::vector::tile_layer const& layer = vt->layers(i);
-						mapnik::layer lyr(layer.name(), merc_srs);
-						MAPNIK_SHARED_PTR<mapnik::vector::tile_datasource> ds = MAPNIK_MAKE_SHARED<
-							mapnik::vector::tile_datasource>(
-							layer,
-							x,//vTile->_x,
-							y,//vTile->_y,
-							z,//vTile->_z,
-							width//vTile->_width
-							);
-						ds->set_envelope(m_req.get_buffered_extent());
-						lyr.set_datasource(ds);
-						map.MAPNIK_ADD_LAYER(lyr);
-					}
-					renderer_type ren(backend,
-						map,
-						m_req,
-						scale_factor,
-						offset_x,
-						offset_y,
-						tolerance);
-					ren.apply(scale_denominator);
+					// merge 
+					_tile->MergeFrom(*vt);
+				}
+				else
+				{
+					// set up to render to new vtile
+					typedef mapnik::vector::backend_pbf backend_type;
+					typedef mapnik::vector::processor<backend_type> renderer_type;
+					mapnik::vector::tile new_tiledata;
+					backend_type backend(new_tiledata,
+						path_multiplier);
 
-					//merge
-					_tile->MergeFrom(new_tiledata);
+					// get mercator extent of target tile
+					mapnik::vector::spherical_mercator merc(_width);
+					double minx, miny, maxx, maxy;
+					merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
+					mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
+					// create request
+					mapnik::request m_req(_width, _height, map_extent);
+					m_req.set_buffer_size(buffer_size);
+					// create map
+					mapnik::Map map(_width, _height, merc_srs);
+					map.set_maximum_extent(max_extent);
+
+					// source tile properties
+					unsigned x = vTile->_x;
+					unsigned y = vTile->_y;
+					unsigned z = vTile->_y;
+					unsigned width = vTile->_width;
+
+					unsigned num_layers = vt->layers_size();
+					if (num_layers > 0)
+					{
+						for (int i = 0; i < vt->layers_size(); ++i)
+						{
+							mapnik::vector::tile_layer const& layer = vt->layers(i);
+							mapnik::layer lyr(layer.name(), merc_srs);
+							MAPNIK_SHARED_PTR<mapnik::vector::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+								mapnik::vector::tile_datasource>(
+								layer,
+								x,//vTile->_x,
+								y,//vTile->_y,
+								z,//vTile->_z,
+								width//vTile->_width
+								);
+							ds->set_envelope(m_req.get_buffered_extent());
+							lyr.set_datasource(ds);
+							map.MAPNIK_ADD_LAYER(lyr);
+						}
+						renderer_type ren(backend,
+							map,
+							m_req,
+							scale_factor,
+							offset_x,
+							offset_y,
+							tolerance);
+						ren.apply(scale_denominator);
+
+						//merge
+						_tile->MergeFrom(new_tiledata);
+					}
 				}
 			}
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
 		}
 	}
 
