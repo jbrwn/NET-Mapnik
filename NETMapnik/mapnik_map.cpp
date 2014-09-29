@@ -209,12 +209,12 @@ namespace NETMapnik
 		unsigned offset_y = 0;
 		
 		// get options
-		NET_options_parser^ optionsPaser = gcnew NET_options_parser(options);
-		optionsPaser->TryGet<int>("BufferSize", buffer_size);
-		optionsPaser->TryGet<double>("Scale", scale_factor);
-		optionsPaser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsPaser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsPaser->TryGet<unsigned>("OffsetY", offset_y);
+		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
+		optionsParser->TryGet<int>("BufferSize", buffer_size);
+		optionsParser->TryGet<double>("Scale", scale_factor);
+		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
 
 		try
 		{
@@ -258,17 +258,17 @@ namespace NETMapnik
 		std::size_t layer_idx = 0;
 
 		// get options
-		NET_options_parser^ optionsPaser = gcnew NET_options_parser(options);
-		optionsPaser->TryGet<int>("BufferSize", buffer_size);
-		optionsPaser->TryGet<double>("Scale", scale_factor);
-		optionsPaser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsPaser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsPaser->TryGet<unsigned>("OffsetY", offset_y);
+		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
+		optionsParser->TryGet<int>("BufferSize", buffer_size);
+		optionsParser->TryGet<double>("Scale", scale_factor);
+		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
 
 		std::vector<mapnik::layer> const& layers = _map->layers();
 
 		System::String^ layer;
-		if (optionsPaser->TryGet<System::String^>("Layer", layer))
+		if (optionsParser->TryGet<System::String^>("Layer", layer))
 		{
 			bool found = false;
 			unsigned int idx(0);
@@ -290,7 +290,7 @@ namespace NETMapnik
 		}
 
 		System::Collections::Generic::IEnumerable<System::String^>^ fields;
-		if (optionsPaser->TryGet<System::Collections::Generic::IEnumerable<System::String^>^>("Fields", fields))
+		if (optionsParser->TryGet<System::Collections::Generic::IEnumerable<System::String^>^>("Fields", fields))
 		{
 			for each(System::String^ name in fields)
 			{
@@ -351,21 +351,21 @@ namespace NETMapnik
 		mapnik::scaling_method_e scaling_method = mapnik::SCALING_NEAR;
 
 		// get options
-		NET_options_parser^ optionsPaser = gcnew NET_options_parser(options);
-		optionsPaser->TryGet<int>("BufferSize", buffer_size);
-		optionsPaser->TryGet<double>("Scale", scale_factor);
-		optionsPaser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsPaser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsPaser->TryGet<unsigned>("OffsetY", offset_y);
-		optionsPaser->TryGet<unsigned>("Tolernace", tolerance);
-		optionsPaser->TryGet<unsigned>("PathMultiplier", path_multiplier);
+		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
+		optionsParser->TryGet<int>("BufferSize", buffer_size);
+		optionsParser->TryGet<double>("Scale", scale_factor);
+		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
+		optionsParser->TryGet<unsigned>("Tolernace", tolerance);
+		optionsParser->TryGet<unsigned>("PathMultiplier", path_multiplier);
 
 		System::String^ format;
-		if (optionsPaser->TryGet<System::String^>("ImageFormat", format))
+		if (optionsParser->TryGet<System::String^>("ImageFormat", format))
 			image_format = msclr::interop::marshal_as<std::string>(format);
 
 		System::String^ scaling;
-		if (optionsPaser->TryGet<System::String^>("ImageScaling", scaling))
+		if (optionsParser->TryGet<System::String^>("ImageScaling", scaling))
 		{
 			std::string scaling_str = msclr::interop::marshal_as<std::string>(scaling);
 			boost::optional<mapnik::scaling_method_e> method = mapnik::scaling_method_from_string(scaling_str);
