@@ -27,6 +27,14 @@ namespace NETMapnik
 	{
 		_map = new mapnik::Map();
 	}
+	Map::Map(System::UInt32 width, System::UInt32 height)
+	{
+		_map = new mapnik::Map(width, height);
+	}
+	Map::Map(System::UInt32 width, System::UInt32 height, System::String^ srs)
+	{
+		_map = new mapnik::Map(width, height, msclr::interop::marshal_as<std::string>(srs));
+	}
 
 	//Destructor
 	Map::~Map()
@@ -63,12 +71,12 @@ namespace NETMapnik
 	}
 
 	//buffer
-	System::Int32 Map::Buffer::get()
+	System::Int32 Map::BufferSize::get()
 	{
 		return _map->buffer_size();
 	}
 
-	void Map::Buffer::set(System::Int32 value)
+	void Map::BufferSize::set(System::Int32 value)
 	{
 		_map->set_buffer_size(value);
 	}
@@ -84,6 +92,20 @@ namespace NETMapnik
 	{
 		std::string srs = msclr::interop::marshal_as<std::string>(value);
 		_map->set_srs(srs);
+	}
+
+	//Aspect Fix Mode
+	System::Int32 Map::AspectFixMode::get()
+	{
+		return _map->get_aspect_fix_mode();
+	}
+
+	void Map::AspectFixMode::set(System::Int32 value)
+	{
+		if (value < _map->aspect_fix_mode_MAX)
+			_map->set_aspect_fix_mode(static_cast<mapnik::Map::aspect_fix_mode>(value));
+		else
+			throw gcnew System::Exception("AspectFixMode is invalid");
 	}
 
 	//parameters
@@ -106,12 +128,23 @@ namespace NETMapnik
 	}
 
 	//load map
-	void Map::LoadMap(System::String^ path)
+	void Map::Load(System::String^ path)
+	{
+		return Load(path, false, "");
+	}
+
+	void Map::Load(System::String^ path, System::Boolean strict)
+	{
+		return Load(path, strict, "");
+	}
+
+	void Map::Load(System::String^ path, System::Boolean strict, System::String^ basePath)
 	{
 		std::string unmanagedPath = msclr::interop::marshal_as<std::string>(path);
+		std::string unmanagedBasePath = msclr::interop::marshal_as<std::string>(basePath);
 		try
 		{
-			mapnik::load_map(*_map,unmanagedPath);
+			mapnik::load_map(*_map,unmanagedPath,strict,unmanagedBasePath);
 		}
 		catch (const std::exception& ex)
 		{
@@ -120,12 +153,24 @@ namespace NETMapnik
 		}
 	}
 
+	//FromString
 	void Map::FromString(System::String^ str)
 	{
+		return FromString(str, false, "");
+	}
+
+	void Map::FromString(System::String^ str, System::Boolean strict)
+	{
+		return FromString(str, strict, "");
+	}
+
+	void Map::FromString(System::String^ str, System::Boolean strict, System::String^ basePath)
+	{
 		std::string unmanagedStr = msclr::interop::marshal_as<std::string>(str);
+		std::string unmanagedBasePath = msclr::interop::marshal_as<std::string>(basePath);
 		try
 		{
-			mapnik::load_map_string(*_map, unmanagedStr);
+			mapnik::load_map_string(*_map, unmanagedStr,strict,unmanagedBasePath);
 		}
 		catch (const std::exception& ex)
 		{

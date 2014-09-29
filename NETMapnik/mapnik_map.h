@@ -14,6 +14,8 @@ namespace NETMapnik
 	public:
 		//Constructor
 		Map();
+		Map(System::UInt32 width, System::UInt32 height);
+		Map(System::UInt32 width, System::UInt32 height, System::String^ srs);
 		//Destructor
 		~Map();
 
@@ -28,7 +30,7 @@ namespace NETMapnik
 			void set(System::UInt32 value);
 		}
 
-		property System::Int32 Buffer
+		property System::Int32 BufferSize
 		{
 			System::Int32 get();
 			void set(System::Int32 value);
@@ -40,14 +42,28 @@ namespace NETMapnik
 			void set(System::String^ value);
 		}
 
+		property System::Int32 AspectFixMode
+		{
+			System::Int32 get();
+			void set(System::Int32 value);
+		}
+
+		//property Extent 
+		//property BufferedExtent
+		//property MaxiumExtent
 
 		property System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Parameters
 		{
 			System::Collections::Generic::Dictionary<System::String^, System::Object^>^ get();
 		}
 
-		void LoadMap(System::String^ path);
+		void Load(System::String^ path);
+		void Load(System::String^ path, System::Boolean strict);
+		void Load(System::String^ path, System::Boolean strict, System::String^ basePath);
 		void FromString(System::String^ str);
+		void FromString(System::String^ str, System::Boolean strict);
+		void FromString(System::String^ str, System::Boolean strict, System::String^ basePath);
+
 		void ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
 		void ZoomAll();
 

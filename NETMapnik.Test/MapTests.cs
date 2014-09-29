@@ -28,7 +28,7 @@ namespace NETMapnik.Test
         public void Map_GetParamaters()
         {
             Map m = new Map();
-            m.LoadMap(@"..\..\data\params.xml");
+            m.Load(@"..\..\data\params.xml");
             Dictionary<string,object> prms = m.Parameters;
             Assert.AreEqual("wat up",(string)prms["words"]);
             Assert.AreEqual(1, (int)prms["num"]);
@@ -41,7 +41,7 @@ namespace NETMapnik.Test
             Map m = new Map();
             string mapString = @"<Map buffer-size=""20""></Map>";
             m.FromString(mapString);
-            Assert.AreEqual(m.Buffer, 20);
+            Assert.AreEqual(m.BufferSize, 20);
         }
 
 
