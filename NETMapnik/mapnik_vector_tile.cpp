@@ -202,7 +202,7 @@ namespace NETMapnik
 			//get map projection from map object
 			mapnik::projection map_proj(m->srs(), true);
 
-			double scale_denom;
+			double scale_denom = scale_denominator;
 			if (scale_denom <= 0.0)
 			{
 				scale_denom = mapnik::scale_denominator(m_req.scale(), map_proj.is_geographic());
