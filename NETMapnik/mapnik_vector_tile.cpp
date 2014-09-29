@@ -2,6 +2,7 @@
 #include "mapnik_vector_tile.h"
 #include "mapnik_map.h"
 #include "mapnik_image.h"
+#include "NET_options_parser.h"
 
 #include <mapnik\map.hpp>
 #include <mapnik\graphics.hpp>
@@ -173,26 +174,51 @@ namespace NETMapnik
 
 	void VectorTile::Render(Map^ map, Image^ image)
 	{
+		Render(map, image, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
+	}
+
+	void VectorTile::Render(Map^ map, Image^ image, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	{
 		//See - https://github.com/mapnik/node-mapnik/blob/master/src/mapnik_vector_tile.cpp
+
+		//Unwrap native objects
+		mapnik::Map *m = map->NativeObject();
+		mapnik::image_32 *i = image->NativeObject();
+
+		// set defaults
+		int z = 0;
+		int x = 0;
+		int y = 0;
+		bool zxy_override = false;
+		int buffer_size = 0;
+		double scale_factor = 1.0;
+		double scale_denominator = 0.0;
+		
+		// get options
+		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
+		optionsParser->TryGet<int>("BufferSize", buffer_size);
+		optionsParser->TryGet<double>("Scale", scale_factor);
+		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
+		if (optionsParser->TryGet<int>("Z", z))
+			zxy_override = true;
+		if (optionsParser->TryGet<int>("X", x))
+			zxy_override = true;
+		if (optionsParser->TryGet<int>("Y", y))
+			zxy_override = true;
+
 		try
 		{
-			//Unwrap native objects
-			mapnik::Map *m = map->NativeObject();
-			mapnik::image_32 *i = image->NativeObject();
-
-			unsigned offset_x = 0;
-			unsigned offset_y = 0;
-			int buffer_size = 0;
-			double scale_factor = 1.0; 
-			double scale_denominator = 0.0;
-			//zxy overrid vars
-
-
 			//get vtile extent
 			mapnik::vector::spherical_mercator merc(_width);
 			double minx, miny, maxx, maxy;
-			//TO DO: override xyz if options passed into method
-			merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
+			if (zxy_override)
+			{
+				merc.xyz(x, y, z, minx, miny, maxx, maxy);
+			}
+			else
+			{
+				merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
+			}
 			mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
 
 			//create request
@@ -213,7 +239,12 @@ namespace NETMapnik
 			std::vector<mapnik::layer> const& layers = m->layers();
 
 			//render
-			mapnik::agg_renderer<mapnik::image_32> ren(*m,m_req,*i,scale_factor,offset_x,offset_y);
+			mapnik::agg_renderer<mapnik::image_32> ren(
+				*m,
+				m_req,
+				*i,
+				scale_factor
+			);
 			ren.start_map_processing(*m);
 			process_layers(ren, m_req, map_proj, layers, scale_denom,*_tile,_z,_x,_y,_width, map_extent);
 			ren.end_map_processing(*m);

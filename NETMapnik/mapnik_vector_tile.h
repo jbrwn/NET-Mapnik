@@ -19,7 +19,9 @@ namespace NETMapnik
 		array<System::Byte>^ GetBytes();
 		void SetBytes(array<System::Byte>^ data);
 		void Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles);
+		
 		void Render(Map^ map, Image^ image);
+		void Render(Map^ map, Image^ image, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 
 	internal:
 		mapnik::vector::tile *NativeObject();
