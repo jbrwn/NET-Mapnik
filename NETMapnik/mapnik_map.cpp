@@ -4,6 +4,7 @@
 #include "mapnik_image.h"
 #include "mapnik_vector_tile.h"
 #include "mapnik_value_converter.h"
+#include "NET_options_parser.h"
 
 #include <mapnik\params.hpp>
 #include <mapnik\map.hpp>
@@ -17,6 +18,9 @@
 // vector output api
 #include "vector_tile_processor.hpp"
 #include "vector_tile_backend_pbf.hpp"
+
+// boost
+#include <boost\foreach.hpp>
 
 #include <msclr\marshal_cppstd.h>
 
@@ -193,88 +197,185 @@ namespace NETMapnik
 
 	void Map::Render(Image^ image)
 	{
-		try
-		{
-			mapnik::image_32* i = image->NativeObject();
-			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
-			m_req.set_buffer_size(_map->buffer_size());
-			mapnik::agg_renderer<mapnik::image_32> ren(
-				*_map, 
-				m_req, 
-				*i,
-				1.0,
-				0U,
-				0U
-			);
-			ren.apply(0);
-		}
-		catch (const std::exception& ex)
-		{
-			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
-			throw gcnew System::Exception(managedException);
-		}
+		Render(image, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
 	}
-
-	void Map::Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields)
+	void Map::Render(Image^ image, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
-		mapnik::grid* g = grid->NativeObject();
-		
-		std::vector<mapnik::layer> const& layers = _map->layers();
-		std::size_t layer_num = layers.size();
-		if (layerIdx >= layer_num) {
-			throw gcnew System::Exception(System::String::Format("Zero-based layer index {0} not valid only {1} layers in map",layerIdx,layer_num));
-		}
-		
-		// convert .NET list to std::set
-		for each(System::String^ name in fields)
-		{
-			g->add_property_name(msclr::interop::marshal_as<std::string>(name));
-		}
-
-		// copy property names
-		std::set<std::string> attributes = g->property_names();
-		// todo - make this a static constant
-		std::string known_id_key = "__id__";
-		if (attributes.find(known_id_key) != attributes.end())
-		{
-			attributes.erase(known_id_key);
-		}
-
-		std::string join_field = g->get_key();
-		if (known_id_key != join_field &&
-			attributes.find(join_field) == attributes.end())
-		{
-			attributes.insert(join_field);
-		}
-
-		mapnik::grid_renderer<mapnik::grid> ren(*_map,*g,1.0,0,0);
-		mapnik::layer const& layer = layers[layerIdx];
-
-		try
-		{
-			ren.apply(layer, attributes);
-		}
-		catch (const std::exception& ex)
-		{
-			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
-			throw gcnew System::Exception(managedException);
-		}
-	}
-
-	void Map::Render(VectorTile^ tile)
-	{
-		typedef mapnik::vector::backend_pbf backend_type;
-		typedef mapnik::vector::processor<backend_type> renderer_type;
-
-		unsigned tolerance = 1;
-		unsigned path_multiplier = 16;
+		// set defaults 
 		int buffer_size = 0;
 		double scale_factor = 1.0;
 		double scale_denominator = 0.0;
 		unsigned offset_x = 0;
 		unsigned offset_y = 0;
+		
+		// get options
+		NET_options_parser^ optionsPaser = gcnew NET_options_parser(options);
+		optionsPaser->TryGet<int>("BufferSize", buffer_size);
+		optionsPaser->TryGet<double>("Scale", scale_factor);
+		optionsPaser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsPaser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsPaser->TryGet<unsigned>("OffsetY", offset_y);
+
+		try
+		{
+			mapnik::image_32* i = image->NativeObject();
+			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			m_req.set_buffer_size(buffer_size);
+			mapnik::agg_renderer<mapnik::image_32> ren(
+				*_map, 
+				m_req, 
+				*i,
+				scale_factor,
+				offset_x,
+				offset_y
+			);
+			ren.apply(scale_denominator);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+	}
+
+	void Map::Render(Grid^ grid)
+	{
+		Render(grid, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
+	}
+
+	//void Map::Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields)
+	void Map::Render(Grid^ grid, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	{
+		// unwrap grid
+		mapnik::grid* g = grid->NativeObject();
+
+		// set defaults 
+		int buffer_size = 0;
+		double scale_factor = 1.0;
+		double scale_denominator = 0.0;
+		unsigned offset_x = 0;
+		unsigned offset_y = 0;
+		std::size_t layer_idx = 0;
+
+		// get options
+		NET_options_parser^ optionsPaser = gcnew NET_options_parser(options);
+		optionsPaser->TryGet<int>("BufferSize", buffer_size);
+		optionsPaser->TryGet<double>("Scale", scale_factor);
+		optionsPaser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsPaser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsPaser->TryGet<unsigned>("OffsetY", offset_y);
+
+		std::vector<mapnik::layer> const& layers = _map->layers();
+
+		System::String^ layer;
+		if (optionsPaser->TryGet<System::String^>("Layer", layer))
+		{
+			bool found = false;
+			unsigned int idx(0);
+			std::string const& layer_name = msclr::interop::marshal_as<std::string>(layer);
+			BOOST_FOREACH(mapnik::layer const& lyr, layers)
+			{
+				if (lyr.name() == layer_name)
+				{
+					found = true;
+					layer_idx = idx;
+					break;
+				}
+				++idx;
+			}
+			if (!found)
+			{
+				throw gcnew System::ArgumentException("Layer name " + layer + " not found", "Layer");
+			}
+		}
+
+		System::Collections::Generic::IEnumerable<System::String^>^ fields;
+		if (optionsPaser->TryGet<System::Collections::Generic::IEnumerable<System::String^>^>("Fields", fields))
+		{
+			for each(System::String^ name in fields)
+			{
+				g->add_property_name(msclr::interop::marshal_as<std::string>(name));
+			}
+		}
+
+		try
+		{
+			// copy property names
+			std::set<std::string> attributes = g->property_names();
+			// todo - make this a static constant
+			std::string known_id_key = "__id__";
+			if (attributes.find(known_id_key) != attributes.end())
+			{
+				attributes.erase(known_id_key);
+			}
+
+			std::string join_field = g->get_key();
+			if (known_id_key != join_field &&
+				attributes.find(join_field) == attributes.end())
+			{
+				attributes.insert(join_field);
+			}
+
+			mapnik::grid_renderer<mapnik::grid> ren(
+				*_map,
+				*g,
+				scale_factor,
+				offset_x,
+				offset_y
+			);
+			mapnik::layer const& layer = layers[layer_idx];
+			ren.apply(layer, attributes, scale_denominator);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+	}
+	void Map::Render(VectorTile^ tile)
+	{
+		Render(tile, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
+	}
+
+	void Map::Render(VectorTile^ tile, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	{
+		// set defaults 
+		int buffer_size = 0;
+		double scale_factor = 1.0;
+		double scale_denominator = 0.0;
+		unsigned offset_x = 0;
+		unsigned offset_y = 0;
+		unsigned tolerance = 1;
+		unsigned path_multiplier = 16;
 		std::string image_format = "jpeg";
 		mapnik::scaling_method_e scaling_method = mapnik::SCALING_NEAR;
+
+		// get options
+		NET_options_parser^ optionsPaser = gcnew NET_options_parser(options);
+		optionsPaser->TryGet<int>("BufferSize", buffer_size);
+		optionsPaser->TryGet<double>("Scale", scale_factor);
+		optionsPaser->TryGet<double>("ScaleDenominator", scale_denominator);
+		optionsPaser->TryGet<unsigned>("OffsetX", offset_x);
+		optionsPaser->TryGet<unsigned>("OffsetY", offset_y);
+		optionsPaser->TryGet<unsigned>("Tolernace", tolerance);
+		optionsPaser->TryGet<unsigned>("PathMultiplier", path_multiplier);
+
+		System::String^ format;
+		if (optionsPaser->TryGet<System::String^>("ImageFormat", format))
+			image_format = msclr::interop::marshal_as<std::string>(format);
+
+		System::String^ scaling;
+		if (optionsPaser->TryGet<System::String^>("ImageScaling", scaling))
+		{
+			std::string scaling_str = msclr::interop::marshal_as<std::string>(scaling);
+			boost::optional<mapnik::scaling_method_e> method = mapnik::scaling_method_from_string(scaling_str);
+			if (!method)
+				throw gcnew System::ArgumentException("ImageScaling must be a valid scaling (e.g 'bilinear')", "ImageScaling");
+			scaling_method = *method;
+		}
+
+		typedef mapnik::vector::backend_pbf backend_type;
+		typedef mapnik::vector::processor<backend_type> renderer_type;
 
 		try
 		{
@@ -301,7 +402,5 @@ namespace NETMapnik
 			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
 			throw gcnew System::Exception(managedException);
 		}
-
-
 	}
 }

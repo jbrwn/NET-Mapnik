@@ -68,8 +68,11 @@ namespace NETMapnik
 		void ZoomAll();
 
 		void Render(Image^ image);
-		void Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields);
+		void Render(Image^ image, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+		void Render(Grid^ grid);
+		void Render(Grid^ grid, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		void Render(VectorTile^ tile);
+		void Render(VectorTile^ tile, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 
 	internal:
 		mapnik::Map *NativeObject();

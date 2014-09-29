@@ -18,8 +18,11 @@ namespace NETMapnik.Test
             m.Load(@"..\..\data\test.xml");
             m.ZoomAll();
             Grid g = new Grid(256, 256);
-            List<string> gridFields = new List<string>() {"FIPS"};
-            m.Render(g, 0, gridFields);
+            Dictionary<string, object> options = new Dictionary<string, object>();
+            options["Fields"] = new List<string>() { "FIPS" };
+            options["Layer"] = "world2";
+
+            m.Render(g, options);
             Dictionary<string, object> UTFGridDict = g.Encode("utf", true, 4);
 
             Assert.AreEqual(UTFGridDict.Keys.Count, 3);

@@ -91,6 +91,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClInclude Include="mapnik_value_converter.h" />
     <ClInclude Include="mapnik_vector_tile.h" />
     <ClInclude Include="NET_grid_utils.h" />
+    <ClInclude Include="NET_options_parser.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
@@ -106,6 +107,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClCompile Include="mapnik_grid.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />
     <ClCompile Include="NET_grid_utils.cpp" />
+    <ClCompile Include="NET_options_parser.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
