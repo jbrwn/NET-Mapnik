@@ -114,6 +114,7 @@ namespace NETMapnik
 				}
 			}
 		}
+		return true;
 	}
 
 	void VectorTile::Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles)
