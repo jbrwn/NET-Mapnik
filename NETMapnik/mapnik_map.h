@@ -34,6 +34,13 @@ namespace NETMapnik
 			void set(System::Int32 value);
 		}
 
+		property System::String^ SRS
+		{
+			System::String^ get();
+			void set(System::String^ value);
+		}
+
+
 		property System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Parameters
 		{
 			System::Collections::Generic::Dictionary<System::String^, System::Object^>^ get();

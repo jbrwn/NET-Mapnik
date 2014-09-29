@@ -18,6 +18,7 @@ namespace NETMapnik
 		~VectorTile();
 		array<System::Byte>^ GetBytes();
 		void SetBytes(array<System::Byte>^ data);
+		void Composite(System::Collections::Generic::IEnumerable<VectorTile^>^ vTiles);
 		void Render(Map^ map, Image^ image);
 
 	internal:
@@ -39,7 +40,6 @@ namespace NETMapnik
 		mapnik::projection const& map_proj,
 		std::vector<mapnik::layer> const& layers,
 		double scale_denom,
-		double scale_factor,
 		mapnik::vector::tile const& tiledata,
 		int z,
 		int x,

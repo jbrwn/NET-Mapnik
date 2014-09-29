@@ -73,6 +73,19 @@ namespace NETMapnik
 		_map->set_buffer_size(value);
 	}
 
+	//SRS
+	System::String^ Map::SRS::get()
+	{
+		std::string const srs = _map->srs();
+		return msclr::interop::marshal_as<System::String^>(srs);
+	}
+
+	void Map::SRS::set(System::String^ value)
+	{
+		std::string srs = msclr::interop::marshal_as<std::string>(value);
+		_map->set_srs(srs);
+	}
+
 	//parameters
 	// TO DO: implement paramaters class with get and set
 	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Map::Parameters::get()
@@ -223,7 +236,7 @@ namespace NETMapnik
 			mapnik::vector::tile* vTile = tile->NativeObject();
 			backend_type backend(*vTile, path_multiplier);
 			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
-			m_req.set_buffer_size(_map->buffer_size());
+			m_req.set_buffer_size(buffer_size);
 			renderer_type ren(
 				backend,
 				*_map,
