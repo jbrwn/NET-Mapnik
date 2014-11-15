@@ -22,7 +22,28 @@
 // boost
 #include <boost\foreach.hpp>
 
+// microsoft
 #include <msclr\marshal_cppstd.h>
+
+// Helper bbox functions
+mapnik::box2d<double> ArrayToBox2D(array<System::Double>^ boxArray)
+{
+	if (boxArray->Length != 4)
+		throw gcnew System::Exception("Bbox array must contain 4 values: minx,miny,maxx,maxy");
+
+	return mapnik::box2d<double>(boxArray[0], boxArray[1], boxArray[2], boxArray[3]);
+}
+
+array<System::Double>^ Box2DToArray(mapnik::box2d<double> bbox)
+{
+	array<System::Double>^ boxArray = gcnew array<System::Double>(4);
+	boxArray[0] = bbox.minx();
+	boxArray[1] = bbox.miny();
+	boxArray[2] = bbox.maxx();
+	boxArray[3] = bbox.maxy();
+
+	return boxArray;
+}
 
 namespace NETMapnik
 {
@@ -112,6 +133,61 @@ namespace NETMapnik
 			throw gcnew System::Exception("AspectFixMode is invalid");
 	}
 
+	//Extent
+	array<System::Double>^ Map::Extent::get()
+	{
+		return Box2DToArray(_map->get_current_extent());
+	}
+
+	void Map::Extent::set(array<System::Double>^ bbox)
+	{
+		_map->zoom_to_box(ArrayToBox2D(bbox));
+	}
+
+	//BufferedExtent
+	array<System::Double>^ Map::BufferedExtent::get()
+	{
+		return Box2DToArray(_map->get_buffered_extent());
+	}
+
+	//MaximumExtent
+	array<System::Double>^ Map::MaximumExtent::get()
+	{
+		boost::optional<mapnik::box2d<double>> const& extent = _map->maximum_extent();
+		if (!extent)
+			return nullptr;
+		return Box2DToArray(*extent);
+	}
+
+	void Map::MaximumExtent::set(array<System::Double>^ bbox)
+	{
+		_map->set_maximum_extent(ArrayToBox2D(bbox));
+	}
+
+	//Scale
+	System::Double Map::Scale()
+	{
+		return _map->scale();
+	}
+
+	//ScaleDenominator
+	System::Double Map::ScaleDenominator()
+	{
+		return _map->scale_denominator();
+	}
+
+	//clear
+	void Map::Clear()
+	{
+		_map->remove_all();
+	}
+
+	//Resize
+	void Map::Resize(System::Int32 width, System::Int32 heigt)
+	{
+		_map->resize(width, heigt);
+	}
+	
 	//parameters
 	// TO DO: implement paramaters class with get and set
 	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Map::Parameters::get()

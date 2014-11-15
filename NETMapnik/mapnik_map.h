@@ -19,6 +19,23 @@ namespace NETMapnik
 		//Destructor
 		~Map();
 
+		property array<System::Double>^ Extent
+		{
+			array<System::Double>^ get();
+			void set(array<System::Double>^);
+		}
+
+		property array<System::Double>^ BufferedExtent
+		{
+			array<System::Double>^ get();
+		}
+
+		property array<System::Double>^ MaximumExtent
+		{
+			array<System::Double>^ get();
+			void set(array<System::Double>^);
+		}
+
 		property System::UInt32 Width
 		{
 			System::UInt32 get();
@@ -48,14 +65,15 @@ namespace NETMapnik
 			void set(System::Int32 value);
 		}
 
-		//property Extent 
-		//property BufferedExtent
-		//property MaxiumExtent
-
 		property System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Parameters
 		{
 			System::Collections::Generic::Dictionary<System::String^, System::Object^>^ get();
 		}
+
+		System::Double Scale();
+		System::Double ScaleDenominator();
+		void Clear();
+		void Resize(System::Int32 width, System::Int32 heigt);
 
 		void Load(System::String^ path);
 		void Load(System::String^ path, System::Boolean strict);
