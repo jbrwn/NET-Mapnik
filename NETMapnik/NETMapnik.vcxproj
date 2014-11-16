@@ -83,6 +83,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mapnik_color.h" />
     <ClInclude Include="mapnik_datasource_cache.h" />
     <ClInclude Include="mapnik_font_engine_freetype.h" />
     <ClInclude Include="mapnik_image.h" />
@@ -100,6 +101,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="mapnik_color.cpp" />
     <ClCompile Include="mapnik_datasource_cache.cpp" />
     <ClCompile Include="mapnik_font_engine_freetype.cpp" />
     <ClCompile Include="mapnik_image.cpp" />
