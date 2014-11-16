@@ -5,6 +5,7 @@
 #include "mapnik_vector_tile.h"
 #include "mapnik_value_converter.h"
 #include "NET_options_parser.h"
+#include "mapnik_color.h"
 
 #include <mapnik\params.hpp>
 #include <mapnik\map.hpp>
@@ -139,9 +140,9 @@ namespace NETMapnik
 		return Box2DToArray(_map->get_current_extent());
 	}
 
-	void Map::Extent::set(array<System::Double>^ bbox)
+	void Map::Extent::set(array<System::Double>^ value)
 	{
-		_map->zoom_to_box(ArrayToBox2D(bbox));
+		_map->zoom_to_box(ArrayToBox2D(value));
 	}
 
 	//BufferedExtent
@@ -159,9 +160,23 @@ namespace NETMapnik
 		return Box2DToArray(*extent);
 	}
 
-	void Map::MaximumExtent::set(array<System::Double>^ bbox)
+	void Map::MaximumExtent::set(array<System::Double>^ value)
 	{
-		_map->set_maximum_extent(ArrayToBox2D(bbox));
+		_map->set_maximum_extent(ArrayToBox2D(value));
+	}
+
+	Color^ Map::Background::get()
+	{
+		boost::optional<mapnik::color> const& bg = _map->background();
+		if (!bg)
+			return nullptr;
+		return gcnew Color(bg->red(), bg->green(), bg->blue(), bg->alpha());
+	}
+
+	void Map::Background::set(Color^ value)
+	{
+		mapnik::color* c = value->NativeObject();
+		_map->set_background(*c);
 	}
 
 	//Scale

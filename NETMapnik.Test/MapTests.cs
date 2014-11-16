@@ -64,6 +64,29 @@ namespace NETMapnik.Test
             Assert.AreEqual(m.BufferSize, 20);
         }
 
+        [TestMethod]
+        public void Map_GetBackground()
+        {
+            Map m = new Map();
+            Color c = m.Background;
+            Assert.IsNull(c);
+
+            string mapString = @"<Map background-color=""red""></Map>";
+            m.FromString(mapString);
+            c = m.Background;
+            Assert.AreEqual(c.Hex(), "#ff0000");
+        }
+
+        [TestMethod]
+        public void Map_SetBackground()
+        {
+            Color c = new Color("red");
+            Map m = new Map();
+            m.Background = c;
+
+            Color c2 = m.Background;
+            Assert.AreEqual(c2.Hex(), "#ff0000");
+        }
 
     }
 }

@@ -8,6 +8,7 @@ namespace NETMapnik
 	ref class Image;
 	ref class Grid;
 	ref class VectorTile;
+	ref class Color;
 
 	public ref class Map
 	{
@@ -22,7 +23,7 @@ namespace NETMapnik
 		property array<System::Double>^ Extent
 		{
 			array<System::Double>^ get();
-			void set(array<System::Double>^);
+			void set(array<System::Double>^ value);
 		}
 
 		property array<System::Double>^ BufferedExtent
@@ -33,7 +34,7 @@ namespace NETMapnik
 		property array<System::Double>^ MaximumExtent
 		{
 			array<System::Double>^ get();
-			void set(array<System::Double>^);
+			void set(array<System::Double>^ value);
 		}
 
 		property System::UInt32 Width
@@ -63,6 +64,12 @@ namespace NETMapnik
 		{
 			System::Int32 get();
 			void set(System::Int32 value);
+		}
+
+		property Color^ Background
+		{
+			Color^ get();
+			void set(Color^ value);
 		}
 
 		property System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Parameters
