@@ -207,6 +207,31 @@ namespace NETMapnik
 		return paramsDictionary;
 	}
 
+	void Map::Parameters::set(System::Collections::Generic::Dictionary<System::String^, System::Object^>^ paramsDictionary)
+	{
+		mapnik::parameters params;
+		for each (System::Collections::Generic::KeyValuePair<System::String^, System::Object^>^ kvp in paramsDictionary)
+		{
+			std::string key = msclr::interop::marshal_as<std::string>(kvp->Key);
+			System::Object^ managedValue = kvp->Value;
+			if (managedValue->GetType() == System::String::typeid)
+			{
+			    params[key] = msclr::interop::marshal_as<std::string>(safe_cast<System::String^>(managedValue));
+			}
+			else if (managedValue->GetType() == System::Int32::typeid)
+			{
+				int i = safe_cast<int>(managedValue);
+				params[key] = static_cast<mapnik::value_integer>(i);
+			}
+			else if (managedValue->GetType() == System::Double::typeid)
+			{
+				double d = safe_cast<double>(managedValue);
+				params[key] = d;
+			}
+		}
+		_map->set_extra_parameters(params);
+	}
+
 	//load map
 	void Map::Load(System::String^ path)
 	{

@@ -68,6 +68,7 @@ namespace NETMapnik
 		property System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Parameters
 		{
 			System::Collections::Generic::Dictionary<System::String^, System::Object^>^ get();
+			void set(System::Collections::Generic::Dictionary<System::String^, System::Object^>^);
 		}
 
 		System::Double Scale();

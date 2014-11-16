@@ -36,6 +36,26 @@ namespace NETMapnik.Test
         }
 
         [TestMethod]
+        public void Map_SetParamaters()
+        {
+            Map m = new Map();
+
+            Dictionary<string, object> prms = new Dictionary<string, object>() 
+            {
+                {"words", "wat up"},
+                {"num", 1},
+                {"decimal", .123}
+            };
+
+            m.Parameters = prms;
+
+            Dictionary<string, object> rtnPrms = m.Parameters;
+            Assert.AreEqual("wat up", (string)rtnPrms["words"]);
+            Assert.AreEqual(1, (int)rtnPrms["num"]);
+            Assert.AreEqual(.123, (double)rtnPrms["decimal"]);
+        }
+
+        [TestMethod]
         public void Map_FromString()
         {
             Map m = new Map();
