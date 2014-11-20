@@ -6,6 +6,7 @@
 #include "mapnik_value_converter.h"
 #include "NET_options_parser.h"
 #include "mapnik_color.h"
+#include "mapnik_layer.h"
 
 #include <mapnik\params.hpp>
 #include <mapnik\map.hpp>
@@ -198,7 +199,7 @@ namespace NETMapnik
 	}
 
 	//Resize
-	void Map::Resize(System::Int32 width, System::Int32 heigt)
+	void Map::Resize(System::UInt32 width, System::UInt32 heigt)
 	{
 		_map->resize(width, heigt);
 	}
@@ -245,6 +246,64 @@ namespace NETMapnik
 			}
 		}
 		_map->set_extra_parameters(params);
+	}
+
+	//GetLayer
+	Layer^ Map::GetLayer(System::UInt32 index)
+	{
+		std::vector<mapnik::layer> const& layers = _map->layers();
+		if (index < layers.size())
+		{
+			return gcnew Layer(layers[index]);
+		}
+		else
+		{
+			throw gcnew System::ArgumentOutOfRangeException("invalid layer index");
+		}
+		
+	}
+
+	Layer^ Map::GetLayer(System::String^ name)
+	{
+		bool found = false;
+		unsigned int idx(0);
+		std::string layer_name = msclr::interop::marshal_as<std::string>(name);
+		std::vector<mapnik::layer> const& layers = _map->layers();
+		for (mapnik::layer const& lyr : layers)
+		{
+			if (lyr.name() == layer_name)
+			{
+				found = true;
+				return gcnew Layer(layers[idx]);
+			}
+			++idx;
+		}
+		if (!found)
+		{
+			throw gcnew System::Exception(System::String::Format("Layer name {0} not found",name));
+		}
+	}
+
+	//AddLayer
+	void Map::AddLayer(Layer^ layer)
+	{
+		//mapnik::layer *l = layer->NativeObject();
+		//boost::shared_ptr<mapnik::layer> *spr = layer->NativeObject();
+		//boost::shared_ptr<mapnik::layer> sp = *spr;
+
+		_map->MAPNIK_ADD_LAYER(*layer->NativeObject());
+	}
+
+	//Layers
+	System::Collections::Generic::IEnumerable<Layer^>^ Map::Layers()
+	{
+		std::vector<mapnik::layer> const& layers = _map->layers();
+		System::Collections::Generic::List<Layer^>^ layerCollection = gcnew System::Collections::Generic::List<Layer^>();
+		for (unsigned i = 0; i < layers.size(); ++i)
+		{
+			layerCollection->Add(gcnew Layer(layers[i]));
+		}
+		return layerCollection;
 	}
 
 	//load map

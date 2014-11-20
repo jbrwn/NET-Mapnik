@@ -87,6 +87,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClInclude Include="mapnik_datasource_cache.h" />
     <ClInclude Include="mapnik_font_engine_freetype.h" />
     <ClInclude Include="mapnik_image.h" />
+    <ClInclude Include="mapnik_layer.h" />
     <ClInclude Include="mapnik_map.h" />
     <ClInclude Include="mapnik_grid.h" />
     <ClInclude Include="mapnik_value_converter.h" />
@@ -105,6 +106,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClCompile Include="mapnik_datasource_cache.cpp" />
     <ClCompile Include="mapnik_font_engine_freetype.cpp" />
     <ClCompile Include="mapnik_image.cpp" />
+    <ClCompile Include="mapnik_layer.cpp" />
     <ClCompile Include="mapnik_map.cpp" />
     <ClCompile Include="mapnik_grid.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />

@@ -9,6 +9,7 @@ namespace NETMapnik
 	ref class Grid;
 	ref class VectorTile;
 	ref class Color;
+	ref class Layer;
 
 	public ref class Map
 	{
@@ -81,7 +82,12 @@ namespace NETMapnik
 		System::Double Scale();
 		System::Double ScaleDenominator();
 		void Clear();
-		void Resize(System::Int32 width, System::Int32 heigt);
+		void Resize(System::UInt32 width, System::UInt32 heigt);
+
+		Layer^ GetLayer(System::UInt32 index);
+		Layer^ GetLayer(System::String^ name);
+		void AddLayer(Layer^ layer);
+		System::Collections::Generic::IEnumerable<Layer^>^ Layers();
 
 		void Load(System::String^ path);
 		void Load(System::String^ path, System::Boolean strict);

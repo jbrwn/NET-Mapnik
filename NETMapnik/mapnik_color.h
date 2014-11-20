@@ -43,7 +43,6 @@ namespace NETMapnik
 		mapnik::color *NativeObject();
 
 	private:
-		//Unmanaged instance of mapnik::map
 		mapnik::color* _color;
 	};
 }

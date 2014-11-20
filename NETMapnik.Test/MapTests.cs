@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NETMapnik;
 
@@ -86,6 +88,23 @@ namespace NETMapnik.Test
 
             Color c2 = m.Background;
             Assert.AreEqual(c2.Hex(), "#ff0000");
+        }
+
+        [TestMethod]
+        public void Map_GetSetLayer()
+        {
+            Layer l = new Layer("layer", "+init=epsg:4326");
+            Map m = new Map();
+            m.AddLayer(l);
+
+            IEnumerable<Layer> layers = m.Layers();
+            Assert.AreEqual(layers.Count(), 1);
+
+            Layer l1 = m.GetLayer("layer");
+            Assert.AreEqual(l1.Name, "layer");
+
+            Layer l2 = m.GetLayer(0);
+            Assert.AreEqual(l2.Name, "layer");
         }
 
     }
