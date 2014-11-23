@@ -7,6 +7,9 @@ namespace NETMapnik
 {
 	typedef boost::shared_ptr<mapnik::layer> layer_ptr;
 
+	//Forward Declare
+	ref class Datasource;
+
 	public ref class Layer
 	{
 	public:
@@ -32,13 +35,13 @@ namespace NETMapnik
 			void set(System::Collections::Generic::IEnumerable<System::String^>^ value);
 		}
 
-		//property Datasource
-		//{
-		//	Datasource^ get();
-		//	void set(Datasource^ value);
-		//}
+		property Datasource^ Datasource
+		{
+			NETMapnik::Datasource^ get();
+			void set(NETMapnik::Datasource^ value);
+		}
 
-		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Describe();
+		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Describe();
 
 	internal:
 		Layer(mapnik::layer const &layer);

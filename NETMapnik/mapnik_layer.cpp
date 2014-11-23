@@ -1,7 +1,7 @@
-//#define NOMINMAX
-
 #include "stdafx.h"
 #include "mapnik_layer.h"
+#include "mapnik_datasource.h"
+#include "mapnik_value_converter.h"
 
 // boost
 #include <boost\make_shared.hpp>
@@ -78,11 +78,22 @@ namespace NETMapnik
 	}
 
 
-	//	Datasource^ Layer::Datasource::get();
-	//	void Layer::Datasource::set(Datasource^ value);
+	Datasource^ Layer::Datasource::get()
+	{
+		mapnik::datasource_ptr ds = (*_layer)->datasource();
+		if (ds)
+		{
+			return gcnew NETMapnik::Datasource(ds);
+		}
+		return nullptr;
+	}
+	void Layer::Datasource::set(NETMapnik::Datasource^ value)
+	{
+		(*_layer)->set_datasource(value->NativeObject());
+	}
 
 
-	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Layer::Describe()
+	System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Layer::Describe()
 	{
 		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ description = gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>();
 		if ((*_layer)->name() != "")
@@ -122,20 +133,21 @@ namespace NETMapnik
 
 		description["styles"] = Styles;
 
-		//mapnik::datasource_ptr datasource = (*_layer)->datasource();
-		//Datasource ds;
-		//description["datasource"), ds);
-		//if (datasource)
-		//{
-		//	mapnik::parameters::const_iterator it = datasource->params().begin();
-		//	mapnik::parameters::const_iterator end = datasource->params().end();
-		//	for (; it != end; ++it)
-		//	{
-		//		node_mapnik::params_to_object serializer(ds, it->first);
-		//		MAPNIK_APPLY_VISITOR(serializer, it->second);
-		//	}
-		//}
-
+		mapnik::datasource_ptr datasource = (*_layer)->datasource();
+		if (datasource)
+		{
+			System::Collections::Generic::Dictionary<System::String^, System::Object^>^ ds = gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>();
+			mapnik::parameters::const_iterator it = datasource->params().begin();
+			mapnik::parameters::const_iterator end = datasource->params().end();
+			for (; it != end; ++it)
+			{
+				System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
+				mapnik::value_holder valueHolder = it->second;
+				mapnik_value_holder_to_managed *c = new mapnik_value_holder_to_managed();
+				ds[key] = c->convert(valueHolder);
+			}
+			description["datasource"] = ds;
+		}
 		return description;
 	}
 

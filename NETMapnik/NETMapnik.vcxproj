@@ -84,6 +84,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mapnik_color.h" />
+    <ClInclude Include="mapnik_datasource.h" />
     <ClInclude Include="mapnik_datasource_cache.h" />
     <ClInclude Include="mapnik_font_engine_freetype.h" />
     <ClInclude Include="mapnik_image.h" />
@@ -92,6 +93,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClInclude Include="mapnik_grid.h" />
     <ClInclude Include="mapnik_value_converter.h" />
     <ClInclude Include="mapnik_vector_tile.h" />
+    <ClInclude Include="NET_box_utils.h" />
     <ClInclude Include="NET_grid_utils.h" />
     <ClInclude Include="NET_options_parser.h" />
     <ClInclude Include="resource.h" />
@@ -103,6 +105,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="mapnik_color.cpp" />
+    <ClCompile Include="mapnik_datasource.cpp" />
     <ClCompile Include="mapnik_datasource_cache.cpp" />
     <ClCompile Include="mapnik_font_engine_freetype.cpp" />
     <ClCompile Include="mapnik_image.cpp" />
@@ -110,6 +113,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClCompile Include="mapnik_map.cpp" />
     <ClCompile Include="mapnik_grid.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />
+    <ClCompile Include="NET_box_utils.cpp" />
     <ClCompile Include="NET_grid_utils.cpp" />
     <ClCompile Include="NET_options_parser.cpp" />
     <ClCompile Include="Stdafx.cpp">
