@@ -1,6 +1,10 @@
 #pragma once
 
+#include <mapnik\value_types.hpp>
 #include <mapnik\value.hpp>
+
+// boost
+#include <boost\variant\static_visitor.hpp>
 
 #include <msclr\marshal_cppstd.h>
 
@@ -38,14 +42,6 @@ namespace NETMapnik
 		System::Object^ operator() (mapnik::value_null const& /*s*/) const
 		{
 			return nullptr;
-		}
-	};
-
-	struct mapnik_value_holder_to_managed
-	{
-		static System::Object^ convert(mapnik::value_holder const& v)
-		{
-			return boost::apply_visitor(value_converter(), v);
 		}
 	};
 }

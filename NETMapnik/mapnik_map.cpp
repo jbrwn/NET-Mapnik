@@ -197,9 +197,7 @@ namespace NETMapnik
 		for (; it != end; ++it)
 		{
 			System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
-			mapnik::value_holder valueHolder = it->second;
-			mapnik_value_holder_to_managed *c = new mapnik_value_holder_to_managed();
-			paramsDictionary[key] = c->convert(valueHolder);
+			paramsDictionary[key] = boost::apply_visitor(value_converter(), it->second);
 		}
 		return paramsDictionary;
 	}

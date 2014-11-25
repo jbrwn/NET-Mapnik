@@ -5,6 +5,9 @@
 
 namespace NETMapnik
 {
+	//Forward Declare
+	ref class Featureset;
+
 	typedef boost::shared_ptr<mapnik::datasource> datasource_ptr;
 
 	public ref class Datasource
@@ -21,7 +24,7 @@ namespace NETMapnik
 		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Paramemters();
 		array<System::Double>^ Extent();
 		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Describe();
-		//Featureset();
+		Featureset^ Featureset();
 	internal:
 		datasource_ptr NativeObject();
 		Datasource(datasource_ptr ds);

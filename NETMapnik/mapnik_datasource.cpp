@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "mapnik_datasource.h"
+#include "mapnik_featureset.h"
 #include "mapnik_value_converter.h"
 #include "NET_box_utils.h"
 
@@ -78,9 +79,7 @@ namespace NETMapnik
 		for (; it != end; ++it)
 		{
 			System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
-			mapnik::value_holder valueHolder = it->second;
-			mapnik_value_holder_to_managed *c = new mapnik_value_holder_to_managed();
-			paramsDictionary[key] = c->convert(valueHolder);
+			paramsDictionary[key] = boost::apply_visitor(value_converter(), it->second);
 		}
 		return paramsDictionary;
 	}
@@ -99,6 +98,38 @@ namespace NETMapnik
 		}
 
 		return Box2DToArray(e);
+	}
+
+	Featureset^ Datasource::Featureset()
+	{
+		featureset_ptr fs;
+		try
+		{
+			mapnik::query q((*_ds)->envelope());
+			mapnik::layer_descriptor ld = (*_ds)->get_descriptor();
+			std::vector<mapnik::attribute_descriptor> const& desc = ld.get_descriptors();
+			std::vector<mapnik::attribute_descriptor>::const_iterator itr = desc.begin();
+			std::vector<mapnik::attribute_descriptor>::const_iterator end = desc.end();
+			while (itr != end)
+			{
+				q.add_property_name(itr->get_name());
+				++itr;
+			}
+
+			fs = (*_ds)->features(q);
+		}
+		catch (std::exception const& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+
+		if (fs)
+		{
+			return gcnew NETMapnik::Featureset(fs);
+		}
+
+		return nullptr;
 	}
 
 	System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Datasource::Describe()
