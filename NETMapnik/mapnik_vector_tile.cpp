@@ -20,7 +20,7 @@ namespace NETMapnik
 {
 	VectorTile::VectorTile(System::Int32 z, System::Int32 x, System::Int32 y)
 	{
-		_tile = new mapnik::vector::tile();
+		_tile = new vector_tile::Tile();
 		_z = z;
 		_x = x;
 		_y = y;
@@ -30,7 +30,7 @@ namespace NETMapnik
 
 	VectorTile::VectorTile(System::Int32 z, System::Int32 x, System::Int32 y, System::UInt32 width, System::UInt32 height)
 	{
-		_tile = new mapnik::vector::tile();
+		_tile = new vector_tile::Tile();
 		_z = z;
 		_x = x;
 		_y = y;
@@ -46,7 +46,7 @@ namespace NETMapnik
 		}
 	}
 
-	mapnik::vector::tile *VectorTile::NativeObject()
+	vector_tile::Tile *VectorTile::NativeObject()
 	{
 		return _tile;
 	}
@@ -91,7 +91,7 @@ namespace NETMapnik
 		System::Collections::Generic::List<System::String^>^ names = gcnew System::Collections::Generic::List<System::String^>();
 		for (int i = 0; i < _tile->layers_size(); ++i)
 		{
-			mapnik::vector::tile_layer const& layer =  _tile->layers(i);
+			vector_tile::Tile_Layer const& layer = _tile->layers(i);
 			names->Add(msclr::interop::marshal_as<System::String^>(layer.name().c_str()));
 		}
 		return names;
@@ -107,7 +107,7 @@ namespace NETMapnik
 		{
 			for (int i = 0; i < _tile->layers_size(); ++i)
 			{
-				mapnik::vector::tile_layer const& layer = _tile->layers(i);
+				vector_tile::Tile_Layer const& layer = _tile->layers(i);
 				if (layer.features_size()) 
 				{
 					return false;
@@ -151,7 +151,7 @@ namespace NETMapnik
 			for each (VectorTile^ vTile in vTiles)
 			{
 				//get native tile object
-				mapnik::vector::tile const *vt = vTile->NativeObject();
+				vector_tile::Tile const *vt = vTile->NativeObject();
 
 				if (_z == vTile->_z &&
 					_x == vTile->_x &&
@@ -163,14 +163,14 @@ namespace NETMapnik
 				else
 				{
 					// set up to render to new vtile
-					typedef mapnik::vector::backend_pbf backend_type;
-					typedef mapnik::vector::processor<backend_type> renderer_type;
-					mapnik::vector::tile new_tiledata;
+					typedef mapnik::vector_tile_impl::backend_pbf backend_type;
+					typedef mapnik::vector_tile_impl::processor<backend_type> renderer_type;
+					vector_tile::Tile new_tiledata;
 					backend_type backend(new_tiledata,
 						path_multiplier);
 
 					// get mercator extent of target tile
-					mapnik::vector::spherical_mercator merc(_width);
+					mapnik::vector_tile_impl::spherical_mercator merc(_width);
 					double minx, miny, maxx, maxy;
 					merc.xyz(_x, _y, _z, minx, miny, maxx, maxy);
 					mapnik::box2d<double> map_extent(minx, miny, maxx, maxy);
@@ -192,10 +192,10 @@ namespace NETMapnik
 					{
 						for (int i = 0; i < vt->layers_size(); ++i)
 						{
-							mapnik::vector::tile_layer const& layer = vt->layers(i);
+							vector_tile::Tile_Layer const& layer = vt->layers(i);
 							mapnik::layer lyr(layer.name(), merc_srs);
-							MAPNIK_SHARED_PTR<mapnik::vector::tile_datasource> ds = MAPNIK_MAKE_SHARED<
-								mapnik::vector::tile_datasource>(
+							MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+								mapnik::vector_tile_impl::tile_datasource>(
 								layer,
 								x,//vTile->_x,
 								y,//vTile->_y,
@@ -265,7 +265,7 @@ namespace NETMapnik
 		try
 		{
 			//get vtile extent
-			mapnik::vector::spherical_mercator merc(_width);
+			mapnik::vector_tile_impl::spherical_mercator merc(_width);
 			double minx, miny, maxx, maxy;
 			if (zxy_override)
 			{
@@ -318,7 +318,7 @@ namespace NETMapnik
 		mapnik::projection const& map_proj,
 		std::vector<mapnik::layer> const& layers,
 		double scale_denom,
-		mapnik::vector::tile const& tiledata,
+		vector_tile::Tile const& tiledata,
 		int z,
 		int x,
 		int y,
@@ -336,12 +336,12 @@ namespace NETMapnik
 			{
 				for (int j = 0; j < tiledata.layers_size(); ++j)
 				{
-					mapnik::vector::tile_layer const& layer = tiledata.layers(j);
+					vector_tile::Tile_Layer  const& layer = tiledata.layers(j);
 					if (lyr.name() == layer.name())
 					{
 						mapnik::layer lyr_copy(lyr);
-						MAPNIK_SHARED_PTR<mapnik::vector::tile_datasource> ds = MAPNIK_MAKE_SHARED<
-							mapnik::vector::tile_datasource>(
+						MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+							mapnik::vector_tile_impl::tile_datasource>(
 							layer,
 							x,
 							y,

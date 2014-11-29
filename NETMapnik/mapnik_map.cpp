@@ -528,12 +528,12 @@ namespace NETMapnik
 			scaling_method = *method;
 		}
 
-		typedef mapnik::vector::backend_pbf backend_type;
-		typedef mapnik::vector::processor<backend_type> renderer_type;
+		typedef mapnik::vector_tile_impl::backend_pbf backend_type;
+		typedef mapnik::vector_tile_impl::processor<backend_type> renderer_type;
 
 		try
 		{
-			mapnik::vector::tile* vTile = tile->NativeObject();
+			vector_tile::Tile* vTile = tile->NativeObject();
 			backend_type backend(*vTile, path_multiplier);
 			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
 			m_req.set_buffer_size(buffer_size);

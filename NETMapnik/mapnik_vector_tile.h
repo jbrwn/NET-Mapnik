@@ -30,10 +30,10 @@ namespace NETMapnik
 		void Render(Map^ map, Image^ image, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 
 	internal:
-		mapnik::vector::tile *NativeObject();
+		vector_tile::Tile *NativeObject();
 
 	private:
-		mapnik::vector::tile* _tile;
+		vector_tile::Tile* _tile;
 		int _z;
 		int _x;
 		int _y;
@@ -48,7 +48,7 @@ namespace NETMapnik
 		mapnik::projection const& map_proj,
 		std::vector<mapnik::layer> const& layers,
 		double scale_denom,
-		mapnik::vector::tile const& tiledata,
+		vector_tile::Tile const& tiledata,
 		int z,
 		int x,
 		int y,
