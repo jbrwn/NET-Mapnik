@@ -3,18 +3,20 @@
 #include "NET_box_utils.h"
 #include "mapnik_value_converter.h"
 
-#include <mapnik/feature_factory.hpp>
-#include <mapnik/json/feature_parser.hpp>
-#include <mapnik/json/feature_generator_grammar.hpp>
+// mapnik
+#include <mapnik\feature_factory.hpp>
+#include <mapnik\json\feature_parser.hpp>
+#include <mapnik\json\feature_generator_grammar.hpp>
+#include <mapnik\value_types.hpp>
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
 
 namespace NETMapnik
 {
-	Feature::Feature(feature_ptr feature)
+	Feature::Feature(mapnik::feature_ptr feature)
 	{
-		_feature = new feature_ptr(feature);
+		_feature = new mapnik::feature_ptr(feature);
 
 	}
 

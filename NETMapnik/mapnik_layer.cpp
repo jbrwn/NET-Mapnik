@@ -3,6 +3,11 @@
 #include "mapnik_datasource.h"
 #include "mapnik_value_converter.h"
 
+// mapnik
+#include <mapnik\datasource.hpp>
+#include <mapnik\layer.hpp>
+#include <mapnik\params.hpp>
+
 // boost
 #include <boost\make_shared.hpp>
 

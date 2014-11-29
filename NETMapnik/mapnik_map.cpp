@@ -9,21 +9,35 @@
 #include "mapnik_layer.h"
 #include "NET_box_utils.h"
 
-#include <mapnik\params.hpp>
-#include <mapnik\map.hpp>
-#include <mapnik\load_map.hpp>
+// mapnik
 #include <mapnik\agg_renderer.hpp>
+
 #include <mapnik\grid\grid.hpp>
+#include <mapnik\box2d.hpp>       
+#include <mapnik\color.hpp>         
+#include <mapnik\attribute.hpp>       
+#include <mapnik\datasource.hpp>        
+#include <mapnik\graphics.hpp>  
 #include <mapnik\grid\grid_view.hpp>
 #include <mapnik\grid\grid_renderer.hpp>
 #include <mapnik\grid\grid_util.hpp>
+#include <mapnik\image_data.hpp>        
+#include <mapnik\image_util.hpp>        
+#include <mapnik\layer.hpp>            
+#include <mapnik\load_map.hpp>   
+#include <mapnik\map.hpp>       
+#include <mapnik\params.hpp>       
+#include <mapnik\save_map.hpp>     
+#include <mapnik\image_scaling.hpp>
+#include <mapnik\request.hpp>
 
-// vector output api
+// vector tile api
 #include "vector_tile_processor.hpp"
 #include "vector_tile_backend_pbf.hpp"
 
 // boost
 #include <boost\foreach.hpp>
+#include <boost\optional\optional.hpp> 
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
@@ -266,10 +280,6 @@ namespace NETMapnik
 	//AddLayer
 	void Map::AddLayer(Layer^ layer)
 	{
-		//mapnik::layer *l = layer->NativeObject();
-		//boost::shared_ptr<mapnik::layer> *spr = layer->NativeObject();
-		//boost::shared_ptr<mapnik::layer> sp = *spr;
-
 		_map->MAPNIK_ADD_LAYER(*layer->NativeObject());
 	}
 

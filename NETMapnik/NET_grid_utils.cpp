@@ -1,11 +1,10 @@
 #include "StdAfx.h"
 #include "NET_grid_utils.h"
 
-#include <mapnik\grid\grid_renderer.hpp>
+// mapnik
 #include <mapnik\grid\grid.hpp>
-#include <mapnik\grid\grid_util.hpp>
-#include <mapnik\grid\grid_view.hpp>
 
+// microsoft
 #include <cstdint>
 #include <msclr\marshal_cppstd.h>
 

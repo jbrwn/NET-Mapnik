@@ -1,3 +1,5 @@
+#pragma once
+
 #include <mapnik\box2d.hpp>
 
 namespace NETMapnik

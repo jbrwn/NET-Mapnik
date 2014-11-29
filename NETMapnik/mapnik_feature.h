@@ -1,11 +1,10 @@
 #pragma once
 
+// mapnik
 #include <mapnik\feature.hpp>
-#include <boost\shared_ptr.hpp>
 
 namespace NETMapnik
 {
-	typedef boost::shared_ptr<mapnik::feature_impl> feature_ptr;
 	public ref class Feature 
 	{
 	public:
@@ -18,10 +17,10 @@ namespace NETMapnik
 		System::String^ ToJSON();
 
 	internal:
-		Feature(feature_ptr feature);
+		Feature(mapnik::feature_ptr feature);
 
 	private:
-		feature_ptr* _feature;
+		mapnik::feature_ptr* _feature;
 	};
 
 };

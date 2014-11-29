@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "mapnik_color.h"
 
+// mapnik
+#include <mapnik\color.hpp>
+
 // microsoft
 #include <msclr\marshal_cppstd.h>
 

@@ -1,14 +1,12 @@
 #pragma once
 
+// mapnik
 #include <mapnik\datasource.hpp>
-#include <boost\shared_ptr.hpp>
 
 namespace NETMapnik
 {
 	//Forward Declare
 	ref class Featureset;
-
-	typedef boost::shared_ptr<mapnik::datasource> datasource_ptr;
 
 	public ref class Datasource
 	{
@@ -26,13 +24,13 @@ namespace NETMapnik
 		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Describe();
 		Featureset^ Featureset();
 	internal:
-		datasource_ptr NativeObject();
-		Datasource(datasource_ptr ds);
+		mapnik::datasource_ptr NativeObject();
+		Datasource(mapnik::datasource_ptr ds);
 
 	private:
 
 		System::String^ _type;
-		datasource_ptr *_ds;
+		mapnik::datasource_ptr *_ds;
 	};
 
 }

@@ -1,11 +1,13 @@
 #pragma once
 
+// mapnik
 #include <mapnik\value_types.hpp>
 #include <mapnik\value.hpp>
 
 // boost
 #include <boost\variant\static_visitor.hpp>
 
+// microsoft
 #include <msclr\marshal_cppstd.h>
 
 namespace NETMapnik

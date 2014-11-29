@@ -4,9 +4,8 @@
 // mapnik
 #include <mapnik\datasource_cache.hpp>
 
-// clr 
+// microsoft
 #include <msclr\marshal_cppstd.h>
-
 
 namespace NETMapnik
 {	

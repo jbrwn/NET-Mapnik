@@ -2,8 +2,10 @@
 #include "mapnik_grid.h"
 #include "NET_grid_utils.h"
 
+// mapnik
 #include <mapnik\grid\grid.hpp>
 
+// microsoft
 #include <msclr\marshal_cppstd.h>
 
 namespace NETMapnik

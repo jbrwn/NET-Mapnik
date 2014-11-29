@@ -1,6 +1,9 @@
 #pragma once
 
+// mapnik
 #include <mapnik\layer.hpp>
+
+// boost
 #include <boost\shared_ptr.hpp>
 
 namespace NETMapnik

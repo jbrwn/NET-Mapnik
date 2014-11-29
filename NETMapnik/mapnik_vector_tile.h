@@ -1,9 +1,6 @@
 #pragma once
 
 #include "vector_tile.pb.h"
-#include <mapnik\request.hpp>
-#include <mapnik\projection.hpp>
-#include <mapnik\layer.hpp>
 
 namespace NETMapnik
 {
@@ -41,18 +38,4 @@ namespace NETMapnik
 		unsigned _height;
 
 	};
-
-	template <typename Renderer>
-	void process_layers(Renderer & ren,
-		mapnik::request const& m_req,
-		mapnik::projection const& map_proj,
-		std::vector<mapnik::layer> const& layers,
-		double scale_denom,
-		vector_tile::Tile const& tiledata,
-		int z,
-		int x,
-		int y,
-		unsigned tileSize,
-		mapnik::box2d<double> const& map_extent);
-
 }

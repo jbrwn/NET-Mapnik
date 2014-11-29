@@ -4,7 +4,7 @@
 // mapnik
 #include <mapnik\font_engine_freetype.hpp>
 
-// clr 
+// microsoft
 #include <msclr\marshal_cppstd.h>
 
 

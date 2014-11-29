@@ -228,6 +228,61 @@ namespace NETMapnik
 		}
 	}
 
+	template <typename Renderer>
+	void process_layers(Renderer & ren,
+		mapnik::request const& m_req,
+		mapnik::projection const& map_proj,
+		std::vector<mapnik::layer> const& layers,
+		double scale_denom,
+		vector_tile::Tile const& tiledata,
+		int z,
+		int x,
+		int y,
+		unsigned tileSize,
+		mapnik::box2d<double> const& map_extent)
+	{
+
+		// loop over layers in map and match by name
+		// with layers in the vector tile
+		unsigned layers_size = layers.size();
+		for (unsigned i = 0; i < layers_size; ++i)
+		{
+			mapnik::layer const& lyr = layers[i];
+			if (lyr.visible(scale_denom))
+			{
+				for (int j = 0; j < tiledata.layers_size(); ++j)
+				{
+					vector_tile::Tile_Layer  const& layer = tiledata.layers(j);
+					if (lyr.name() == layer.name())
+					{
+						mapnik::layer lyr_copy(lyr);
+						MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+							mapnik::vector_tile_impl::tile_datasource>(
+							layer,
+							x,
+							y,
+							z,
+							tileSize
+							);
+						ds->set_envelope(m_req.get_buffered_extent());
+						lyr_copy.set_datasource(ds);
+						std::set<std::string> names;
+						ren.apply_to_layer(lyr_copy,
+							ren,
+							map_proj,
+							m_req.scale(),
+							scale_denom,
+							m_req.width(),
+							m_req.height(),
+							m_req.extent(),
+							m_req.buffer_size(),
+							names);
+					}
+				}
+			}
+		}
+	}
+
 	void VectorTile::Render(Map^ map, Image^ image)
 	{
 		Render(map, image, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
@@ -311,62 +366,4 @@ namespace NETMapnik
 			throw gcnew System::Exception(managedException);
 		}
 	}
-
-	template <typename Renderer>
-	void process_layers(Renderer & ren,
-		mapnik::request const& m_req,
-		mapnik::projection const& map_proj,
-		std::vector<mapnik::layer> const& layers,
-		double scale_denom,
-		vector_tile::Tile const& tiledata,
-		int z,
-		int x,
-		int y,
-		unsigned tileSize,
-		mapnik::box2d<double> const& map_extent)
-	{
-
-		// loop over layers in map and match by name
-		// with layers in the vector tile
-		unsigned layers_size = layers.size();
-		for (unsigned i = 0; i < layers_size; ++i)
-		{
-			mapnik::layer const& lyr = layers[i];
-			if (lyr.visible(scale_denom))
-			{
-				for (int j = 0; j < tiledata.layers_size(); ++j)
-				{
-					vector_tile::Tile_Layer  const& layer = tiledata.layers(j);
-					if (lyr.name() == layer.name())
-					{
-						mapnik::layer lyr_copy(lyr);
-						MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
-							mapnik::vector_tile_impl::tile_datasource>(
-							layer,
-							x,
-							y,
-							z,
-							tileSize
-							);
-						ds->set_envelope(m_req.get_buffered_extent());
-						lyr_copy.set_datasource(ds);
-						std::set<std::string> names;
-						ren.apply_to_layer(lyr_copy,
-							ren,
-							map_proj,
-							m_req.scale(),
-							scale_denom,
-							m_req.width(),
-							m_req.height(),
-							m_req.extent(),
-							m_req.buffer_size(),
-							names);
-					}
-				}
-			}
-		}
-	}
-
-
-
 }

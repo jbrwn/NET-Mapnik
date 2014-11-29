@@ -4,10 +4,14 @@
 #include "mapnik_value_converter.h"
 #include "NET_box_utils.h"
 
+// mapnik
+#include <mapnik\attribute_descriptor.hpp>
+#include <mapnik\box2d.hpp>
+#include <mapnik\datasource.hpp>
 #include <mapnik\datasource_cache.hpp>
-
-// boost
-#include <boost\make_shared.hpp>
+#include <mapnik\feature_layer_desc.hpp>
+#include <mapnik\params.hpp>
+#include <mapnik\query.hpp>
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
@@ -45,13 +49,13 @@ namespace NETMapnik
 			{
 				_type = "vector";
 			}
-			_ds = new datasource_ptr(ds);
+			_ds = new mapnik::datasource_ptr(ds);
 		}
 	}
 
-	Datasource::Datasource(datasource_ptr ds)
+	Datasource::Datasource(mapnik::datasource_ptr ds)
 	{
-		_ds = new datasource_ptr(ds);
+		_ds = new mapnik::datasource_ptr(ds);
 	}
 	
 	Datasource::~Datasource()
@@ -60,7 +64,7 @@ namespace NETMapnik
 			delete _ds;
 	}
 
-	datasource_ptr Datasource::NativeObject()
+	mapnik::datasource_ptr Datasource::NativeObject()
 	{
 		return *_ds;
 	}
@@ -102,7 +106,7 @@ namespace NETMapnik
 
 	Featureset^ Datasource::Featureset()
 	{
-		featureset_ptr fs;
+		mapnik::featureset_ptr fs;
 		try
 		{
 			mapnik::query q((*_ds)->envelope());
