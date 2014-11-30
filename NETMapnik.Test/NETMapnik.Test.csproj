@@ -61,6 +61,7 @@
     <Compile Include="LayerTest.cs" />
     <Compile Include="DatasourceTests.cs" />
     <Compile Include="FeatureTests.cs" />
+    <Compile Include="GeometryTests.cs" />
     <Compile Include="UTFGridTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>

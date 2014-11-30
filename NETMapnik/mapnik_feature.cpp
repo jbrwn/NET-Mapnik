@@ -2,6 +2,7 @@
 #include "mapnik_feature.h"
 #include "NET_box_utils.h"
 #include "mapnik_value_converter.h"
+#include "mapnik_geometry.h"
 
 // mapnik
 #include <mapnik\feature_factory.hpp>
@@ -51,7 +52,10 @@ namespace NETMapnik
 
 	}
 
-	//Geometry Geometry();
+	Geometry^ Feature::Geometry()
+	{
+		return gcnew NETMapnik::Geometry(*_feature);
+	}
 
 	System::String^ Feature::ToJSON()
 	{

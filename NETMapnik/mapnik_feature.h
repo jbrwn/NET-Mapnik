@@ -5,6 +5,9 @@
 
 namespace NETMapnik
 {
+	//Forward Declare
+	ref class Geometry;
+
 	public ref class Feature 
 	{
 	public:
@@ -13,7 +16,7 @@ namespace NETMapnik
 		System::Int32 Id();
 		array<System::Double>^ Extent();
 		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Attributes();
-		//Geometry Geometry();
+		Geometry^ Geometry();
 		System::String^ ToJSON();
 
 	internal:

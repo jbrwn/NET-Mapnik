@@ -89,6 +89,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClInclude Include="mapnik_feature.h" />
     <ClInclude Include="mapnik_featureset.h" />
     <ClInclude Include="mapnik_font_engine_freetype.h" />
+    <ClInclude Include="mapnik_geometry.h" />
     <ClInclude Include="mapnik_image.h" />
     <ClInclude Include="mapnik_layer.h" />
     <ClInclude Include="mapnik_map.h" />
@@ -112,6 +113,7 @@ xcopy /y /e /i ..\lib\mapnik-v2.3.0\lib\mapnik $(OutDir)mapnik</Command>
     <ClCompile Include="mapnik_feature.cpp" />
     <ClCompile Include="mapnik_featureset.cpp" />
     <ClCompile Include="mapnik_font_engine_freetype.cpp" />
+    <ClCompile Include="mapnik_geometry.cpp" />
     <ClCompile Include="mapnik_image.cpp" />
     <ClCompile Include="mapnik_layer.cpp" />
     <ClCompile Include="mapnik_map.cpp" />
