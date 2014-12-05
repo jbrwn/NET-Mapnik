@@ -83,7 +83,8 @@ namespace NETMapnik
 		for (; it != end; ++it)
 		{
 			System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
-			paramsDictionary[key] = boost::apply_visitor(value_converter(), it->second);
+			params_to_object serializer(paramsDictionary, key);
+			mapnik::util::apply_visitor(serializer, it->second);
 		}
 		return paramsDictionary;
 	}

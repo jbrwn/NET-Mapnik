@@ -3,47 +3,53 @@
 // mapnik
 #include <mapnik\value_types.hpp>
 #include <mapnik\value.hpp>
-
-// boost
-#include <boost\variant\static_visitor.hpp>
+#include <mapnik\util\variant.hpp>
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
 
 namespace NETMapnik
 {
-	struct value_converter : public boost::static_visitor<System::Object^>
+	struct params_to_object : public mapnik::util::static_visitor<>
 	{
-		System::Object^ operator() (mapnik::value_integer val) const
+		params_to_object(System::Collections::Generic::IDictionary<System::String^, System::Object^>^ ds, System::String^ key) :
+			_ds(ds),
+			_key(key) {}
+		
+		void operator() (mapnik::value_integer val) const
 		{
-			return gcnew int(val);
+			_ds->Add(_key,gcnew int(val));
 		}
 
-		System::Object^ operator() (double val) const
+		void operator() (double val) const
 		{
-			return gcnew double(val);
+			_ds->Add(_key, gcnew double(val));
 		}
 
-		System::Object^ operator() (bool val) const
+		void operator() (bool val) const
 		{
-			return gcnew bool(val);
+			_ds->Add(_key,gcnew bool(val));
 		}
 
-		System::Object^ operator() (std::string const& s) const
+		void operator() (std::string const& s) const
 		{
-			return msclr::interop::marshal_as<System::String^>(s);
+			_ds->Add(_key, msclr::interop::marshal_as<System::String^>(s));
 		}
 
-		System::Object^ operator() (mapnik::value_unicode_string const& s) const
+		void operator() (mapnik::value_unicode_string const& s) const
 		{
 			std::string buffer;
 			mapnik::to_utf8(s, buffer);
-			return  msclr::interop::marshal_as<System::String^>(buffer);
+			_ds->Add(_key, msclr::interop::marshal_as<System::String^>(buffer));
 		}
 
-		System::Object^ operator() (mapnik::value_null const& /*s*/) const
+		void operator() (mapnik::value_null const& /*s*/) const
 		{
-			return nullptr;
+			_ds->Add(_key, nullptr);
 		}
+
+	private:
+		gcroot<System::Collections::Generic::IDictionary<System::String^, System::Object^>^> _ds;
+		gcroot<System::String^> _key;
 	};
 }

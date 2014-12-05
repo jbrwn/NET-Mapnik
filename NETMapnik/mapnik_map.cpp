@@ -211,7 +211,8 @@ namespace NETMapnik
 		for (; it != end; ++it)
 		{
 			System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
-			paramsDictionary[key] = boost::apply_visitor(value_converter(), it->second);
+			params_to_object serializer(paramsDictionary, key);
+			mapnik::util::apply_visitor(serializer, it->second);
 		}
 		return paramsDictionary;
 	}
@@ -371,6 +372,7 @@ namespace NETMapnik
 		double scale_denominator = 0.0;
 		unsigned offset_x = 0;
 		unsigned offset_y = 0;
+		auto variables = mapnik::attributes();
 		
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
@@ -387,7 +389,8 @@ namespace NETMapnik
 			m_req.set_buffer_size(buffer_size);
 			mapnik::agg_renderer<mapnik::image_32> ren(
 				*_map, 
-				m_req, 
+				m_req,
+				variables,
 				*i,
 				scale_factor,
 				offset_x,

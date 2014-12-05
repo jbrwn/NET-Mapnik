@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,14 +21,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -63,14 +63,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_WINDOWS;HAVE_JPEG;HAVE_PNG;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;BOOST_THREAD_USE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;_WINDOWS;BOOST_ALL_NO_LIB;BOOST_MSVC_ENABLE_2014_JUN_CTP;BOOST_VARIANT_DO_NOT_USE_VARIADIC_TEMPLATES;HAVE_JPEG;HAVE_PNG;HAVE_WEBP;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;SVG_RENDERER;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;HAVE_CAIRO;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\mapnik-v2.3.0\include;..\lib\mapnik-v2.3.0\include\mapnik\agg;..\lib\protobuf-2.5.0\vsprojects\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\includes\libxml2;C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\includes\google;C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\includes\freetype2;C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\includes\cairo;C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\includes\mapnik\agg;C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libpng.lib;zlib.lib;libwebp.lib;libjpeg.lib;icuuc.lib;icuin.lib;cairo.lib;libboost_system-vc120-mt-1_55.lib;libxml2_a.lib;ws2_32.lib;mapnik.lib;libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib\protobuf-2.5.0\vsprojects\Release;..\lib\mapnik-v2.3.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>mapnik.lib;libpng16.lib;zlib.lib;harfbuzz.lib;libwebp_dll.lib;libjpeg.lib;icuuc.lib;icuin.lib;cairo.lib;libboost_system-vc140-mt-1_57.lib;libxml2_a.lib;ws2_32.lib;libprotobuf-lite.lib;mapnik-wkt.lib;mapnik-json.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Administrator\Source\Repos\NET-Mapnik\lib\x86\mapnik-sdk\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y ..\lib\mapnik-v2.3.0\lib\*.dll $(OutDir)
