@@ -15,7 +15,7 @@ namespace NETMapnik.Test
             Map m = new Map();
             m.Width = 256;
             m.Height = 256;
-            m.Load(@"..\..\data\test.xml");
+            m.Load(@".\data\test.xml");
             m.ZoomAll();
             Grid g = new Grid(256, 256);
             Dictionary<string, object> options = new Dictionary<string, object>();

@@ -28,7 +28,7 @@ namespace NETMapnik.Test
             Dictionary<string, object> options = new Dictionary<string, object>() 
             { 
                 { "type","shape"},
-                { "file", @"..\..\data\world_merc.shp" }
+                { "file", @".\data\world_merc.shp" }
             };
             Datasource ds = new Datasource(options);
 

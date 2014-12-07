@@ -30,7 +30,7 @@ namespace NETMapnik.Test
         public void Map_GetParamaters()
         {
             Map m = new Map();
-            m.Load(@"..\..\data\params.xml");
+            m.Load(@".\data\params.xml");
             Dictionary<string,object> prms = m.Parameters;
             Assert.AreEqual("wat up",(string)prms["words"]);
             Assert.AreEqual(1, (int)prms["num"]);

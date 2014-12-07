@@ -14,7 +14,7 @@ namespace NETMapnik.Test
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
             Map m = new Map();
-            m.Load(@"..\..\data\layer.xml");
+            m.Load(@".\data\layer.xml");
             m.Width = 256;
             m.Height = 256;
             m.ZoomAll();
@@ -30,7 +30,7 @@ namespace NETMapnik.Test
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
             Map m = new Map();
-            m.Load(@"..\..\data\layer.xml");
+            m.Load(@".\data\layer.xml");
             m.Width = 256;
             m.Height = 256;
             m.ZoomAll();
@@ -40,7 +40,7 @@ namespace NETMapnik.Test
             VectorTile v2 = new VectorTile(0, 0, 0, 256, 256);
             v2.SetBytes(v.GetBytes());
             Map m2 = new Map();
-            m2.Load(@"..\..\data\style.xml");
+            m2.Load(@".\data\style.xml");
             Image i = new Image(256, 256);
             v2.Render(m2, i);
             int byteCount = i.Encode("png").Length;
@@ -52,7 +52,7 @@ namespace NETMapnik.Test
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
             Map m = new Map();
-            m.Load(@"..\..\data\layer.xml");
+            m.Load(@".\data\layer.xml");
             m.Width = 256;
             m.Height = 256;
 
@@ -65,7 +65,7 @@ namespace NETMapnik.Test
             m.Render(v2);
 
             Map renderMap = new Map();
-            renderMap.Load(@"..\..\data\style.xml");
+            renderMap.Load(@".\data\style.xml");
             Image i1 = new Image(256, 256);
             Image i2 = new Image(256, 256);
 
@@ -86,7 +86,7 @@ namespace NETMapnik.Test
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
             Map m = new Map();
-            m.Load(@"..\..\data\layer.xml");
+            m.Load(@".\data\layer.xml");
             m.Width = 256;
             m.Height = 256;
             m.ZoomAll();
@@ -109,7 +109,7 @@ namespace NETMapnik.Test
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
             Map m = new Map();
-            m.Load(@"..\..\data\layer.xml");
+            m.Load(@".\data\layer.xml");
             m.Width = 256;
             m.Height = 256;
 

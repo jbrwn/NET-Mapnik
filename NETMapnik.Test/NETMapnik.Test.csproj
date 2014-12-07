@@ -123,12 +123,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\layer.xml" />
-    <Content Include="data\style.xml" />
+    <Content Include="data\layer.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\style.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\params.xml">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\test.xml" />
+    <Content Include="data\test.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="test.runsettings">
       <SubType>Designer</SubType>
@@ -159,8 +166,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /y /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\*.dll $(ProjectDir)$(OutDir)
+xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\mapnik $(ProjectDir)$(OutDir)mapnik</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
