@@ -125,6 +125,9 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>..\lib\x86\mapnik-sdk\bin\protoc.exe -I ..\lib\mapnik-vector-tile\proto --cpp_out=..\lib\mapnik-vector-tile\src  ..\lib\mapnik-vector-tile\proto\vector_tile.proto</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -144,6 +147,9 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>..\lib\x64\mapnik-sdk\bin\protoc.exe -I ..\lib\mapnik-vector-tile\proto --cpp_out=..\lib\mapnik-vector-tile\src  ..\lib\mapnik-vector-tile\proto\vector_tile.proto</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="System" />
