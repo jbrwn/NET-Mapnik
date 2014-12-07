@@ -113,7 +113,8 @@
       <PreprocessorDefinitions>NOMINMAX;_WINDOWS;BOOST_ALL_NO_LIB;BOOST_MSVC_ENABLE_2014_JUN_CTP;BOOST_VARIANT_DO_NOT_USE_VARIADIC_TEMPLATES;HAVE_JPEG;HAVE_PNG;HAVE_WEBP;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;SVG_RENDERER;_CLR_NATIVE_THREADS;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;HAVE_CAIRO;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\x86\mapnik-sdk\includes\libxml2;..\lib\x86\mapnik-sdk\includes\google;..\lib\x86\mapnik-sdk\includes\freetype2;..\lib\x86\mapnik-sdk\includes\cairo;..\lib\x86\mapnik-sdk\includes\mapnik\agg;..\lib\x86\mapnik-sdk\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4068;4244;4805;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -131,7 +132,8 @@
       <PreprocessorDefinitions>NOMINMAX;_WINDOWS;BOOST_ALL_NO_LIB;BOOST_MSVC_ENABLE_2014_JUN_CTP;BOOST_VARIANT_DO_NOT_USE_VARIADIC_TEMPLATES;HAVE_JPEG;HAVE_PNG;HAVE_WEBP;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;SVG_RENDERER;_CLR_NATIVE_THREADS;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;HAVE_CAIRO;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\x64\mapnik-sdk\includes\libxml2;..\lib\x64\mapnik-sdk\includes\google;..\lib\x64\mapnik-sdk\includes\freetype2;..\lib\x64\mapnik-sdk\includes\cairo;..\lib\x64\mapnik-sdk\includes\mapnik\agg;..\lib\x64\mapnik-sdk\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4068;4244;4805;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
