@@ -1,0 +1,12 @@
+--- mutex.bak	Fri Dec 05 07:23:10 2014
++++ mutex	Sat Dec 06 18:51:37 2014
+@@ -5,7 +5,9 @@
+ #ifndef RC_INVOKED
+ 
+  #ifdef _M_CEE
++ #ifndef _CLR_NATIVE_THREADS
+   #error <mutex> is not supported when compiling with /clr or /clr:pure.
++ #endif /* _CLR_NATIVE_THREADS */
+  #endif /* _M_CEE */
+ 
+ #include <thr/xthread>
