@@ -1,40 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+# Visual Studio 14
+VisualStudioVersion = 14.0.22310.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NETMapnik", "NETMapnik\NETMapnik.vcxproj", "{B84651B2-ECBF-4DAD-B501-DA67268D99D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETMapnik.Test", "NETMapnik.Test\NETMapnik.Test.csproj", "{A4E32E59-A200-45A6-89B6-982342112748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
-		Debug|Win32 = Debug|Win32
-		Release|Any CPU = Release|Any CPU
-		Release|Mixed Platforms = Release|Mixed Platforms
-		Release|Win32 = Release|Win32
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|Win32.Build.0 = Debug|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|Any CPU.ActiveCfg = Release|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|Win32.ActiveCfg = Release|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|Win32.Build.0 = Release|Win32
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{A4E32E59-A200-45A6-89B6-982342112748}.Release|Win32.ActiveCfg = Release|Any CPU
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x64.ActiveCfg = Debug|x64
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x64.Build.0 = Debug|x64
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x86.ActiveCfg = Debug|Win32
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x86.Build.0 = Debug|Win32
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x64.ActiveCfg = Release|x64
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x64.Build.0 = Release|x64
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x86.ActiveCfg = Release|Win32
+		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x86.Build.0 = Release|Win32
+		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|x64.ActiveCfg = Debug|x64
+		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|x86.ActiveCfg = Debug|x86
+		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x64.ActiveCfg = Release|x64
+		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x64.Build.0 = Release|x64
+		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x86.ActiveCfg = Release|x86
+		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
