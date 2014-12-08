@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata minClientVersion="2.5">
+        <id>mapnik.x64</id>
+        <title>mapnik (x64)</title>
+        <version>1.0.0</version>
+        <authors>Joel Brown</authors>
+        <!--<licenseUrl></licenseUrl>-->
+        <projectUrl>https://github.com/kernelsanders/NET-Mapnik</projectUrl>
+        <description>x64 bindings for the mapnik tile rendering library</description>
+        <tags>mapnik</tags>
+	</metadata>
+	<files>
+		<file src="x64\Release\NETMapnik.dll" target="lib\net45" />
+		<file src="lib\x64\mapnik-sdk\libs\*.dll"  target="native\" />
+    <file src="lib\x64\mapnik-sdk\libs\mapnik\"  target="native\mapnik" />
+		<file src="mapnik.x64.props" target="build\net45" />
+	</files>
+</package>
