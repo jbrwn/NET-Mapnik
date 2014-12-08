@@ -27,6 +27,6 @@ Requirements:
   - [Build dependencies](lib/readme.md)
 
 Build:
-  - Open NETMapnik.sln in Visual Studio 2013
+  - Open NETMapnik.sln in Visual Studio 2015
   - Set build to release
   - Build solution
