@@ -304,7 +304,8 @@ namespace NETMapnik
 		int buffer_size = 0;
 		double scale_factor = 1.0;
 		double scale_denominator = 0.0;
-		
+		auto variables = mapnik::attributes();
+
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
 		optionsParser->TryGet<int>("BufferSize", buffer_size);
@@ -353,6 +354,7 @@ namespace NETMapnik
 			mapnik::agg_renderer<mapnik::image_32> ren(
 				*m,
 				m_req,
+				variables,
 				*i,
 				scale_factor
 			);

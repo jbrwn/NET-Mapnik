@@ -1,14 +1,13 @@
 #pragma once
 
+#include <memory>
+
 // mapnik
 #include <mapnik\layer.hpp>
 
-// boost
-#include <boost\shared_ptr.hpp>
-
 namespace NETMapnik
 {
-	typedef boost::shared_ptr<mapnik::layer> layer_ptr;
+	typedef std::shared_ptr<mapnik::layer> layer_ptr;
 
 	//Forward Declare
 	ref class Datasource;

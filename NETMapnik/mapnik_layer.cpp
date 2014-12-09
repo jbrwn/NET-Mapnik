@@ -3,13 +3,12 @@
 #include "mapnik_datasource.h"
 #include "mapnik_value_converter.h"
 
+#include <memory>
+
 // mapnik
 #include <mapnik\datasource.hpp>
 #include <mapnik\layer.hpp>
 #include <mapnik\params.hpp>
-
-// boost
-#include <boost\make_shared.hpp>
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
@@ -18,20 +17,20 @@ namespace NETMapnik
 {
 	Layer::Layer(mapnik::layer const& layer) 
 	{
-		_layer = new layer_ptr(boost::make_shared<mapnik::layer>(layer));
+		_layer = new layer_ptr(std::make_shared<mapnik::layer>(layer));
 	}
 
 	Layer::Layer(System::String^ name)
 	{
 		std::string unmanagedName = msclr::interop::marshal_as<std::string>(name);
-		_layer = new layer_ptr(boost::make_shared<mapnik::layer>(unmanagedName));
+		_layer = new layer_ptr(std::make_shared<mapnik::layer>(unmanagedName));
 	}
 
 	Layer::Layer(System::String^ name, System::String^ srs)
 	{
 		std::string unmanagedName = msclr::interop::marshal_as<std::string>(name);
 		std::string unmanagedSRS = msclr::interop::marshal_as<std::string>(srs);
-		_layer = new layer_ptr(boost::make_shared<mapnik::layer>(unmanagedName, unmanagedSRS));
+		_layer = new layer_ptr(std::make_shared<mapnik::layer>(unmanagedName, unmanagedSRS));
 	}
 
 	Layer::~Layer()
@@ -147,7 +146,8 @@ namespace NETMapnik
 			for (; it != end; ++it)
 			{
 				System::String^ key = msclr::interop::marshal_as<System::String^>(it->first);
-				ds[key] = boost::apply_visitor(value_converter(), it->second);
+				params_to_object serializer(ds, key);
+				mapnik::util::apply_visitor(serializer, it->second);
 				
 			}
 			description["datasource"] = ds;

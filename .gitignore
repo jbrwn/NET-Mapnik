@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+*.sln.ide
 
 # Build results
 
@@ -97,7 +98,7 @@ publish/
 
 # NuGet Packages Directory
 ## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-#packages/
+packages/
 
 # Windows Azure Build Output
 csx
@@ -160,3 +161,5 @@ lib/boost
 lib/mapnik*
 lib/mapnik-vector-tile
 lib/protobuf*
+lib/x86
+lib/x64

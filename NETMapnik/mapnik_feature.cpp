@@ -4,7 +4,10 @@
 #include "mapnik_value_converter.h"
 #include "mapnik_geometry.h"
 
+#include <memory>
+
 // mapnik
+#include <mapnik\util\variant.hpp>
 #include <mapnik\feature_factory.hpp>
 #include <mapnik\json\feature_parser.hpp>
 #include <mapnik\json\feature_generator_grammar.hpp>
@@ -41,12 +44,14 @@ namespace NETMapnik
 	{
 		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ feat = gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>();
 
-		mapnik::feature_impl::iterator itr = (*_feature)->begin();
-		mapnik::feature_impl::iterator end = (*_feature)->end();
+		mapnik::feature_ptr feature = *_feature;
+		mapnik::feature_impl::iterator itr = feature->begin();
+		mapnik::feature_impl::iterator end = feature->end();
 		for (; itr != end; ++itr)
 		{
-			System::String^ key = msclr::interop::marshal_as<System::String^>(boost::get<0>(*itr));
-			feat[key] = boost::apply_visitor(value_converter(), boost::get<1>(*itr).base());
+			System::String^ key = msclr::interop::marshal_as<System::String^>(std::get<0>(*itr));
+			params_to_object serializer(feat, key);
+			mapnik::util::apply_visitor(serializer, std::get<1>(*itr));
 		}
 		return feat;
 
