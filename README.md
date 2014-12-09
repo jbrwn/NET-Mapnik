@@ -11,6 +11,8 @@ Requirements
 ------------
 
 Visual C++ 2015 Redistributable
+https://github.com/kernelsanders/vcredist/raw/master/2015Preview/vcredist_x86.exe
+https://github.com/kernelsanders/vcredist/raw/master/2015Preview/vcredist_x64.exe
 
 Install
 -------
