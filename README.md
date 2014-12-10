@@ -3,9 +3,7 @@ NET-Mapnik
 
 .NET bindings for [mapnik](https://github.com/mapnik/mapnik).
 
-[![](http://img.shields.io/nuget/v/mapnik.svg?style=flat-square)](https://www.nuget.org/packages/mapnik/)
-
-For example usage take a look at [the tests](NETMapnik.Test).
+For example usage take a look at the [tests](NETMapnik.Test).
 
 Requirements
 ------------
@@ -18,8 +16,15 @@ https://github.com/kernelsanders/vcredist/raw/master/2015Preview/vcredist_x64.ex
 Install
 -------
 Install the nuget package:
+
+[mapnik (x86)](https://www.nuget.org/packages/mapnik)
 ```
 PM> Install-Package mapnik
+```
+
+[mapnik (x64)](https://www.nuget.org/packages/mapnik.x64)
+```
+PM> Install-Package mapnik.x64
 ```
 
 Build Instrucitons
