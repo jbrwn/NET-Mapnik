@@ -17,12 +17,10 @@ Install
 -------
 Install the nuget package:
 
-[mapnik (x86)](https://www.nuget.org/packages/mapnik)
 ```
 PM> Install-Package mapnik
 ```
-
-[mapnik (x64)](https://www.nuget.org/packages/mapnik.x64)
+or
 ```
 PM> Install-Package mapnik.x64
 ```
