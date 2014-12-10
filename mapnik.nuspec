@@ -7,7 +7,8 @@
         <authors>Joel Brown</authors>
         <!--<licenseUrl></licenseUrl>-->
         <projectUrl>https://github.com/kernelsanders/NET-Mapnik</projectUrl>
-        <description>x86 bindings for the mapnik tile rendering library</description>
+        <description>.NET bindings for the mapnik tile rendering library (x86)</description>
+        <releaseNotes>Requires Visual C++ Redistributable for Visual Studio 2015 Preview - https://github.com/kernelsanders/vcredist/tree/master/2015Preview </releaseNotes>
         <tags>mapnik</tags>
 	</metadata>
 	<files>
