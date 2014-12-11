@@ -1,48 +1,53 @@
 #pragma once
 
+#include <memory>
+
 #include <mapnik\color.hpp>
 
 namespace NETMapnik
 {
+	typedef std::shared_ptr<mapnik::color> color_ptr;
+
 	public ref class Color
 	{
 	public:
 		Color(System::String^ color);
-		Color(System::UInt32 r, System::UInt32 g, System::UInt32 b);
-		Color(System::UInt32 r, System::UInt32 g, System::UInt32 b, System::UInt32 a);
+		Color(System::Int32 r, System::Int32 g, System::Int32 b);
+		Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Int32 a);
 		~Color();
 
-		property System::UInt32 R
+		property System::Int32 R
 		{
-			System::UInt32 get();
-			void set(System::UInt32);
+			System::Int32 get();
+			void set(System::Int32);
 		}
 
-		property System::UInt32 G
+		property System::Int32 G
 		{
-			System::UInt32 get();
-			void set(System::UInt32);
+			System::Int32 get();
+			void set(System::Int32);
 		}
 
-		property System::UInt32 B
+		property System::Int32 B
 		{
-			System::UInt32 get();
-			void set(System::UInt32);
+			System::Int32 get();
+			void set(System::Int32);
 		}
 
-		property System::UInt32 A
+		property System::Int32 A
 		{
-			System::UInt32 get();
-			void set(System::UInt32);
+			System::Int32 get();
+			void set(System::Int32);
 		}
 
 		 System::String^ ToString() override;
 		 System::String^ Hex();
 
 	internal:
-		mapnik::color *NativeObject();
+		Color(mapnik::color const& color);
+		color_ptr NativeObject();
 
 	private:
-		mapnik::color* _color;
+		color_ptr* _color;
 	};
 }

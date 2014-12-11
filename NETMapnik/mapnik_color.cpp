@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "mapnik_color.h"
 
+#include <memory>
+
 // mapnik
 #include <mapnik\color.hpp>
 
@@ -13,77 +15,114 @@ namespace NETMapnik
 	Color::Color(System::String^ color)
 	{
 		std::string unmanagedColor = msclr::interop::marshal_as<std::string>(color);
-		_color = new mapnik::color(unmanagedColor);
+		try
+		{
+			_color = new color_ptr(std::make_shared<mapnik::color>(unmanagedColor));
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 
-	Color::Color(System::UInt32 r, System::UInt32 g, System::UInt32 b)
+	Color::Color(System::Int32 r, System::Int32 g, System::Int32 b)
 	{
-		_color = new mapnik::color(r, g, b);
+		try
+		{
+			_color = new color_ptr(std::make_shared<mapnik::color>(r, g, b));
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 	
-	Color::Color(System::UInt32 r, System::UInt32 g, System::UInt32 b, System::UInt32 a)
+	Color::Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Int32 a)
 	{
-		_color = new mapnik::color(r, g, b, a);
+		try
+		{
+			_color = new color_ptr(std::make_shared<mapnik::color>(r, g, b, a));
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 	
+	Color::Color(mapnik::color const& color)
+	{
+		try 
+		{
+			_color = new color_ptr(std::make_shared<mapnik::color>(color));
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+	}
+
 	Color::~Color()
 	{
 		if (_color != NULL)
 			delete _color;
 	}
 
-	mapnik::color *Color::NativeObject()
+	color_ptr Color::NativeObject()
 	{
-		return _color;
+		return *_color;
 	}
 
-	System::UInt32 Color::R::get()
+	System::Int32 Color::R::get()
 	{
-		return _color->red();
+		return (*_color)->red();
 	}
 
-	void Color::R::set(System::UInt32 value)
+	void Color::R::set(System::Int32 value)
 	{
-		_color->set_red(value);
+		(*_color)->set_red(value);
 	}
 
-	System::UInt32 Color::G::get()
+	System::Int32 Color::G::get()
 	{
-		return _color->green();
+		return (*_color)->green();
 	}
 
-	void Color::G::set(System::UInt32 value)
+	void Color::G::set(System::Int32 value)
 	{
-		_color->set_green(value);
+		(*_color)->set_green(value);
 	}
 
-	System::UInt32 Color::B::get()
+	System::Int32 Color::B::get()
 	{
-		return _color->blue();
+		return (*_color)->blue();
 	}
 
-	void Color::B::set(System::UInt32 value)
+	void Color::B::set(System::Int32 value)
 	{
-		_color->set_blue(value);
+		(*_color)->set_blue(value);
 	}
 
-	System::UInt32 Color::A::get()
+	System::Int32 Color::A::get()
 	{
-		return _color->alpha();
+		return (*_color)->alpha();
 	}
 
-	void Color::A::set(System::UInt32 value)
+	void Color::A::set(System::Int32 value)
 	{
-		_color->set_alpha(value);
+		(*_color)->set_alpha(value);
 	}
 
 	System::String^ Color::ToString()
 	{
-		return msclr::interop::marshal_as<System::String^>(_color->to_string());
+		return msclr::interop::marshal_as<System::String^>((*_color)->to_string());
 	}
 
 	System::String^ Color::Hex()
 	{
-		return msclr::interop::marshal_as<System::String^>(_color->to_hex_string());
+		return msclr::interop::marshal_as<System::String^>((*_color)->to_hex_string());
 	}
 }

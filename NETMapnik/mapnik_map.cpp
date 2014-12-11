@@ -166,12 +166,12 @@ namespace NETMapnik
 		boost::optional<mapnik::color> const& bg = _map->background();
 		if (!bg)
 			return nullptr;
-		return gcnew Color(bg->red(), bg->green(), bg->blue(), bg->alpha());
+		return gcnew Color(*bg);
 	}
 
 	void Map::Background::set(Color^ value)
 	{
-		mapnik::color* c = value->NativeObject();
+		color_ptr c = value->NativeObject();
 		_map->set_background(*c);
 	}
 
