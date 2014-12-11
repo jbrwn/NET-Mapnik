@@ -75,4 +75,15 @@ namespace NETMapnik
 		return msclr::interop::marshal_as<System::String^>(json);
 	}
 
+	Feature^ Feature::FromJSON(System::String^ json)
+	{
+		std::string unmanagedJson = msclr::interop::marshal_as<std::string>(json);
+		mapnik::feature_ptr f(mapnik::feature_factory::create(std::make_shared<mapnik::context_type>(), 1));
+		if (!mapnik::json::from_geojson(unmanagedJson, *f))
+		{
+			throw gcnew System::Exception("Failed to parse geojson feature");
+		}
+		return gcnew Feature(f);
+	}
+
 }

@@ -19,6 +19,8 @@ namespace NETMapnik
 		Geometry^ Geometry();
 		System::String^ ToJSON();
 
+		static Feature^ FromJSON(System::String^ json);
+
 	internal:
 		Feature(mapnik::feature_ptr feature);
 

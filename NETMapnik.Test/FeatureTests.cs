@@ -13,8 +13,8 @@ namespace NETMapnik.Test
         public void Featureset_Creation()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Dictionary<string, object> options = new Dictionary<string, object>() 
-            { 
+            Dictionary<string, object> options = new Dictionary<string, object>()
+            {
                 { "type","shape"},
                 { "file", @".\data\world_merc.shp" }
             };
@@ -22,8 +22,8 @@ namespace NETMapnik.Test
             Datasource d = new Datasource(options);
             Featureset fs = d.Featureset();
             Feature feature = fs.Next();
-            Dictionary<string, object> attr = new Dictionary<string,object>(feature.Attributes());
-            Dictionary<string, object> expectedAttr = new Dictionary<string, object>() 
+            Dictionary<string, object> attr = new Dictionary<string, object>(feature.Attributes());
+            Dictionary<string, object> expectedAttr = new Dictionary<string, object>()
             {
                 {"AREA", 44},
                 {"FIPS", "AC"},
@@ -61,8 +61,8 @@ namespace NETMapnik.Test
             JObject expected = JObject.Parse(input);
 
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Dictionary<string, object> options = new Dictionary<string, object>() 
-            { 
+            Dictionary<string, object> options = new Dictionary<string, object>()
+            {
                 { "type","csv"},
                 { "inline", "geojson\n'" + expected["geometry"].ToString(Formatting.None) + "'" }
             };
@@ -84,5 +84,32 @@ namespace NETMapnik.Test
             }
         }
 
+        [TestMethod]
+        public void Feature_FromJSON()
+        {
+            string input = @"{
+                type: ""Feature"",
+                properties: {},
+                geometry: {
+                    type: ""Polygon"",
+                    coordinates: [[[1,1],[1,2],[2,2],[2,1],[1,1]]]
+                }
+            }";
+            JObject expected = JObject.Parse(input);
+            Feature f = Feature.FromJSON(expected.ToString(Formatting.None));
+            JObject feature = JObject.Parse(f.ToJSON());
+
+            Assert.AreEqual(expected["type"], feature["type"]);
+            Assert.AreEqual(((JObject)expected["properties"]).Count, ((JObject)feature["properties"]).Count);
+            Assert.AreEqual(expected["geometry"]["type"], feature["geometry"]["type"]);
+
+            JArray coords = (JArray)expected["geometry"]["coordinates"][0];
+            for (int i = 0; i < coords.Count; i++)
+            {
+                JArray coord1 = (JArray)expected["geometry"]["coordinates"][0][i];
+                JArray coord2 = (JArray)feature["geometry"]["coordinates"][0][i];
+                CollectionAssert.AreEquivalent(coord1.ToObject<List<double>>(), coord2.ToObject<List<double>>());
+            }
+        }
     }
 }
