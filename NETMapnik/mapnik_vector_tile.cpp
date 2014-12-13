@@ -293,7 +293,7 @@ namespace NETMapnik
 		//See - https://github.com/mapnik/node-mapnik/blob/master/src/mapnik_vector_tile.cpp
 
 		//Unwrap native objects
-		mapnik::Map *m = map->NativeObject();
+		map_ptr m = map->NativeObject();
 		mapnik::image_32 *i = image->NativeObject();
 
 		// set defaults

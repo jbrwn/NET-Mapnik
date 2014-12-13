@@ -20,7 +20,7 @@ namespace NETMapnik.Test
             Grid g = new Grid(256, 256);
             Dictionary<string, object> options = new Dictionary<string, object>();
             options["Fields"] = new List<string>() { "FIPS" };
-            options["Layer"] = "world2";
+            options["Layer"] = "world";
 
             m.Render(g, options);
             Dictionary<string, object> UTFGridDict = g.Encode("utf", true, 4);

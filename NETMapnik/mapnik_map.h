@@ -1,23 +1,43 @@
 #pragma once
 
+#include <memory>
+
 #include <mapnik\map.hpp>
 
 namespace NETMapnik
 {
+	
+	public enum class AspectFixMode : int
+	{
+
+		ASPECT_GROW_BBOX = mapnik::Map::GROW_BBOX,
+		ASPECT_GROW_CANVAS = mapnik::Map::GROW_CANVAS,
+		ASPECT_SHRINK_BBOX = mapnik::Map::SHRINK_BBOX,
+		ASPECT_SHRINK_CANVAS = mapnik::Map::SHRINK_CANVAS,
+		ASPECT_ADJUST_BBOX_WIDTH = mapnik::Map::ADJUST_BBOX_WIDTH,
+		ASPECT_ADJUST_BBOX_HEIGHT = mapnik::Map::ADJUST_BBOX_HEIGHT,
+		ASPECT_ADJUST_CANVAS_WIDTH = mapnik::Map::ADJUST_CANVAS_WIDTH,
+		ASPECT_ADJUST_CANVAS_HEIGHT = mapnik::Map::ADJUST_CANVAS_HEIGHT,
+		ASPECT_RESPECT = mapnik::Map::RESPECT,
+	};
+	
 	//Forward Declare
 	ref class Image;
 	ref class Grid;
 	ref class VectorTile;
 	ref class Color;
 	ref class Layer;
+	ref class Featureset;
+
+	typedef std::shared_ptr<mapnik::Map> map_ptr;
 
 	public ref class Map
 	{
 	public:
 		//Constructor
 		Map();
-		Map(System::UInt32 width, System::UInt32 height);
-		Map(System::UInt32 width, System::UInt32 height, System::String^ srs);
+		Map(System::Int32 width, System::Int32 height);
+		Map(System::Int32 width, System::Int32 height, System::String^ srs);
 		//Destructor
 		~Map();
 
@@ -38,15 +58,15 @@ namespace NETMapnik
 			void set(array<System::Double>^ value);
 		}
 
-		property System::UInt32 Width
+		property System::Int32 Width
 		{
-			System::UInt32 get();
-			void set(System::UInt32 value);
+			System::Int32 get();
+			void set(System::Int32 value);
 		}
-		property System::UInt32 Height
+		property System::Int32 Height
 		{
-			System::UInt32 get();
-			void set(System::UInt32 value);
+			System::Int32 get();
+			void set(System::Int32 value);
 		}
 
 		property System::Int32 BufferSize
@@ -61,10 +81,10 @@ namespace NETMapnik
 			void set(System::String^ value);
 		}
 
-		property System::Int32 AspectFixMode
+		property NETMapnik::AspectFixMode AspectFixMode
 		{
-			System::Int32 get();
-			void set(System::Int32 value);
+			NETMapnik::AspectFixMode get();
+			void set(NETMapnik::AspectFixMode value);
 		}
 
 		property Color^ Background
@@ -82,9 +102,23 @@ namespace NETMapnik
 		System::Double Scale();
 		System::Double ScaleDenominator();
 		void Clear();
-		void Resize(System::UInt32 width, System::UInt32 heigt);
+		void Resize(System::Int32 width, System::Int32 heigt);
 
-		Layer^ GetLayer(System::UInt32 index);
+		System::Collections::Generic::IEnumerable<System::String^>^ Fonts();
+		System::Collections::Generic::IDictionary<System::String^, System::String^>^ FontFiles();
+		System::String^ FontDirectory();
+		void LoadFonts();
+		System::Collections::Generic::IEnumerable<System::String^>^ MemoryFonts();
+		void RegisterFonts(System::String^ path);
+		void RegisterFonts(System::String^ path, System::Boolean recurse);
+		Map^ Clone();
+		void Save(System::String^ path);
+		System::String^ ToXML();
+		
+		//System::Collections::Generic::IEnumerable<System::Collections::Generic::KeyValuePair<System::String^, Featureset^>^>^ QueryPoint(int x, int y, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+		//System::Collections::Generic::IEnumerable<System::Collections::Generic::KeyValuePair<System::String^, Featureset^>^>^ QueryMapPoint(int x, int y, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+
+		Layer^ GetLayer(System::Int32 index);
 		Layer^ GetLayer(System::String^ name);
 		void AddLayer(Layer^ layer);
 		System::Collections::Generic::IEnumerable<Layer^>^ Layers();
@@ -105,13 +139,14 @@ namespace NETMapnik
 		void Render(Grid^ grid, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		void Render(VectorTile^ tile);
 		void Render(VectorTile^ tile, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+		//void RenderFile(System::String^ path, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 
 	internal:
-		mapnik::Map *NativeObject();
+		map_ptr NativeObject();
+		Map(mapnik::Map const& map);
 
 	private:
-		//Unmanaged instance of mapnik::map
-		mapnik::Map* _map;
+		map_ptr* _map;
 	};
 
 }

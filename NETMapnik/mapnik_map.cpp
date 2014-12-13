@@ -9,9 +9,10 @@
 #include "mapnik_layer.h"
 #include "NET_box_utils.h"
 
+#include <memory>
+
 // mapnik
 #include <mapnik\agg_renderer.hpp>
-
 #include <mapnik\grid\grid.hpp>
 #include <mapnik\box2d.hpp>       
 #include <mapnik\color.hpp>         
@@ -47,15 +48,19 @@ namespace NETMapnik
 	//Constructor
 	Map::Map()
 	{
-		_map = new mapnik::Map();
+		_map = new map_ptr(std::make_shared<mapnik::Map>());
 	}
-	Map::Map(System::UInt32 width, System::UInt32 height)
+	Map::Map(System::Int32 width, System::Int32 height)
 	{
-		_map = new mapnik::Map(width, height);
+		_map = new map_ptr(std::make_shared<mapnik::Map>(width, height));
 	}
-	Map::Map(System::UInt32 width, System::UInt32 height, System::String^ srs)
+	Map::Map(System::Int32 width, System::Int32 height, System::String^ srs)
 	{
-		_map = new mapnik::Map(width, height, msclr::interop::marshal_as<std::string>(srs));
+		_map = new map_ptr(std::make_shared<mapnik::Map>(width, height, msclr::interop::marshal_as<std::string>(srs)));
+	}
+	Map::Map(mapnik::Map const& map)
+	{
+		_map = new map_ptr(std::make_shared<mapnik::Map>(map));
 	}
 
 	//Destructor
@@ -65,67 +70,68 @@ namespace NETMapnik
 			delete _map;
 	}
 
-	mapnik::Map *Map::NativeObject()
+	map_ptr Map::NativeObject()
 	{
-		return _map;
+		return *_map;
 	}
 
 	//width property
-	System::UInt32 Map::Width::get()
+	System::Int32 Map::Width::get()
 	{
-		return _map->width();
+		return (*_map)->width();
 	}
 
-	void Map::Width::set(System::UInt32 value)
+	void Map::Width::set(System::Int32 value)
 	{
-		_map->set_width(value);
+		(*_map)->set_width(value);
 	}
 
 	//height property
-	System::UInt32 Map::Height::get()
+	System::Int32 Map::Height::get()
 	{
-		return _map->height();
+		return (*_map)->height();
 	}
 
-	void Map::Height::set(System::UInt32 value)
+	void Map::Height::set(System::Int32 value)
 	{
-		_map->set_height(value);
+		(*_map)->set_height(value);
 	}
 
 	//buffer
 	System::Int32 Map::BufferSize::get()
 	{
-		return _map->buffer_size();
+		return (*_map)->buffer_size();
 	}
 
 	void Map::BufferSize::set(System::Int32 value)
 	{
-		_map->set_buffer_size(value);
+		(*_map)->set_buffer_size(value);
 	}
 
 	//SRS
 	System::String^ Map::SRS::get()
 	{
-		std::string const srs = _map->srs();
+		std::string const srs = (*_map)->srs();
 		return msclr::interop::marshal_as<System::String^>(srs);
 	}
 
 	void Map::SRS::set(System::String^ value)
 	{
 		std::string srs = msclr::interop::marshal_as<std::string>(value);
-		_map->set_srs(srs);
+		(*_map)->set_srs(srs);
 	}
 
 	//Aspect Fix Mode
-	System::Int32 Map::AspectFixMode::get()
+	AspectFixMode Map::AspectFixMode::get()
 	{
-		return _map->get_aspect_fix_mode();
+		return static_cast<NETMapnik::AspectFixMode>((*_map)->get_aspect_fix_mode());
 	}
 
-	void Map::AspectFixMode::set(System::Int32 value)
+	void Map::AspectFixMode::set(NETMapnik::AspectFixMode value)
 	{
-		if (value < _map->aspect_fix_mode_MAX)
-			_map->set_aspect_fix_mode(static_cast<mapnik::Map::aspect_fix_mode>(value));
+		int enumValue = static_cast<int>(value);
+		if (enumValue < (*_map)->aspect_fix_mode_MAX)
+			(*_map)->set_aspect_fix_mode(static_cast<mapnik::Map::aspect_fix_mode>(enumValue));
 		else
 			throw gcnew System::Exception("AspectFixMode is invalid");
 	}
@@ -133,24 +139,24 @@ namespace NETMapnik
 	//Extent
 	array<System::Double>^ Map::Extent::get()
 	{
-		return Box2DToArray(_map->get_current_extent());
+		return Box2DToArray((*_map)->get_current_extent());
 	}
 
 	void Map::Extent::set(array<System::Double>^ value)
 	{
-		_map->zoom_to_box(ArrayToBox2D(value));
+		(*_map)->zoom_to_box(ArrayToBox2D(value));
 	}
 
 	//BufferedExtent
 	array<System::Double>^ Map::BufferedExtent::get()
 	{
-		return Box2DToArray(_map->get_buffered_extent());
+		return Box2DToArray((*_map)->get_buffered_extent());
 	}
 
 	//MaximumExtent
 	array<System::Double>^ Map::MaximumExtent::get()
 	{
-		boost::optional<mapnik::box2d<double>> const& extent = _map->maximum_extent();
+		boost::optional<mapnik::box2d<double>> const& extent = (*_map)->maximum_extent();
 		if (!extent)
 			return nullptr;
 		return Box2DToArray(*extent);
@@ -158,12 +164,12 @@ namespace NETMapnik
 
 	void Map::MaximumExtent::set(array<System::Double>^ value)
 	{
-		_map->set_maximum_extent(ArrayToBox2D(value));
+		(*_map)->set_maximum_extent(ArrayToBox2D(value));
 	}
 
 	Color^ Map::Background::get()
 	{
-		boost::optional<mapnik::color> const& bg = _map->background();
+		boost::optional<mapnik::color> const& bg = (*_map)->background();
 		if (!bg)
 			return nullptr;
 		return gcnew Color(*bg);
@@ -172,31 +178,113 @@ namespace NETMapnik
 	void Map::Background::set(Color^ value)
 	{
 		color_ptr c = value->NativeObject();
-		_map->set_background(*c);
+		(*_map)->set_background(*c);
 	}
 
 	//Scale
 	System::Double Map::Scale()
 	{
-		return _map->scale();
+		return (*_map)->scale();
 	}
 
 	//ScaleDenominator
 	System::Double Map::ScaleDenominator()
 	{
-		return _map->scale_denominator();
+		return (*_map)->scale_denominator();
 	}
 
 	//clear
 	void Map::Clear()
 	{
-		_map->remove_all();
+		(*_map)->remove_all();
 	}
 
 	//Resize
-	void Map::Resize(System::UInt32 width, System::UInt32 heigt)
+	void Map::Resize(System::Int32 width, System::Int32 heigt)
 	{
-		_map->resize(width, heigt);
+		(*_map)->resize(width, heigt);
+	}
+
+	System::Collections::Generic::IEnumerable<System::String^>^ Map::Fonts()
+	{
+		auto const& mapping = (*_map)->get_font_file_mapping();
+		System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
+		unsigned i = 0;
+		for (auto const& kv : mapping)
+		{
+			a->Add(msclr::interop::marshal_as<System::String^>(kv.first.c_str()));
+		}
+		return a;
+	}
+
+	System::Collections::Generic::IDictionary<System::String^, System::String^>^ Map::FontFiles()
+	{
+		auto const& mapping = (*_map)->get_font_file_mapping();
+		System::Collections::Generic::IDictionary<System::String^, System::String^>^ d = gcnew System::Collections::Generic::Dictionary<System::String^, System::String^>();
+		unsigned i = 0;
+		for (auto const& kv : mapping)
+		{
+			System::String^ key  = msclr::interop::marshal_as<System::String^>(kv.first.c_str());
+			System::String^ value = msclr::interop::marshal_as<System::String^>(kv.second.second.c_str());
+			d->Add(key, value);
+		}
+		return d;
+	}
+
+	System::String ^ Map::FontDirectory()
+	{
+		boost::optional<std::string> const& fdir = (*_map)->font_directory();
+		if (fdir)
+		{
+			return msclr::interop::marshal_as<System::String^>(*fdir);
+		}
+		return nullptr;
+	}
+
+	void Map::LoadFonts()
+	{
+		(*_map)->load_fonts();
+	}
+
+	System::Collections::Generic::IEnumerable<System::String^>^ Map::MemoryFonts()
+	{
+		auto const& font_cache = (*_map)->get_font_memory_cache();
+		System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
+		unsigned i = 0;
+		for (auto const& kv : font_cache)
+		{
+			a->Add(msclr::interop::marshal_as<System::String^>(kv.first.c_str()));
+		}
+		return a;
+	}
+
+	void Map::RegisterFonts(System::String ^ path)
+	{
+		(*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path));
+	}
+
+	void Map::RegisterFonts(System::String ^ path, System::Boolean recurse)
+	{
+		(*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path), recurse);
+	}
+
+	Map ^ Map::Clone()
+	{
+		return gcnew Map(*(*_map));
+	}
+
+	void Map::Save(System::String ^ path)
+	{
+		std::string filename = msclr::interop::marshal_as<std::string>(path);
+		bool explicit_defaults = false;
+		mapnik::save_map(*(*_map), filename, explicit_defaults);
+	}
+
+	System::String ^ Map::ToXML()
+	{
+		bool explicit_defaults = false;
+		std::string map_string = mapnik::save_map_to_string(*(*_map), explicit_defaults);
+		return msclr::interop::marshal_as<System::String^>(map_string.c_str());
 	}
 	
 	//parameters
@@ -204,7 +292,7 @@ namespace NETMapnik
 	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Map::Parameters::get()
 	{
 		
-		mapnik::parameters const& params = _map->get_extra_parameters();
+		mapnik::parameters const& params = (*_map)->get_extra_parameters();
 		mapnik::parameters::const_iterator it = params.begin();
 		mapnik::parameters::const_iterator end = params.end();
 		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ paramsDictionary = gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>();
@@ -239,13 +327,13 @@ namespace NETMapnik
 				params[key] = d;
 			}
 		}
-		_map->set_extra_parameters(params);
+		(*_map)->set_extra_parameters(params);
 	}
 
 	//GetLayer
-	Layer^ Map::GetLayer(System::UInt32 index)
+	Layer^ Map::GetLayer(System::Int32 index)
 	{
-		std::vector<mapnik::layer> const& layers = _map->layers();
+		std::vector<mapnik::layer> const& layers = (*_map)->layers();
 		if (index < layers.size())
 		{
 			return gcnew Layer(layers[index]);
@@ -262,7 +350,7 @@ namespace NETMapnik
 		bool found = false;
 		unsigned int idx(0);
 		std::string layer_name = msclr::interop::marshal_as<std::string>(name);
-		std::vector<mapnik::layer> const& layers = _map->layers();
+		std::vector<mapnik::layer> const& layers = (*_map)->layers();
 		for (mapnik::layer const& lyr : layers)
 		{
 			if (lyr.name() == layer_name)
@@ -281,13 +369,13 @@ namespace NETMapnik
 	//AddLayer
 	void Map::AddLayer(Layer^ layer)
 	{
-		_map->MAPNIK_ADD_LAYER(*layer->NativeObject());
+		(*_map)->MAPNIK_ADD_LAYER(*layer->NativeObject());
 	}
 
 	//Layers
 	System::Collections::Generic::IEnumerable<Layer^>^ Map::Layers()
 	{
-		std::vector<mapnik::layer> const& layers = _map->layers();
+		std::vector<mapnik::layer> const& layers = (*_map)->layers();
 		System::Collections::Generic::List<Layer^>^ layerCollection = gcnew System::Collections::Generic::List<Layer^>();
 		for (unsigned i = 0; i < layers.size(); ++i)
 		{
@@ -313,7 +401,7 @@ namespace NETMapnik
 		std::string unmanagedBasePath = msclr::interop::marshal_as<std::string>(basePath);
 		try
 		{
-			mapnik::load_map(*_map,unmanagedPath,strict,unmanagedBasePath);
+			mapnik::load_map(*(*_map),unmanagedPath,strict,unmanagedBasePath);
 		}
 		catch (const std::exception& ex)
 		{
@@ -339,7 +427,7 @@ namespace NETMapnik
 		std::string unmanagedBasePath = msclr::interop::marshal_as<std::string>(basePath);
 		try
 		{
-			mapnik::load_map_string(*_map, unmanagedStr,strict,unmanagedBasePath);
+			mapnik::load_map_string(*(*_map), unmanagedStr,strict,unmanagedBasePath);
 		}
 		catch (const std::exception& ex)
 		{
@@ -351,13 +439,13 @@ namespace NETMapnik
 	//zoom_to_box
 	void Map::ZoomToBox(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy)
 	{
-		_map->zoom_to_box(mapnik::box2d<double>(minx,miny,maxx,maxy));
+		(*_map)->zoom_to_box(mapnik::box2d<double>(minx,miny,maxx,maxy));
 	}
 
 	//zoom all
 	void Map::ZoomAll()
 	{
-		_map->zoom_all();
+		(*_map)->zoom_all();
 	}
 
 	void Map::Render(Image^ image)
@@ -385,10 +473,10 @@ namespace NETMapnik
 		try
 		{
 			mapnik::image_32* i = image->NativeObject();
-			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			mapnik::request m_req((*_map)->width(), (*_map)->height(), (*_map)->get_current_extent());
 			m_req.set_buffer_size(buffer_size);
 			mapnik::agg_renderer<mapnik::image_32> ren(
-				*_map, 
+				*(*_map),
 				m_req,
 				variables,
 				*i,
@@ -410,7 +498,6 @@ namespace NETMapnik
 		Render(grid, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
 	}
 
-	//void Map::Render(Grid^ grid, System::UInt32 layerIdx,  System::Collections::Generic::List<System::String^>^ fields)
 	void Map::Render(Grid^ grid, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
 		// unwrap grid
@@ -432,7 +519,7 @@ namespace NETMapnik
 		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
 		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
 
-		std::vector<mapnik::layer> const& layers = _map->layers();
+		std::vector<mapnik::layer> const& layers = (*_map)->layers();
 
 		System::String^ layer;
 		if (optionsParser->TryGet<System::String^>("Layer", layer))
@@ -484,7 +571,7 @@ namespace NETMapnik
 			}
 
 			mapnik::grid_renderer<mapnik::grid> ren(
-				*_map,
+				*(*_map),
 				*g,
 				scale_factor,
 				offset_x,
@@ -548,11 +635,11 @@ namespace NETMapnik
 		{
 			vector_tile::Tile* vTile = tile->NativeObject();
 			backend_type backend(*vTile, path_multiplier);
-			mapnik::request m_req(_map->width(), _map->height(), _map->get_current_extent());
+			mapnik::request m_req((*_map)->width(), (*_map)->height(), (*_map)->get_current_extent());
 			m_req.set_buffer_size(buffer_size);
 			renderer_type ren(
 				backend,
-				*_map,
+				*(*_map),
 				m_req,
 				scale_factor,
 				offset_x,
@@ -570,4 +657,16 @@ namespace NETMapnik
 			throw gcnew System::Exception(managedException);
 		}
 	}
+	
+	//void NETMapnik::Map::RenderFile(System::String ^ path, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	//{
+	//	std::string unamangedPath = msclr::interop::marshal_as<std::string>(path);
+	//	
+	//	 defaults
+	//	double scale_factor = 1.0;
+	//	double scale_denominator = 0.0;
+	//	int buffer_size = 0;
+	//	std::string format = "png";
+	//	palette_ptr palette;
+	//}
 }

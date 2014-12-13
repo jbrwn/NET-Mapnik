@@ -22,8 +22,31 @@ namespace NETMapnik.Test
             Map m = new Map();
             m.Height = 256;
             m.Width = 256;
-            Assert.AreEqual(m.Height, 256U);
-            Assert.AreEqual(m.Width, 256U);
+            Assert.AreEqual(m.Height, 256);
+            Assert.AreEqual(m.Width, 256);
+
+            m.Resize(512, 512);
+            Assert.AreEqual(m.Height, 512);
+            Assert.AreEqual(m.Width, 512);
+
+            m.Width = 256;
+            m.Height = 256;
+            Assert.AreEqual(m.Height, 256);
+            Assert.AreEqual(m.Width, 256);
+
+            // Aspect fix mode
+            Assert.AreEqual(m.AspectFixMode, AspectFixMode.ASPECT_GROW_BBOX);
+
+            double[] world = { -180, -85, 180, 85 };
+            m.Extent = world;
+            // will have been made square
+            CollectionAssert.AreEqual(m.Extent, new double[] { -180, -180, 180, 180 });
+
+            // now try again after disabling the "fixing"
+            m.AspectFixMode = AspectFixMode.ASPECT_RESPECT;
+            Assert.AreEqual(m.AspectFixMode, AspectFixMode.ASPECT_RESPECT);
+            m.Extent = world;
+            CollectionAssert.AreEqual(m.Extent, world);
         }
 
         [TestMethod]
@@ -31,8 +54,8 @@ namespace NETMapnik.Test
         {
             Map m = new Map();
             m.Load(@".\data\params.xml");
-            Dictionary<string,object> prms = m.Parameters;
-            Assert.AreEqual("wat up",(string)prms["words"]);
+            Dictionary<string, object> prms = m.Parameters;
+            Assert.AreEqual("wat up", (string)prms["words"]);
             Assert.AreEqual(1, (int)prms["num"]);
             Assert.AreEqual(.123, (double)prms["decimal"]);
         }
@@ -42,7 +65,7 @@ namespace NETMapnik.Test
         {
             Map m = new Map();
 
-            Dictionary<string, object> prms = new Dictionary<string, object>() 
+            Dictionary<string, object> prms = new Dictionary<string, object>()
             {
                 {"words", "wat up"},
                 {"num", 1},
@@ -102,10 +125,34 @@ namespace NETMapnik.Test
 
             Layer l1 = m.GetLayer("layer");
             Assert.AreEqual(l1.Name, "layer");
-
-            Layer l2 = m.GetLayer(0);
-            Assert.AreEqual(l2.Name, "layer");
         }
 
+        [TestMethod]
+        public void Map_Clone()
+        {
+            Map m = new Map();
+            m.AddLayer(new Layer("layer"));
+            Map m2 = m.Clone();
+            Assert.AreEqual(m.Layers().Count(), 1);
+            Assert.AreEqual(m2.Layers().Count(), 1);
+
+            m.Clear();
+            Assert.AreEqual(m.Layers().Count(), 0);
+            Assert.AreEqual(m2.Layers().Count(), 1);
+        }
+
+        [TestMethod]
+        public void Map_ToXML()
+        {
+            string mapString = @"<?xml version=""1.0"" encoding=""utf-8""?>" 
+                + (char)10 
+                + @"<Map srs=""+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs""/>"
+                + (char)10;
+            Map m = new Map();
+            m.FromString(mapString);
+            string xml = m.ToXML();
+            Assert.AreEqual(mapString, xml);
+        }
     }
 }
+
