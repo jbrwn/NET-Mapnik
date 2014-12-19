@@ -9,3 +9,6 @@ https://github.com/mapbox/mapnik-vector-tile @5394eed
 
 ### patch MSVC standard library 
 [mutex.patch](mutex.patch)
+
+### patch mapnik v3.0.0-rc1 SDK
+[image_filter_types.hpp.patch](image_filter_types.hpp.patch)
