@@ -13,10 +13,8 @@ namespace NETMapnik.Test
         public void VectorTile_Creation()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
-            m.Width = 256;
-            m.Height = 256;
             m.ZoomAll();
             VectorTile v = new VectorTile(0,0,0,256,256);
             m.Render(v);
@@ -29,17 +27,15 @@ namespace NETMapnik.Test
         public void VectorTile_Render()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
-            m.Width = 256;
-            m.Height = 256;
             m.ZoomAll();
             VectorTile v = new VectorTile(0, 0, 0, 256, 256);
             m.Render(v);
 
             VectorTile v2 = new VectorTile(0, 0, 0, 256, 256);
             v2.SetBytes(v.GetBytes());
-            Map m2 = new Map();
+            Map m2 = new Map(256, 256);
             m2.Load(@".\data\style.xml");
             Image i = new Image(256, 256);
             v2.Render(m2, i);
@@ -51,10 +47,8 @@ namespace NETMapnik.Test
         public void VectorTile_Overzoom_Render()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
-            m.Width = 256;
-            m.Height = 256;
 
             m.ZoomToBox(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
             VectorTile v1 = new VectorTile(0, 0, 0, 256, 256);
@@ -64,7 +58,7 @@ namespace NETMapnik.Test
             VectorTile v2 = new VectorTile(1, 0, 0, 256, 256);
             m.Render(v2);
 
-            Map renderMap = new Map();
+            Map renderMap = new Map(256, 256);
             renderMap.Load(@".\data\style.xml");
             Image i1 = new Image(256, 256);
             Image i2 = new Image(256, 256);
@@ -85,10 +79,8 @@ namespace NETMapnik.Test
         public void VectorTile_SimpleComposite()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
-            m.Width = 256;
-            m.Height = 256;
             m.ZoomAll();
 
             VectorTile v1 = new VectorTile(0, 0, 0, 256, 256);
@@ -108,10 +100,8 @@ namespace NETMapnik.Test
         public void VectorTile_OverzoomComposite()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
-            m.Width = 256;
-            m.Height = 256;
 
             VectorTile v1 = new VectorTile(1, 0, 0, 256, 256);
             m.ZoomToBox(-20037508.34, 0, 0, 20037508.34);

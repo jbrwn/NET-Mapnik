@@ -46,10 +46,6 @@
 namespace NETMapnik
 {
 	//Constructor
-	Map::Map()
-	{
-		_map = new map_ptr(std::make_shared<mapnik::Map>());
-	}
 	Map::Map(System::Int32 width, System::Int32 height)
 	{
 		_map = new map_ptr(std::make_shared<mapnik::Map>(width, height));
@@ -445,7 +441,15 @@ namespace NETMapnik
 	//zoom all
 	void Map::ZoomAll()
 	{
-		(*_map)->zoom_all();
+		try
+		{
+			(*_map)->zoom_all();
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
 	}
 
 	void Map::Render(Image^ image)
@@ -472,7 +476,7 @@ namespace NETMapnik
 
 		try
 		{
-			mapnik::image_32* i = image->NativeObject();
+			image_ptr i = image->NativeObject();
 			mapnik::request m_req((*_map)->width(), (*_map)->height(), (*_map)->get_current_extent());
 			m_req.set_buffer_size(buffer_size);
 			mapnik::agg_renderer<mapnik::image_32> ren(

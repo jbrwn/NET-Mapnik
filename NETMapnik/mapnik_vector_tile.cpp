@@ -294,7 +294,7 @@ namespace NETMapnik
 
 		//Unwrap native objects
 		map_ptr m = map->NativeObject();
-		mapnik::image_32 *i = image->NativeObject();
+		image_ptr i = image->NativeObject();
 
 		// set defaults
 		int z = 0;

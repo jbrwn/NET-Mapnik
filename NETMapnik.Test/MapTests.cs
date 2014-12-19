@@ -13,13 +13,13 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_Creation_Success()
         {
-            Map m = new Map();
+            Map m = new Map(256,256);
         }
 
         [TestMethod]
         public void Map_GetAndSetProperties_Success()
         {
-            Map m = new Map();
+            Map m = new Map(0,0);
             m.Height = 256;
             m.Width = 256;
             Assert.AreEqual(m.Height, 256);
@@ -52,7 +52,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_GetParamaters()
         {
-            Map m = new Map();
+            Map m = new Map(256,256);
             m.Load(@".\data\params.xml");
             Dictionary<string, object> prms = m.Parameters;
             Assert.AreEqual("wat up", (string)prms["words"]);
@@ -63,7 +63,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_SetParamaters()
         {
-            Map m = new Map();
+            Map m = new Map(256,256);
 
             Dictionary<string, object> prms = new Dictionary<string, object>()
             {
@@ -83,7 +83,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_FromString()
         {
-            Map m = new Map();
+            Map m = new Map(256,256);
             string mapString = @"<Map buffer-size=""20""></Map>";
             m.FromString(mapString);
             Assert.AreEqual(m.BufferSize, 20);
@@ -92,7 +92,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_GetBackground()
         {
-            Map m = new Map();
+            Map m = new Map(256, 256);
             Color c = m.Background;
             Assert.IsNull(c);
 
@@ -106,7 +106,7 @@ namespace NETMapnik.Test
         public void Map_SetBackground()
         {
             Color c = new Color("red");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.Background = c;
 
             Color c2 = m.Background;
@@ -117,7 +117,7 @@ namespace NETMapnik.Test
         public void Map_GetSetLayer()
         {
             Layer l = new Layer("layer", "+init=epsg:4326");
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.AddLayer(l);
 
             IEnumerable<Layer> layers = m.Layers();
@@ -130,7 +130,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_Clone()
         {
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.AddLayer(new Layer("layer"));
             Map m2 = m.Clone();
             Assert.AreEqual(m.Layers().Count(), 1);
@@ -148,7 +148,7 @@ namespace NETMapnik.Test
                 + (char)10 
                 + @"<Map srs=""+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs""/>"
                 + (char)10;
-            Map m = new Map();
+            Map m = new Map(256, 256);
             m.FromString(mapString);
             string xml = m.ToXML();
             Assert.AreEqual(mapString, xml);

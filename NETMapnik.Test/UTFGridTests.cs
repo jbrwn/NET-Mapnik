@@ -12,9 +12,7 @@ namespace NETMapnik.Test
         public void UTFGrid_Creation()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            Map m = new Map();
-            m.Width = 256;
-            m.Height = 256;
+            Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();
             Grid g = new Grid(256, 256);

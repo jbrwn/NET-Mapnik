@@ -35,7 +35,6 @@ namespace NETMapnik
 	{
 	public:
 		//Constructor
-		Map();
 		Map(System::Int32 width, System::Int32 height);
 		Map(System::Int32 width, System::Int32 height, System::String^ srs);
 		//Destructor
