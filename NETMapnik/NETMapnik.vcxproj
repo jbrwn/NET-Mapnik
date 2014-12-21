@@ -170,6 +170,7 @@
     <ClInclude Include="mapnik_layer.h" />
     <ClInclude Include="mapnik_map.h" />
     <ClInclude Include="mapnik_grid.h" />
+    <ClInclude Include="mapnik_palette.h" />
     <ClInclude Include="mapnik_value_converter.h" />
     <ClInclude Include="mapnik_vector_tile.h" />
     <ClInclude Include="NET_box_utils.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="mapnik_layer.cpp" />
     <ClCompile Include="mapnik_map.cpp" />
     <ClCompile Include="mapnik_grid.cpp" />
+    <ClCompile Include="mapnik_palette.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />
     <ClCompile Include="NET_box_utils.cpp" />
     <ClCompile Include="NET_grid_utils.cpp" />
