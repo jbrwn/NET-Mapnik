@@ -8,6 +8,7 @@
 #include "mapnik_color.h"
 #include "mapnik_layer.h"
 #include "NET_box_utils.h"
+#include "mapnik_featureset.h"
 
 #include <memory>
 
@@ -282,7 +283,97 @@ namespace NETMapnik
 		std::string map_string = mapnik::save_map_to_string(*(*_map), explicit_defaults);
 		return msclr::interop::marshal_as<System::String^>(map_string.c_str());
 	}
-	
+
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryPoint(System::Double x, System::Double y)
+	{
+		return _queryPoint(x, y, -1, true);
+	}
+
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryPoint(System::Double x, System::Double y, System::Int32 layerIndex)
+	{
+		return _queryPoint(x, y, layerIndex, true);
+	}
+
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryPoint(System::Double x, System::Double y, System::String ^ layerName)
+	{
+		std::vector<mapnik::layer> const& layers = (*_map)->layers();
+		int layer_idx = -1;
+		bool found = false;
+		unsigned int idx(0);
+		std::string layer_name = msclr::interop::marshal_as<std::string>(layerName);
+		for (mapnik::layer const& lyr : layers)
+		{
+			if (lyr.name() == layer_name)
+			{
+				found = true;
+				layer_idx = idx;
+				break;
+			}
+			++idx;
+		}
+		if (!found)
+		{
+			throw gcnew System::Exception(System::String::Format("Layer name {0} not found", layerName));
+		}
+		return _queryPoint(x, y, layer_idx, true);
+	}
+		
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::_queryPoint(double x, double y, int layer_idx, bool geo_coords)
+	{
+		System::Collections::Generic::List<MapQueryResult^>^ featuresets = gcnew System::Collections::Generic::List<MapQueryResult^>();
+		try
+		{
+			std::vector<mapnik::layer> const& layers = (*_map)->layers();
+			if (layer_idx >= 0)
+			{
+				mapnik::featureset_ptr fs;
+				if (geo_coords)
+				{
+					fs = (*_map)->query_point(layer_idx, x, y);
+				}
+				else
+				{
+					fs = (*_map)->query_map_point(layer_idx, x, y);
+				}
+				mapnik::layer const& lyr = layers[layer_idx];
+				MapQueryResult^ mqr = gcnew MapQueryResult(
+					msclr::interop::marshal_as<System::String^>(lyr.name()),
+					gcnew Featureset(fs)
+				);
+				featuresets->Add(mqr);
+			}
+			else
+			{
+				// query all layers
+				unsigned idx = 0;
+				for (mapnik::layer const& lyr : layers)
+				{
+					mapnik::featureset_ptr fs;
+					if (geo_coords)
+					{
+						fs = (*_map)->query_point(idx, x, y);
+					}
+					else
+					{
+						fs = (*_map)->query_map_point(idx, x, y);
+					}
+					MapQueryResult^ mqr = gcnew MapQueryResult(
+						msclr::interop::marshal_as<System::String^>(lyr.name()),
+						gcnew Featureset(fs)
+						);
+					featuresets->Add(mqr);
+					++idx;
+				}
+			}
+		}
+		catch (std::exception const& ex)
+		{
+			throw gcnew System::Exception(msclr::interop::marshal_as<System::String^>(ex.what()));
+		}
+		return featuresets;
+	}
+
+
 	//parameters
 	// TO DO: implement paramaters class with get and set
 	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Map::Parameters::get()

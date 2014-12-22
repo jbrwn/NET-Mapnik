@@ -5,8 +5,39 @@
 #include <mapnik\map.hpp>
 
 namespace NETMapnik
-{
-	
+{	
+	//Forward Declare
+	ref class Image;
+	ref class Grid;
+	ref class VectorTile;
+	ref class Color;
+	ref class Layer;
+	ref class Featureset;
+
+	typedef std::shared_ptr<mapnik::Map> map_ptr;
+
+	public ref struct MapQueryResult
+	{
+	public:
+		MapQueryResult(System::String^ layer, Featureset^ featureset) :
+			_layer(layer),
+			_featureset(featureset) {}
+
+		property System::String^ Layer
+		{
+			System::String^ get() { return _layer; };
+		}
+
+		property NETMapnik::Featureset^ Featureset
+		{
+			NETMapnik::Featureset^ get() { return _featureset; };
+		}
+
+	private:
+		System::String^ _layer;
+		NETMapnik::Featureset^ _featureset;
+	};
+
 	public enum class AspectFixMode : int
 	{
 
@@ -20,16 +51,6 @@ namespace NETMapnik
 		ASPECT_ADJUST_CANVAS_HEIGHT = mapnik::Map::ADJUST_CANVAS_HEIGHT,
 		ASPECT_RESPECT = mapnik::Map::RESPECT,
 	};
-	
-	//Forward Declare
-	ref class Image;
-	ref class Grid;
-	ref class VectorTile;
-	ref class Color;
-	ref class Layer;
-	ref class Featureset;
-
-	typedef std::shared_ptr<mapnik::Map> map_ptr;
 
 	public ref class Map
 	{
@@ -114,8 +135,10 @@ namespace NETMapnik
 		void Save(System::String^ path);
 		System::String^ ToXML();
 		
-		//System::Collections::Generic::IEnumerable<System::Collections::Generic::KeyValuePair<System::String^, Featureset^>^>^ QueryPoint(int x, int y, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
-		//System::Collections::Generic::IEnumerable<System::Collections::Generic::KeyValuePair<System::String^, Featureset^>^>^ QueryMapPoint(int x, int y, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryPoint(System::Double x, System::Double y);
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryPoint(System::Double x, System::Double y, System::Int32 layerIndex);
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryPoint(System::Double x, System::Double y, System::String^ layerName);
+
 
 		Layer^ GetLayer(System::Int32 index);
 		Layer^ GetLayer(System::String^ name);
@@ -146,6 +169,7 @@ namespace NETMapnik
 
 	private:
 		map_ptr* _map;
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ _queryPoint(double x, double y, int layer_idx, bool geo_coords);
 	};
 
 }
