@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "mapnik_image.h"
 #include "mapnik_color.h"
+#include "mapnik_palette.h"
 #include "NET_options_parser.h"
 
 #include <memory>
@@ -94,6 +95,24 @@ namespace NETMapnik
 		try
 		{
 			std::string s = save_to_string(*(*_img), unmanagedFormat);
+			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
+			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
+			return data;
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+	}
+
+	array<System::Byte>^ Image::Encode(System::String ^ format, Palette ^ palette)
+	{
+		std::string unmanagedFormat = msclr::interop::marshal_as<std::string>(format);
+		palette_ptr p = palette->NativeObject();
+		try
+		{
+			std::string s = save_to_string(*(*_img), unmanagedFormat,*p);
 			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
 			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
 			return data;

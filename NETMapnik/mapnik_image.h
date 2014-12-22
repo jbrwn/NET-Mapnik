@@ -50,6 +50,7 @@ namespace NETMapnik
 
 	//Forward Declare
 	ref class Color;
+	ref class Palette;
 
 	typedef std::shared_ptr<mapnik::image_32> image_ptr;
 
@@ -87,8 +88,7 @@ namespace NETMapnik
 		void Save(System::String^ path);
 		void Save(System::String^ path, System::String^ format);
 		array<System::Byte>^ Encode(System::String^ format);
-		
-		//array<System::Byte>^ Encode(System::String^ format, Palette^ palette);
+		array<System::Byte>^ Encode(System::String^ format, Palette^ palette);
 
 	internal:
 		Image(image_ptr img);
