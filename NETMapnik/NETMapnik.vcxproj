@@ -167,6 +167,7 @@
     <ClInclude Include="mapnik_font_engine_freetype.h" />
     <ClInclude Include="mapnik_geometry.h" />
     <ClInclude Include="mapnik_image.h" />
+    <ClInclude Include="mapnik_image_view.h" />
     <ClInclude Include="mapnik_layer.h" />
     <ClInclude Include="mapnik_map.h" />
     <ClInclude Include="mapnik_grid.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="mapnik_font_engine_freetype.cpp" />
     <ClCompile Include="mapnik_geometry.cpp" />
     <ClCompile Include="mapnik_image.cpp" />
+    <ClCompile Include="mapnik_image_view.cpp" />
     <ClCompile Include="mapnik_layer.cpp" />
     <ClCompile Include="mapnik_map.cpp" />
     <ClCompile Include="mapnik_grid.cpp" />

@@ -51,6 +51,7 @@ namespace NETMapnik
 	//Forward Declare
 	ref class Color;
 	ref class Palette;
+	ref class ImageView;
 
 	typedef std::shared_ptr<mapnik::image_32> image_ptr;
 
@@ -68,9 +69,7 @@ namespace NETMapnik
 
 		Color^ GetPixel(System::Int32 x, System::Int32 y);
 		void SetPixel(System::Int32 x, System::Int32 y, Color^ value);
-		
-		//ImageView View(Image image, System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h);
-		
+		ImageView^ View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h);
 		void SetGrayScaleToAlpha();
 		void SetGrayScaleToAlpha(Color^ color);
 		System::Int32 Width();

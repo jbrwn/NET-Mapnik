@@ -65,6 +65,9 @@
     <ClInclude Include="mapnik_palette.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mapnik_image_view.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -122,6 +125,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapnik_palette.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapnik_image_view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

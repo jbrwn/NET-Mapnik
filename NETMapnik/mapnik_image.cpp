@@ -2,6 +2,7 @@
 #include "mapnik_image.h"
 #include "mapnik_color.h"
 #include "mapnik_palette.h"
+#include "mapnik_image_view.h"
 #include "NET_options_parser.h"
 
 #include <memory>
@@ -373,6 +374,9 @@ namespace NETMapnik
 		}
 	}
 
-
+	ImageView^ Image::View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h)
+	{
+		return gcnew ImageView(this, x, y, w, h);
+	}
 
 }
