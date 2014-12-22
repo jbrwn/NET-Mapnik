@@ -284,6 +284,41 @@ namespace NETMapnik
 		return msclr::interop::marshal_as<System::String^>(map_string.c_str());
 	}
 
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryMapPoint(System::Double x, System::Double y)
+	{
+		return _queryPoint(x, y, -1, false);
+	}
+
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryMapPoint(System::Double x, System::Double y, System::Int32 layerIndex)
+	{
+		return _queryPoint(x, y, layerIndex, false);
+	}
+
+	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryMapPoint(System::Double x, System::Double y, System::String ^ layerName)
+	{
+		std::vector<mapnik::layer> const& layers = (*_map)->layers();
+		int layer_idx = -1;
+		bool found = false;
+		unsigned int idx(0);
+		std::string layer_name = msclr::interop::marshal_as<std::string>(layerName);
+		for (mapnik::layer const& lyr : layers)
+		{
+			if (lyr.name() == layer_name)
+			{
+				found = true;
+				layer_idx = idx;
+				break;
+			}
+			++idx;
+		}
+		if (!found)
+		{
+			throw gcnew System::Exception(System::String::Format("Layer name {0} not found", layerName));
+		}
+		return _queryPoint(x, y, layer_idx, false);
+	}
+
+
 	System::Collections::Generic::IEnumerable<MapQueryResult^>^ Map::QueryPoint(System::Double x, System::Double y)
 	{
 		return _queryPoint(x, y, -1, true);

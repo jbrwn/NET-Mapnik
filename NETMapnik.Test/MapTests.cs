@@ -241,6 +241,94 @@ namespace NETMapnik.Test
             MapQueryResult mqr2 = r.ToList()[1];
             Assert.AreEqual(mqr2.Layer, "world2");
         }
+
+        [TestMethod]
+        public void Map_QueryMapPoint_SingleLayer()
+        {
+            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Map m = new Map(256, 256);
+            m.Load(@".\data\test.xml");
+            m.ZoomAll();
+
+            Dictionary<string, object> expected = new Dictionary<string, object>()
+            {
+                {"AREA", 915896},
+                {"FIPS", "US"},
+                {"ISO2", "US"},
+                {"ISO3", "USA"},
+                {"LAT", 39.622},
+                {"LON", -98.606},
+                {"NAME", "United States"},
+                {"POP2005", 299846449},
+                {"REGION", 19},
+                {"SUBREGION", 21},
+                {"UN", 840 }
+            };
+
+            IEnumerable<MapQueryResult> r;
+            MapQueryResult mqr;
+            Dictionary<string, object> actual;
+
+            //query by layer name
+            r = m.QueryMapPoint(55, 130, "world");
+            Assert.AreEqual(r.Count(), 1);
+            mqr = r.ToList()[0];
+            Assert.AreEqual(mqr.Layer, "world");
+            actual = new Dictionary<string, object>(mqr.Featureset.Next().Attributes());
+            CollectionAssert.AreEquivalent(expected, actual);
+
+            //query by layer index
+            r = m.QueryMapPoint(55, 130, 0);
+            Assert.AreEqual(r.Count(), 1);
+            mqr = r.ToList()[0];
+            Assert.AreEqual(mqr.Layer, "world");
+            actual = new Dictionary<string, object>(mqr.Featureset.Next().Attributes());
+            CollectionAssert.AreEquivalent(expected, actual);
+
+            //query all
+            //query by layer name
+            r = r = m.QueryMapPoint(55, 130);
+            Assert.AreEqual(r.Count(), 1);
+            mqr = r.ToList()[0];
+            Assert.AreEqual(mqr.Layer, "world");
+            actual = new Dictionary<string, object>(mqr.Featureset.Next().Attributes());
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        [TestMethod]
+        public void Map_QueryMapPoint_MultipleLayers()
+        {
+            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Map m = new Map(256, 256);
+            m.Load(@".\data\test.xml");
+
+            Layer l = new Layer("world2");
+            Datasource d = new Datasource(
+                   new Dictionary<string, object>() {
+                       { "type","shape"},
+                       { "file", @".\data\world_merc.shp" }
+                   }
+            );
+            l.Datasource = d;
+            m.AddLayer(l);
+            m.ZoomAll();
+
+            IEnumerable<MapQueryResult> r;
+
+            //query single layer
+            r = m.QueryMapPoint(55, 130, "world2");
+            Assert.AreEqual(r.Count(), 1);
+            MapQueryResult mqr = r.ToList()[0];
+            Assert.AreEqual(mqr.Layer, "world2");
+
+            //query all
+            r = m.QueryMapPoint(55, 130);
+            Assert.AreEqual(r.Count(), 2);
+            MapQueryResult mqr1 = r.ToList()[0];
+            Assert.AreEqual(mqr1.Layer, "world");
+            MapQueryResult mqr2 = r.ToList()[1];
+            Assert.AreEqual(mqr2.Layer, "world2");
+        }
     }
 }
 

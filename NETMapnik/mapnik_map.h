@@ -123,7 +123,6 @@ namespace NETMapnik
 		System::Double ScaleDenominator();
 		void Clear();
 		void Resize(System::Int32 width, System::Int32 heigt);
-
 		System::Collections::Generic::IEnumerable<System::String^>^ Fonts();
 		System::Collections::Generic::IDictionary<System::String^, System::String^>^ FontFiles();
 		System::String^ FontDirectory();
@@ -134,17 +133,16 @@ namespace NETMapnik
 		Map^ Clone();
 		void Save(System::String^ path);
 		System::String^ ToXML();
-		
 		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryPoint(System::Double x, System::Double y);
 		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryPoint(System::Double x, System::Double y, System::Int32 layerIndex);
 		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryPoint(System::Double x, System::Double y, System::String^ layerName);
-
-
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryMapPoint(System::Double x, System::Double y);
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryMapPoint(System::Double x, System::Double y, System::Int32 layerIndex);
+		System::Collections::Generic::IEnumerable<MapQueryResult^>^ QueryMapPoint(System::Double x, System::Double y, System::String^ layerName);
 		Layer^ GetLayer(System::Int32 index);
 		Layer^ GetLayer(System::String^ name);
 		void AddLayer(Layer^ layer);
 		System::Collections::Generic::IEnumerable<Layer^>^ Layers();
-
 		void Load(System::String^ path);
 		void Load(System::String^ path, System::Boolean strict);
 		void Load(System::String^ path, System::Boolean strict, System::String^ basePath);
