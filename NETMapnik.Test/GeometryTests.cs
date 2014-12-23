@@ -67,5 +67,21 @@ namespace NETMapnik.Test
             byte[] actual = f.Geometry().ToWKB();
             CollectionAssert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void Geometry_ToJSON()
+        {
+            string expected = @"{""type"":""Polygon"",""coordinates"":[[[1,1],[1,2],[2,2],[2,1],[1,1]]]}";
+            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            var options = new Dictionary<string, object>()
+            {
+                { "type","csv"},
+                { "inline", "geojson\n'" + expected + "'" }
+            };
+            Datasource ds = new Datasource(options);
+            Feature f = ds.Featureset().Next();
+            string actual = f.Geometry().ToJSON();
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

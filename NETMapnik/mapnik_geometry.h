@@ -11,7 +11,7 @@ namespace NETMapnik
 		array<System::Double>^ Extent();
 		System::String^ ToWKT();
 		array<System::Byte>^ ToWKB();
-		//System::String^ ToJSON();
+		System::String^ ToJSON();
 
 	internal:
 		Geometry(mapnik::feature_ptr f);

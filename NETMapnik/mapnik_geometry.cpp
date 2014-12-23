@@ -4,6 +4,7 @@
 
 // mapnik
 #include <mapnik\feature.hpp>
+#include <mapnik\util\geometry_to_geojson.hpp>
 #include <mapnik\util\geometry_to_wkt.hpp>
 #include <mapnik\util\geometry_to_wkb.hpp>
 
@@ -46,8 +47,13 @@ namespace NETMapnik
 		return data;
 	}
 
-	//System::String^ ToJSON()
-	//{
-
-	//}
+	System::String^ Geometry::ToJSON()
+	{
+		std::string json;
+		if (!mapnik::util::to_geojson(json, (*_geom)->paths()))
+		{
+			throw gcnew System::Exception("Failed to generate GeoJSON");
+		}
+		return msclr::interop::marshal_as<System::String^>(json);
+	}
 }
