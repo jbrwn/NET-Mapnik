@@ -101,6 +101,7 @@
     <Compile Include="GeometryTests.cs" />
     <Compile Include="PaletteTests.cs" />
     <Compile Include="ImageViewTests.cs" />
+    <Compile Include="ProjectionTests.cs" />
     <Compile Include="UTFGridTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>
@@ -182,7 +183,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy /y /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\*.dll $(ProjectDir)$(OutDir)
-xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\mapnik $(ProjectDir)$(OutDir)mapnik</PostBuildEvent>
+xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\mapnik $(ProjectDir)$(OutDir)mapnik
+xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\share $(ProjectDir)$(OutDir)share</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
