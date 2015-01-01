@@ -37,5 +37,64 @@ namespace NETMapnik.Test
             Assert.AreEqual(expected[2], actual[2], .0001);
             Assert.AreEqual(expected[3], actual[3], .0001);
         }
+
+        [TestMethod]
+        public void ProjTransform_Init()
+        {
+            Projection src = new Projection("+init=epsg:4326");
+            Projection dest = new Projection("+init=epsg:3857");
+            ProjTransform tran = new ProjTransform(src, dest);
+        }
+
+        [TestMethod]
+        public void ProjTransform_NoChange()
+        {
+            Projection src = new Projection("+init=epsg:4326");
+            Projection dest = new Projection("+init=epsg:4326");
+            ProjTransform tran = new ProjTransform(src, dest);
+            double[] expected = new double[] { -122.33517, 47.63752 };
+
+            //forward
+            double[] actual = tran.Forward(expected[0], expected[1]);
+            Assert.AreEqual(expected[0], actual[0]);
+            Assert.AreEqual(expected[1], actual[1]);
+
+            //backward
+            actual = tran.Backward(expected[0], expected[1]);
+            Assert.AreEqual(expected[0], actual[0]);
+            Assert.AreEqual(expected[1], actual[1]);
+        }
+
+        [TestMethod]
+        public void ProjTransform_Forward()
+        {
+            Projection src = new Projection("+init=epsg:4326");
+            Projection dest = new Projection("+init=epsg:3857");
+            ProjTransform tran = new ProjTransform(src, dest);
+            double x = -122.33517;
+            double y = 47.63752;
+            double[] expected = new double[] { -13618288.8305, 6046761.54747 };
+
+            //forward
+            double[] actual = tran.Forward(x, y);
+            Assert.AreEqual(expected[0], actual[0], .0001);
+            Assert.AreEqual(expected[1], actual[1], .0001);
+        }
+
+        [TestMethod]
+        public void ProjTransform_Backward()
+        {
+            Projection src = new Projection("+init=epsg:4326");
+            Projection dest = new Projection("+init=epsg:3857");
+            ProjTransform tran = new ProjTransform(src, dest);
+            double x =  - 13618288.8305;
+            double y = 6046761.54747;
+            double[] expected = new double[] {-122.33517, 47.63752 };
+
+            //forward
+            double[] actual = tran.Backward(x, y);
+            Assert.AreEqual(expected[0], actual[0], .0001);
+            Assert.AreEqual(expected[1], actual[1], .0001);
+        }
     }
 }
