@@ -32,6 +32,8 @@ namespace NETMapnik
 		array<System::Double>^ Forward(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
 		array<System::Double>^ Backward(System::Double x, System::Double y);
 		array<System::Double>^ Backward(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);
+	internal:
+		projTran_ptr NativeObject();
 	private:
 		projTran_ptr* _projTran;
 	};

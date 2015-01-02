@@ -113,6 +113,11 @@ namespace NETMapnik
 		}
 	}
 
+	projTran_ptr ProjTransform::NativeObject()
+	{
+		return *_projTran;
+	}
+
 	array<System::Double>^ ProjTransform::Backward(System::Double x, System::Double y)
 	{
 		double z = 0;
