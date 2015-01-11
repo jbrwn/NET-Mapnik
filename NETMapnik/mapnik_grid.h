@@ -23,12 +23,17 @@ namespace NETMapnik
 			void set(System::String^ value);
 		}
 
+		static property System::Int64 BaseMask
+		{
+			System::Int64 get();
+		}
+
 		void Clear();
 		System::Boolean Painted();
 		System::Int32 Width();
 		System::Int32 Height();
 		System::Collections::Generic::IEnumerable<System::String^>^ Fields();
-		//GridView^ View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h);
+		GridView^ View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h);
 		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Encode();
 		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Encode(System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 	internal:

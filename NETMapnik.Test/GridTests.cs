@@ -7,7 +7,7 @@ using NETMapnik;
 namespace NETMapnik.Test
 {
     [TestClass]
-    public class UTFGridTests
+    public class GridTests
     {
         [TestMethod]
         public void Grid_Encode()

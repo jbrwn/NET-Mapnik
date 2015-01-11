@@ -102,7 +102,8 @@
     <Compile Include="PaletteTests.cs" />
     <Compile Include="ImageViewTests.cs" />
     <Compile Include="ProjectionTests.cs" />
-    <Compile Include="UTFGridTests.cs" />
+    <Compile Include="GridViewTests.cs" />
+    <Compile Include="GridTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>
   <ItemGroup>

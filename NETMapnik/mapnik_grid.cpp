@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "mapnik_grid.h"
+#include "mapnik_grid_view.h"
 #include "NET_grid_utils.h"
 #include "NET_options_parser.h"
 
@@ -53,6 +54,11 @@ namespace NETMapnik
 		(*_grid)->set_key(msclr::interop::marshal_as<std::string>(value));
 	}
 
+	System::Int64 Grid::BaseMask::get()
+	{
+		return mapnik::grid::base_mask;
+	}
+
 	void Grid::Clear()
 	{
 		(*_grid)->clear();
@@ -89,10 +95,10 @@ namespace NETMapnik
 		return l;
 	}
 
-	//GridView^ Grid::View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h)
-	//{
-	//	
-	//}
+	GridView^ Grid::View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h)
+	{
+		return gcnew GridView(this, x, y, w, h);
+	}
 
 	System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Grid::Encode()
 	{
