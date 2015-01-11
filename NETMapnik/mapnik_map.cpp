@@ -631,7 +631,7 @@ namespace NETMapnik
 	void Map::Render(Grid^ grid, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
 		// unwrap grid
-		mapnik::grid* g = grid->NativeObject();
+		grid_ptr g = grid->NativeObject();
 
 		// set defaults 
 		int buffer_size = 0;

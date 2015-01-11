@@ -205,7 +205,6 @@
     <ClCompile Include="mapnik_projection.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />
     <ClCompile Include="NET_box_utils.cpp" />
-    <ClCompile Include="NET_grid_utils.cpp" />
     <ClCompile Include="NET_options_parser.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

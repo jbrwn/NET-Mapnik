@@ -85,9 +85,6 @@
     <ClCompile Include="mapnik_grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NET_grid_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mapnik_map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

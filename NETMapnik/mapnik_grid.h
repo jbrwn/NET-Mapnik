@@ -1,20 +1,39 @@
 #pragma once
 
+#include <memory>
 #include <mapnik\grid\grid.hpp>
 
 namespace NETMapnik
 {
+	//Forward Declare
+	ref class GridView;
+
+	typedef std::shared_ptr<mapnik::grid> grid_ptr;
+
 	public ref class Grid
 	{
 	public:
 		Grid(System::UInt32 width, System::UInt32 height);
+		Grid(System::UInt32 width, System::UInt32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		~Grid();
 
-		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Encode(System::String^ format, System::Boolean addFeatures, System::UInt32 resolution);
-	internal:
-		mapnik::grid *NativeObject();
+		property System::String^ Key
+		{
+			System::String^ get();
+			void set(System::String^ value);
+		}
 
+		void Clear();
+		System::Boolean Painted();
+		System::Int32 Width();
+		System::Int32 Height();
+		System::Collections::Generic::IEnumerable<System::String^>^ Fields();
+		//GridView^ View(System::Int32 x, System::Int32 y, System::Int32 w, System::Int32 h);
+		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Encode();
+		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ Encode(System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+	internal:
+		grid_ptr NativeObject();
 	private:
-		mapnik::grid* _grid;
+		grid_ptr* _grid;
 	};
 }
