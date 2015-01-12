@@ -159,6 +159,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ds_emitter.h" />
     <ClInclude Include="mapnik_color.h" />
     <ClInclude Include="mapnik_datasource.h" />
     <ClInclude Include="mapnik_datasource_cache.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="mapnik_layer.h" />
     <ClInclude Include="mapnik_map.h" />
     <ClInclude Include="mapnik_grid.h" />
+    <ClInclude Include="mapnik_memory_datasource.h" />
     <ClInclude Include="mapnik_palette.h" />
     <ClInclude Include="mapnik_projection.h" />
     <ClInclude Include="mapnik_value_converter.h" />
@@ -203,6 +205,7 @@
     <ClCompile Include="mapnik_layer.cpp" />
     <ClCompile Include="mapnik_map.cpp" />
     <ClCompile Include="mapnik_grid.cpp" />
+    <ClCompile Include="mapnik_memory_datasource.cpp" />
     <ClCompile Include="mapnik_palette.cpp" />
     <ClCompile Include="mapnik_projection.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />
