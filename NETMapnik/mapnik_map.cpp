@@ -780,6 +780,7 @@ namespace NETMapnik
 			);
 
 			ren.apply(scale_denominator);
+			tile->Painted(ren.painted());
 		}
 		catch (const std::exception& ex)
 		{
