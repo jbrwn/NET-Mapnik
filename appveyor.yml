@@ -32,8 +32,8 @@ test_script:
 - ps: vstest.console /Platform:$env:Platform /InIsolation /logger:Appveyor ".\NETMapnik.Test\bin\$env:Platform\$env:Configuration\NETMapnik.Test.dll"
 on_success:
 - ps: >-
-	$id = "mapnik" + $(if ($env:Platform -eq "x64") {".x64"})
-	$nativeplatform = $(if ($env:Platform -eq "x86") {"win32"} else {$env:Platform})
-	$version = $env:APPVEYOR_BUILD_VERSION.Replace("+" + $env:APPVEYOR_BUILD_NUMBER, $env:APPVEYOR_BUILD_NUMBER.PadLeft(5,'0'))
-	nuget pack .\mapnik.nuspec -NonInteractive -Properties id=$id`;platform=$env:Platform`;nativeplatform=$nativeplatform`;version=$version
+    $id = "mapnik" + $(if ($env:Platform -eq "x64") {".x64"})
+    $nativeplatform = $(if ($env:Platform -eq "x86") {"win32"} else {$env:Platform})
+    $version = $env:APPVEYOR_BUILD_VERSION.Replace("+" + $env:APPVEYOR_BUILD_NUMBER, $env:APPVEYOR_BUILD_NUMBER.PadLeft(5,'0'))
+    nuget pack .\mapnik.nuspec -NonInteractive -Properties id=$id`;platform=$env:Platform`;nativeplatform=$nativeplatform`;version=$version
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
