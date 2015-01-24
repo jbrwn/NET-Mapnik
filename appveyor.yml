@@ -34,10 +34,8 @@ on_success:
 - ps: >-
     $id = "mapnik" + $(if ($env:Platform -eq "x64") {".x64"})
 
-    $nativeplatform = $(if ($env:Platform -eq "x86") {"win32"} else {$env:Platform})
-
     $version = $env:APPVEYOR_BUILD_VERSION.Replace("+" + $env:APPVEYOR_BUILD_NUMBER, $env:APPVEYOR_BUILD_NUMBER.PadLeft(5,'0'))
 
-    nuget pack .\mapnik.nuspec -NonInteractive -Properties id=$id`;platform=$env:Platform`;nativeplatform=$nativeplatform`;version=$version
+    nuget pack .\$id.nuspec -NonInteractive -Version $version -Properties id=$id
 
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
