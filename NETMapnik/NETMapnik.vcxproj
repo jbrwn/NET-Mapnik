@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ds_emitter.h" />
+    <ClInclude Include="mapnik.h" />
     <ClInclude Include="mapnik_color.h" />
     <ClInclude Include="mapnik_datasource.h" />
     <ClInclude Include="mapnik_datasource_cache.h" />

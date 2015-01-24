@@ -83,6 +83,9 @@
     <ClInclude Include="ds_emitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mapnik.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">

@@ -104,6 +104,7 @@
     <Compile Include="ProjectionTests.cs" />
     <Compile Include="GridViewTests.cs" />
     <Compile Include="GridTests.cs" />
+    <Compile Include="ConstantsTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>
   <ItemGroup>
