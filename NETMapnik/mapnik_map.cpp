@@ -238,9 +238,9 @@ namespace NETMapnik
 		return nullptr;
 	}
 
-	void Map::LoadFonts()
+	System::Boolean Map::LoadFonts()
 	{
-		(*_map)->load_fonts();
+		return (*_map)->load_fonts();
 	}
 
 	System::Collections::Generic::IEnumerable<System::String^>^ Map::MemoryFonts()
@@ -255,14 +255,14 @@ namespace NETMapnik
 		return a;
 	}
 
-	void Map::RegisterFonts(System::String ^ path)
+	System::Boolean Map::RegisterFonts(System::String ^ path)
 	{
-		(*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path));
+		return (*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path));
 	}
 
-	void Map::RegisterFonts(System::String ^ path, System::Boolean recurse)
+	System::Boolean Map::RegisterFonts(System::String ^ path, System::Boolean recurse)
 	{
-		(*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path), recurse);
+		return (*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path), recurse);
 	}
 
 	Map ^ Map::Clone()

@@ -126,10 +126,10 @@ namespace NETMapnik
 		System::Collections::Generic::IEnumerable<System::String^>^ Fonts();
 		System::Collections::Generic::IDictionary<System::String^, System::String^>^ FontFiles();
 		System::String^ FontDirectory();
-		void LoadFonts();
+		System::Boolean LoadFonts();
 		System::Collections::Generic::IEnumerable<System::String^>^ MemoryFonts();
-		void RegisterFonts(System::String^ path);
-		void RegisterFonts(System::String^ path, System::Boolean recurse);
+		System::Boolean RegisterFonts(System::String^ path);
+		System::Boolean RegisterFonts(System::String^ path, System::Boolean recurse);
 		Map^ Clone();
 		void Save(System::String^ path);
 		System::String^ ToXML();

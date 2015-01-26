@@ -6,34 +6,46 @@ namespace NETMapnik
 	{
 	public:
 		static Mapnik();
-		//static bool RegisterFonts(System::String^ dir, bool recurse);
-		//static bool RegisterFonts(System::String^ dir);
-		//static System::Collections::Generic::IEnumerable<System::String^>^ Fonts();
-		//static System::Collections::Generic::IEnumerable<System::String^>^ FontFiles();
-		//static System::Collections::Generic::IEnumerable<System::String^>^ MemoryFonts();
+		static System::Boolean RegisterFonts(System::String^ dir, bool recurse);
+		static System::Boolean RegisterFonts(System::String^ dir);
+		static System::Boolean RegisterDefaultFonts();
+		static System::Boolean RegisterSystemFonts();
+		static System::Collections::Generic::IEnumerable<System::String^>^ Fonts();
+		static System::Collections::Generic::IDictionary<System::String^,System::String^>^ FontFiles();
+		static System::Collections::Generic::IEnumerable<System::String^>^ MemoryFonts();
+
 
 		//static bool RegisterDatasource(System::String^ path);
 		//static bool RegisterDatasources(System::String^ path);
 		//static System::Collections::Generic::IEnumerable<System::String^>^ Datasources();
 
-		static property System::Collections::Generic::IReadOnlyDictionary<System::String^, System::Boolean>^ Supports
+		static property System::Collections::Generic::IDictionary<System::String^, System::Boolean>^ Supports
 		{
-			System::Collections::Generic::IReadOnlyDictionary<System::String^, System::Boolean>^ get()
+			System::Collections::Generic::IDictionary<System::String^, System::Boolean>^ get()
 			{
 				return gcnew System::Collections::ObjectModel::ReadOnlyDictionary<System::String^, System::Boolean>(_supports);
 			}
 		}
 
-		static property System::Collections::Generic::IReadOnlyDictionary<System::String^, System::String^>^ Versions
+		static property System::Collections::Generic::IDictionary<System::String^, System::String^>^ Versions
 		{
-			System::Collections::Generic::IReadOnlyDictionary<System::String^, System::String^>^ get()
+			System::Collections::Generic::IDictionary<System::String^, System::String^>^ get()
 			{
 				return gcnew System::Collections::ObjectModel::ReadOnlyDictionary<System::String^, System::String^>(_versions);
+			};
+		}
+
+		static property System::Collections::Generic::IDictionary<System::String^, System::String^>^ Paths
+		{
+			System::Collections::Generic::IDictionary<System::String^, System::String^>^ get()
+			{
+				return gcnew System::Collections::ObjectModel::ReadOnlyDictionary<System::String^, System::String^>(_paths);
 			};
 		}
 	private:
 		static initonly System::Collections::Generic::Dictionary<System::String^, System::String^>^ _versions;
 		static initonly System::Collections::Generic::Dictionary<System::String^, System::Boolean>^ _supports;
+		static initonly System::Collections::Generic::Dictionary<System::String^, System::String^>^ _paths;
 	};
 
 }

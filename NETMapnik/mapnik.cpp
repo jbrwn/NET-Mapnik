@@ -3,7 +3,7 @@
 
 // mapnik
 #include <mapnik\version.hpp>
-//#include <mapnik\font_engine_freetype.hpp>
+#include <mapnik\font_engine_freetype.hpp>
 
 // boost
 #include <boost\version.hpp>
@@ -18,35 +18,81 @@
 
 namespace NETMapnik
 {
-	//bool Mapnik::RegisterFonts(System::String^ dir)
-	//{
-	//	return RegisterFonts(dir, false);
-	//}
+	System::Boolean Mapnik::RegisterFonts(System::String^ dir)
+	{
+		return RegisterFonts(dir, false);
+	}
 
-	//bool Mapnik::RegisterFonts(System::String^ dir, bool recurse)
-	//{
-	//	try
-	//	{
-	//		std::string path = msclr::interop::marshal_as<std::string>(dir);
-	//		return mapnik::freetype_engine::register_fonts(path, recurse);
-	//	}
-	//	catch (const std::exception& ex)
-	//	{
-	//		System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
-	//		throw gcnew System::Exception(managedException);
-	//	}
-	//}
+	System::Boolean Mapnik::RegisterFonts(System::String^ dir, bool recurse)
+	{
+		try
+		{
+			std::string path = msclr::interop::marshal_as<std::string>(dir);
+			return mapnik::freetype_engine::register_fonts(path, recurse);
+		}
+		catch (const std::exception& ex)
+		{
+			System::String^ managedException = msclr::interop::marshal_as<System::String^>(ex.what());
+			throw gcnew System::Exception(managedException);
+		}
+	}
 
-	//System::Collections::Generic::IEnumerable<System::String^>^ Mapnik::Fonts()
-	//{
-	//	System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
-	//	std::vector<std::string> const& names = mapnik::freetype_engine::face_names();
-	//	for (unsigned i = 0; i < names.size(); ++i)
-	//	{
-	//		a->Add(msclr::interop::marshal_as<System::String^>(names[i]));
-	//	}
-	//	return a;
-	//}
+	System::Boolean Mapnik::RegisterDefaultFonts()
+	{
+		return RegisterFonts(Paths["Fonts"], true);
+	}
+
+	System::Boolean Mapnik::RegisterSystemFonts()
+	{
+		int num_faces = System::Collections::Generic::List<System::String^>(Fonts()).Count;
+		System::String^ path = "C:\\Windows\\Fonts";
+		if (System::IO::Directory::Exists(path))
+		{
+			RegisterFonts(path, true);
+		}
+		if (System::Collections::Generic::List<System::String^>(Fonts()).Count == num_faces) 
+		{
+			return false;
+		}
+		else 
+		{
+			return true;
+		}
+	}
+
+	System::Collections::Generic::IEnumerable<System::String^>^ Mapnik::Fonts()
+	{
+		System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
+		std::vector<std::string> const& names = mapnik::freetype_engine::face_names();
+		for (unsigned i = 0; i < names.size(); ++i)
+		{
+			a->Add(msclr::interop::marshal_as<System::String^>(names[i]));
+		}
+		return a->AsReadOnly();
+	}
+
+	System::Collections::Generic::IDictionary<System::String^, System::String^>^ Mapnik::FontFiles()
+	{
+		System::Collections::Generic::Dictionary<System::String^, System::String^>^ d = gcnew System::Collections::Generic::Dictionary<System::String^, System::String^>(System::StringComparer::InvariantCultureIgnoreCase);
+		std::map<std::string, std::pair<int, std::string> > const& mapping = mapnik::freetype_engine::get_mapping();
+		for (auto const& kv : mapping)
+		{
+			d->Add(msclr::interop::marshal_as<System::String^>(kv.first), msclr::interop::marshal_as<System::String^>(kv.second.second.c_str()));
+		}
+		return gcnew System::Collections::ObjectModel::ReadOnlyDictionary<System::String^, System::String^>(d);
+	}
+
+	System::Collections::Generic::IEnumerable<System::String^>^ Mapnik::MemoryFonts()
+	{
+		System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
+		auto const& font_cache = mapnik::freetype_engine::get_cache();
+		unsigned i = 0;
+		for (auto const& kv : font_cache)
+		{
+			a->Add(msclr::interop::marshal_as<System::String^>(kv.first));
+		}
+		return a->AsReadOnly();
+	}
 
 	static System::String^ format_version(int version)
 	{
@@ -55,6 +101,10 @@ namespace NETMapnik
 
 	Mapnik::Mapnik()
 	{
+		_paths = gcnew System::Collections::Generic::Dictionary<System::String^, System::String^>(System::StringComparer::InvariantCultureIgnoreCase);
+		_paths->Add("InputPlugins", "mapnik\\input");
+		_paths->Add("Fonts", "mapnik\\fonts");
+
 		_versions = gcnew System::Collections::Generic::Dictionary<System::String^, System::String^>(System::StringComparer::InvariantCultureIgnoreCase);
 		_versions->Add("CLR", System::Environment::Version->ToString());
 		_versions->Add("Boost",format_version(BOOST_VERSION));

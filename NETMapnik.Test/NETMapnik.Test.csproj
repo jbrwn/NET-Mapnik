@@ -105,6 +105,7 @@
     <Compile Include="GridViewTests.cs" />
     <Compile Include="GridTests.cs" />
     <Compile Include="ConstantsTests.cs" />
+    <Compile Include="FontTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +117,9 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="data\9.112.195.pbf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\font\DejaVuSansMono-BoldOblique.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\world_merc.dbf">

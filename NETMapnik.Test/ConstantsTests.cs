@@ -24,6 +24,8 @@ namespace NETMapnik.Test
             Assert.IsInstanceOfType(Mapnik.Versions["CLR"], typeof(String));
             Assert.IsInstanceOfType(Mapnik.Versions["Mapnik"], typeof(String));
             Assert.IsInstanceOfType(Mapnik.Versions["Boost"], typeof(String));
+            Assert.IsInstanceOfType(Mapnik.Paths["Fonts"], typeof(String));
+            Assert.IsInstanceOfType(Mapnik.Paths["InputPlugins"], typeof(String));
 
             //Ignore key case
             Assert.IsInstanceOfType(Mapnik.Versions["MaPnIk"], typeof(String));
