@@ -19,13 +19,11 @@ install:
 
     git clone -q https://github.com/mapbox/mapnik-vector-tile .\lib\mapnik-vector-tile
 
-    git --git-dir=.\lib\mapnik-vector-tile\.git --work-tree=.\lib\mapnik-vector-tile checkout -q 5394eed
+    git --git-dir=.\lib\mapnik-vector-tile\.git --work-tree=.\lib\mapnik-vector-tile checkout -q tags/v0.6.2
 
-    (New-Object Net.WebClient).DownloadFile("http://mapnik.s3.amazonaws.com/dist/dev/mapnik-win-sdk-14.0-$env:Platform-v3.0.0-rc1-57-g2577a6c.7z", "$pwd\mapnik-win-sdk.7z")
+    (New-Object Net.WebClient).DownloadFile("http://mapnik.s3.amazonaws.com/dist/dev/mapnik-win-sdk-14.0-$env:Platform-v3.0.0-rc1-277-ge04b061.7z", "$pwd\mapnik-win-sdk.7z")
 
     7z x .\mapnik-win-sdk.7z -o".\lib\$env:Platform" | FIND /V "ing  "
-
-    git apply -p0 --directory=.\lib\$env:Platform\mapnik-sdk\includes\mapnik .\lib\image_filter_types.hpp.patch
 
     git apply -p0 --directory=$Env:VS140COMNTOOLS\..\..\VC\Include .\lib\mutex.patch
 test_script:

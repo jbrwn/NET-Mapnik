@@ -11,7 +11,7 @@ namespace NETMapnik
 	ref class Color;
 	ref class Palette;
 
-	typedef std::shared_ptr<mapnik::image_view<mapnik::image_data_32>> image_view_ptr;
+	typedef std::shared_ptr<mapnik::image_view<mapnik::image_data_rgba8>> image_view_ptr;
 
 	public ref class ImageView
 	{

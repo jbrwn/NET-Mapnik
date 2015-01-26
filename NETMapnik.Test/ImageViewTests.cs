@@ -36,11 +36,24 @@ namespace NETMapnik.Test
         }
 
         [TestMethod]
-        public void ImageView_Encode()
+        public void ImageView_Save()
         {
             Image i = new Image(100, 100);
             i.Background = new Color("green");
             ImageView iv = i.View(0,0,10,10);
+            string filename = @".\data\tmp\" + Guid.NewGuid().ToString() + ".png";
+            iv.Save(filename);
+            byte[] bytes1 = File.ReadAllBytes(filename);
+            byte[] bytes2 = File.ReadAllBytes(@".\data\10x10green.png");
+            CollectionAssert.AreEqual(bytes1, bytes2);
+        }
+
+        [TestMethod]
+        public void ImageView_Encode()
+        {
+            Image i = new Image(100, 100);
+            i.Background = new Color("green");
+            ImageView iv = i.View(0, 0, 10, 10);
             byte[] bytes1 = iv.Encode("png");
             byte[] bytes2 = File.ReadAllBytes(@".\data\10x10green.png");
             CollectionAssert.AreEqual(bytes1, bytes2);

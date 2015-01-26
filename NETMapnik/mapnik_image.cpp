@@ -80,7 +80,7 @@ namespace NETMapnik
 
 		try
 		{
-			mapnik::save_to_file(*(*_img), unmanagedPath, unmanagedFormat);
+			mapnik::save_to_file((*_img)->data(), unmanagedPath, unmanagedFormat);
 		}
 		catch (const std::exception& ex)
 		{
@@ -95,7 +95,7 @@ namespace NETMapnik
 
 		try
 		{
-			std::string s = save_to_string(*(*_img), unmanagedFormat);
+			std::string s = save_to_string((*_img)->data(), unmanagedFormat);
 			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
 			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
 			return data;
@@ -113,7 +113,7 @@ namespace NETMapnik
 		palette_ptr p = palette->NativeObject();
 		try
 		{
-			std::string s = save_to_string(*(*_img), unmanagedFormat,*p);
+			std::string s = save_to_string((*_img)->data(), unmanagedFormat,*p);
 			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
 			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
 			return data;
@@ -127,7 +127,7 @@ namespace NETMapnik
 
 	Color^ Image::GetPixel(System::Int32 x, System::Int32 y)
 	{
-		mapnik::image_data_32 const& data = (*_img)->data();
+		mapnik::image_data_rgba8 const& data = (*_img)->data();
 		if (x >= 0 && x < static_cast<int>(data.width())
 			&& y >= 0 && y < static_cast<int>(data.height()))
 		{
@@ -142,7 +142,7 @@ namespace NETMapnik
 	}
 	void Image::SetPixel(System::Int32 x, System::Int32 y, Color^ value)
 	{
-		mapnik::image_data_32 & data = (*_img)->data();
+		mapnik::image_data_rgba8 & data = (*_img)->data();
 		if (x < static_cast<int>(data.width()) && y < static_cast<int>(data.height()))
 		{
 			data(x, y) = value->NativeObject()->rgba();
@@ -157,7 +157,7 @@ namespace NETMapnik
 
 	void Image::SetGrayScaleToAlpha(Color^ color)
 	{
-		mapnik::image_data_32 & data = (*_img)->data();
+		mapnik::image_data_rgba8 & data = (*_img)->data();
 		for (unsigned int y = 0; y < data.height(); ++y)
 		{
 			unsigned int* row_from = data.getRow(y);
@@ -294,8 +294,8 @@ namespace NETMapnik
 			(*_img)->height() != img2->height()) {
 			throw gcnew System::Exception("image dimensions do not match");
 		}
-		mapnik::image_data_32 const& data = (*_img)->data();
-		mapnik::image_data_32 const& data2 = img2->data();
+		mapnik::image_data_rgba8 const& data = (*_img)->data();
+		mapnik::image_data_rgba8 const& data2 = img2->data();
 		for (unsigned int y = 0; y < data.height(); ++y)
 		{
 			const unsigned int* row_from = data.getRow(y);
