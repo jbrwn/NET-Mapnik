@@ -481,7 +481,7 @@ namespace NETMapnik
 		return arr;
 	}
 
-	VectorTileJSON^ VectorTile::ToJSON()
+	System::Collections::Generic::IEnumerable<VectorTileLayer^>^ VectorTile::ToJSON()
 	{
 		System::Collections::Generic::List<VectorTileLayer^>^ arr = gcnew System::Collections::Generic::List<VectorTileLayer^>();
 		for (int i = 0; i < _tile->layers_size(); ++i)
@@ -570,7 +570,7 @@ namespace NETMapnik
 			);
 			arr->Add(layer_obj);
 		}
-		return gcnew VectorTileJSON(arr);
+		return arr->AsReadOnly();
 	}
 
 	System::String^ VectorTile::ToGeoJSON(System::Int32 layer)

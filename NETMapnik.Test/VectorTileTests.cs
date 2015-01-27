@@ -153,7 +153,7 @@ namespace NETMapnik.Test
             VectorTile v = new VectorTile(9, 112, 195);
             byte[] bytes = File.ReadAllBytes(@".\data\9.112.195.pbf");
             v.SetData(bytes);
-            VectorTileJSON vtJSON = v.ToJSON();
+            IEnumerable<VectorTileLayer> vtJSON = v.ToJSON();
             string json = JsonConvert.SerializeObject(
                 vtJSON,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });

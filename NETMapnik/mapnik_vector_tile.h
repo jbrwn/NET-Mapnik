@@ -73,13 +73,13 @@ namespace NETMapnik
 		{
 			System::Int32 get() { return _type; };
 		}
-		property System::Collections::Generic::IReadOnlyList<System::Int32>^ Geometry
+		property System::Collections::Generic::IList<System::Int32>^ Geometry
 		{
-			System::Collections::Generic::IReadOnlyList<System::Int32>^ get() { return gcnew System::Collections::ObjectModel::ReadOnlyCollection<System::Int32>(_geometry); };
+			System::Collections::Generic::IList<System::Int32>^ get() { return gcnew System::Collections::ObjectModel::ReadOnlyCollection<System::Int32>(_geometry); };
 		}
-		property System::Collections::Generic::IReadOnlyDictionary<System::String^, System::Object^>^ Properties
+		property System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Properties
 		{
-			System::Collections::Generic::IReadOnlyDictionary<System::String^, System::Object^>^ get() { return gcnew System::Collections::ObjectModel::ReadOnlyDictionary<System::String^, System::Object^>(_properties); };
+			System::Collections::Generic::IDictionary<System::String^, System::Object^>^ get() { return gcnew System::Collections::ObjectModel::ReadOnlyDictionary<System::String^, System::Object^>(_properties); };
 		}
 	private:
 		System::UInt64 _id;
@@ -110,43 +110,15 @@ namespace NETMapnik
 		{
 			System::Int32 get() { return _version; };
 		}
-		property System::Collections::Generic::IReadOnlyList<VectorTileFeature^>^ Features
+		property System::Collections::Generic::IList<VectorTileFeature^>^ Features
 		{
-			System::Collections::Generic::IReadOnlyList<VectorTileFeature^>^ get() { return gcnew System::Collections::ObjectModel::ReadOnlyCollection<VectorTileFeature^>(_features);  };
+			System::Collections::Generic::IList<VectorTileFeature^>^ get() { return gcnew System::Collections::ObjectModel::ReadOnlyCollection<VectorTileFeature^>(_features);  };
 		}
 	private:
 		System::String^ _name;
 		System::Int32 _extent;
 		System::Int32 _version;
 		System::Collections::Generic::IList<VectorTileFeature^>^ _features;
-	};
-
-	public ref class VectorTileJSON : public System::Collections::Generic::IReadOnlyList<VectorTileLayer^>
-	{
-	public:
-		VectorTileJSON(System::Collections::Generic::IReadOnlyList<VectorTileLayer^>^ layers) :
-			_layers(layers) {}
-
-		virtual property System::Int32 Count
-		{
-			System::Int32 get() { return _layers->Count; };
-		}
-
-		virtual property VectorTileLayer^ default[System::Int32]
-		{
-			VectorTileLayer^ get(System::Int32 i) { return _layers[i]; };
-		}
-
-			virtual System::Collections::IEnumerator^ GetEnumeratorBase() = System::Collections::IEnumerable::GetEnumerator
-		{
-			return GetEnumerator();
-		}
-			virtual System::Collections::Generic::IEnumerator<VectorTileLayer^>^ GetEnumerator()
-		{
-			return _layers->GetEnumerator();
-		}
-	private:
-		System::Collections::Generic::IReadOnlyList<VectorTileLayer^>^ _layers;
 	};
 
 	public ref class VectorTile
@@ -166,7 +138,7 @@ namespace NETMapnik
 		System::Collections::Generic::IEnumerable<VectorQueryResult^>^ Query(double lon, double lat, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		//QueryMany(double x, double y, System::String^ layer);
 		//QueryMany(double x, double y, System::String^ layer, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
-		VectorTileJSON^ ToJSON();
+		System::Collections::Generic::IEnumerable<VectorTileLayer^>^ ToJSON();
 		System::String^ ToGeoJSON(System::Int32 layer);
 		System::String^ ToGeoJSON(System::String^ layer);
 		void AddGeoJSON(System::String^ json, System::String^ layer);
