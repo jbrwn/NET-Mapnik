@@ -163,7 +163,6 @@
     <ClInclude Include="mapnik.h" />
     <ClInclude Include="mapnik_color.h" />
     <ClInclude Include="mapnik_datasource.h" />
-    <ClInclude Include="mapnik_datasource_cache.h" />
     <ClInclude Include="mapnik_feature.h" />
     <ClInclude Include="mapnik_featureset.h" />
     <ClInclude Include="mapnik_geometry.h" />
@@ -194,7 +193,6 @@
     <ClCompile Include="mapnik.cpp" />
     <ClCompile Include="mapnik_color.cpp" />
     <ClCompile Include="mapnik_datasource.cpp" />
-    <ClCompile Include="mapnik_datasource_cache.cpp" />
     <ClCompile Include="mapnik_feature.cpp" />
     <ClCompile Include="mapnik_featureset.cpp" />
     <ClCompile Include="mapnik_geometry.cpp" />

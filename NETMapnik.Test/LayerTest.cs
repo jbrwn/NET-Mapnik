@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NETMapnik;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Layer_Describe()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Dictionary<string, object> options = new Dictionary<string, object>() 
             { 
                 { "type","shape"},

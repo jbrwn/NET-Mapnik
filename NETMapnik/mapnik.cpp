@@ -4,6 +4,7 @@
 // mapnik
 #include <mapnik\version.hpp>
 #include <mapnik\font_engine_freetype.hpp>
+#include <mapnik\datasource_cache.hpp>
 
 // boost
 #include <boost\version.hpp>
@@ -90,6 +91,48 @@ namespace NETMapnik
 		for (auto const& kv : font_cache)
 		{
 			a->Add(msclr::interop::marshal_as<System::String^>(kv.first));
+		}
+		return a->AsReadOnly();
+	}
+
+	System::Boolean Mapnik::RegisterDatasource(System::String^ path)
+	{
+		std::string unmanagedPath = msclr::interop::marshal_as<std::string>(path);
+		std::vector<std::string> names_before = mapnik::datasource_cache::instance().plugin_names();
+		mapnik::datasource_cache::instance().register_datasource(unmanagedPath);
+		std::vector<std::string> names_after = mapnik::datasource_cache::instance().plugin_names();
+		if (names_after.size() > names_before.size())
+		{
+			return true;
+		}
+		return false;
+	}
+
+	System::Boolean Mapnik::RegisterDatasources(System::String^ path)
+	{
+		std::string unmanagedPath = msclr::interop::marshal_as<std::string>(path);
+		std::vector<std::string> names_before = mapnik::datasource_cache::instance().plugin_names();
+		mapnik::datasource_cache::instance().register_datasources(unmanagedPath);
+		std::vector<std::string> names_after = mapnik::datasource_cache::instance().plugin_names();
+		if (names_after.size() > names_before.size())
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	void Mapnik::RegisterDefaultInputPlugins()
+	{
+		RegisterDatasources(Paths["InputPlugins"]);
+	}
+
+	System::Collections::Generic::IEnumerable<System::String^>^ Mapnik::Datasources()
+	{
+		std::vector<std::string> names = mapnik::datasource_cache::instance().plugin_names();
+		System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
+		for (unsigned i = 0; i < names.size(); ++i)
+		{
+			a->Add(msclr::interop::marshal_as<System::String^>(names[i]));
 		}
 		return a->AsReadOnly();
 	}

@@ -106,6 +106,7 @@
     <Compile Include="GridTests.cs" />
     <Compile Include="ConstantsTests.cs" />
     <Compile Include="FontTests.cs" />
+    <Compile Include="PluginTests.cs" />
     <Compile Include="VectorTileTests.cs" />
   </ItemGroup>
   <ItemGroup>

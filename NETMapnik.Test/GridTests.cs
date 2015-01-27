@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +13,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Grid_Encode()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();
@@ -43,7 +44,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Grid_Encode_Resolution()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();
@@ -84,7 +85,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Grid_Painted()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Grid g = new Grid(256, 256);
             Assert.IsFalse(g.Painted());
 
@@ -109,7 +110,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Grid_Fields()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();

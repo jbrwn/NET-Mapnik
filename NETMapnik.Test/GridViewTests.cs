@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
@@ -32,7 +33,7 @@ namespace NETMapnik.Test
 
             m.Clear();
             g.Clear();
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             m.Load(@".\data\test.xml");
             m.ZoomAll();
             m.Render(g);
@@ -43,7 +44,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void GridView_GetPixel()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();
@@ -57,7 +58,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void GridView_Encode()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();

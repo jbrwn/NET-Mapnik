@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,7 +24,7 @@ namespace NETMapnik.Test
             }";
             JObject feature = JObject.Parse(input);
 
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "csv.input"));
             Dictionary<string, object> options = new Dictionary<string, object>() 
             { 
                 { "type","csv"},
@@ -50,7 +51,7 @@ namespace NETMapnik.Test
             }";
             JObject feature = JObject.Parse(input);
 
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "csv.input"));
             Dictionary<string, object> options = new Dictionary<string, object>() 
             { 
                 { "type","csv"},
@@ -72,7 +73,7 @@ namespace NETMapnik.Test
         public void Geometry_ToJSON()
         {
             string expected = @"{""type"":""Polygon"",""coordinates"":[[[1,1],[1,2],[2,2],[2,1],[1,1]]]}";
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "csv.input"));
             var options = new Dictionary<string, object>()
             {
                 { "type","csv"},
@@ -88,7 +89,7 @@ namespace NETMapnik.Test
         public void Geometry_ToJSON_ProjTransform()
         {
             string expected = @"{""type"":""Polygon"",""coordinates"":[[[1,1],[1,2],[2,2],[2,1],[1,1]]]}";
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "csv.input"));
             var options = new Dictionary<string, object>()
             {
                 { "type","csv"},

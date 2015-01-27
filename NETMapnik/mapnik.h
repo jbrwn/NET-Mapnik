@@ -14,10 +14,11 @@ namespace NETMapnik
 		static System::Collections::Generic::IDictionary<System::String^,System::String^>^ FontFiles();
 		static System::Collections::Generic::IEnumerable<System::String^>^ MemoryFonts();
 
+		static System::Boolean RegisterDatasource(System::String^ path);
+		static System::Boolean RegisterDatasources(System::String^ path);
+		static void RegisterDefaultInputPlugins();
+		static System::Collections::Generic::IEnumerable<System::String^>^ Datasources();
 
-		//static bool RegisterDatasource(System::String^ path);
-		//static bool RegisterDatasources(System::String^ path);
-		//static System::Collections::Generic::IEnumerable<System::String^>^ Datasources();
 
 		static property System::Collections::Generic::IDictionary<System::String^, System::Boolean>^ Supports
 		{

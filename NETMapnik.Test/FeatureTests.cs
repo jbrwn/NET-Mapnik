@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -12,7 +13,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Featureset_Creation()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Dictionary<string, object> options = new Dictionary<string, object>()
             {
                 { "type","shape"},
@@ -60,7 +61,7 @@ namespace NETMapnik.Test
             }";
             JObject expected = JObject.Parse(input);
 
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "csv.input"));
             Dictionary<string, object> options = new Dictionary<string, object>()
             {
                 { "type","csv"},

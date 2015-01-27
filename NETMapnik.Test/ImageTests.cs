@@ -117,7 +117,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_Painted()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Image i = new Image(256, 256);
             Assert.IsFalse(i.Painted());
 

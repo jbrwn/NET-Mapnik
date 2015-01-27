@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
@@ -157,7 +158,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_QueryPoint_SingleLayer()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();
@@ -210,7 +211,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_QueryPoint_MultipleLayers()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
 
@@ -245,7 +246,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_QueryMapPoint_SingleLayer()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
             m.ZoomAll();
@@ -298,7 +299,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Map_QueryMapPoint_MultipleLayers()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\test.xml");
 

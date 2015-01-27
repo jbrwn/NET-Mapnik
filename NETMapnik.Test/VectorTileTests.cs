@@ -33,7 +33,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_SimpleComposite()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
             m.ZoomAll();
@@ -54,7 +54,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_OverzoomComposite()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
 
@@ -129,7 +129,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_GeoJSON()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             string json = @"{""type"":""FeatureCollection"",""name"":""layer"",""features"":[{""type"":""Feature"",""geometry"":{""type"":""Point"",""coordinates"":[-121.9921875,47.9899216674142]},""properties"":{""name"":""geojson data""}}]}";
             VectorTile v = new VectorTile(0, 0, 0);
             v.AddGeoJSON(json, "layer");
@@ -164,7 +164,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_IsSolid()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
             m.Extent = new double[] { -11271098.442818949, 4696291.017841229, -11192826.925854929, 4774562.534805249 };
@@ -214,7 +214,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_Render_Image()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
             m.Extent = new double[] { -20037508.34, 0, 0, 20037508.34 };
@@ -234,7 +234,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_Render_Grid()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
             m.Extent = new double[] { -20037508.34, 0, 0, 20037508.34 };
@@ -271,7 +271,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_Overzoom_Render()
         {
-            DatasourceCache.RegisterDatasources(@".\mapnik\input");
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
             Map m = new Map(256, 256);
             m.Load(@".\data\layer.xml");
 
