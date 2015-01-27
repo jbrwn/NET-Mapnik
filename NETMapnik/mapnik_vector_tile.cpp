@@ -24,7 +24,7 @@
 #include <mapnik\util\geometry_to_geojson.hpp>
 #include <mapnik\feature_kv_iterator.hpp>
 #include <mapnik\json\geometry_generator_grammar.hpp>
-//#include <mapnik\json\properties_generator_grammar.hpp>
+#include <mapnik\json\properties_generator_grammar.hpp>
 #include <mapnik\datasource_cache.hpp>
 
 #include <google\protobuf\io\coded_stream.h>
@@ -573,7 +573,7 @@ namespace NETMapnik
 		return gcnew VectorTileJSON(arr);
 	}
 
-	/*	System::String^ VectorTile::ToGeoJSON(System::Int32 layer)
+	System::String^ VectorTile::ToGeoJSON(System::Int32 layer)
 	{
 
 		int layer_idx = layer;
@@ -813,7 +813,7 @@ namespace NETMapnik
 			return !first;
 		}
 	}
-*/
+
 
 	void VectorTile::AddGeoJSON(System::String^ json, System::String^ layer)
 	{

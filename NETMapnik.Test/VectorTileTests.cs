@@ -130,26 +130,7 @@ namespace NETMapnik.Test
         public void VectorTile_GeoJSON()
         {
             DatasourceCache.RegisterDatasources(@".\mapnik\input");
-            string json = @"{
-                ""type"": ""FeatureCollection"",
-                ""features"": [
-                    {
-                        ""type"": ""Feature"",
-                        ""geometry"": {
-                            ""type"": ""Point"",
-                            ""coordinates"": [
-                                -122,
-                                48
-                            ]
-                        },
-                        ""properties"": {
-                            ""name"": ""geojson data""
-                        }
-                    }
-                ]
-            }";
-
-
+            string json = @"{""type"":""FeatureCollection"",""name"":""layer"",""features"":[{""type"":""Feature"",""geometry"":{""type"":""Point"",""coordinates"":[-121.9921875,47.9899216674142]},""properties"":{""name"":""geojson data""}}]}";
             VectorTile v = new VectorTile(0, 0, 0);
             v.AddGeoJSON(json, "layer");
             byte[] bytes = v.GetData();
@@ -159,6 +140,11 @@ namespace NETMapnik.Test
             CollectionAssert.AreEquivalent(new List<string>() { "layer" }, v.Names().ToList());
 
             //ToGeoJSON
+            string actual1 = v.ToGeoJSON("layer");
+            string actual2 = v.ToGeoJSON(0);
+            Assert.AreEqual(json, actual1);
+            Assert.AreEqual(json, actual2);
+
         }
 
         [TestMethod]
@@ -312,6 +298,5 @@ namespace NETMapnik.Test
             Assert.IsTrue(i1.Compare(i2)-500 < 0);
    
         }
-
     }
 }

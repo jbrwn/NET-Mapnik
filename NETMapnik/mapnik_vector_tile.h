@@ -167,8 +167,8 @@ namespace NETMapnik
 		//QueryMany(double x, double y, System::String^ layer);
 		//QueryMany(double x, double y, System::String^ layer, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		VectorTileJSON^ ToJSON();
-		//System::String^ ToGeoJSON(System::Int32 layer);
-		//System::String^ ToGeoJSON(System::String^ layer);
+		System::String^ ToGeoJSON(System::Int32 layer);
+		System::String^ ToGeoJSON(System::String^ layer);
 		void AddGeoJSON(System::String^ json, System::String^ layer);
 		void AddGeoJSON(System::String^ json, System::String^ layer, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		void AddImage(array<System::Byte>^ bytes, System::String^ layer);
@@ -194,8 +194,8 @@ namespace NETMapnik
 		unsigned _width;
 		unsigned _height;
 		bool _painted;
-		//void write_geojson_to_string(std::string & result,bool array,bool all,int layer_idx);
-		//bool layer_to_geojson(vector_tile::Tile_Layer const& layer, std::string & result, unsigned x, unsigned y, unsigned z, unsigned width);
+		void write_geojson_to_string(std::string & result,bool array,bool all,int layer_idx);
+		bool layer_to_geojson(vector_tile::Tile_Layer const& layer, std::string & result, unsigned x, unsigned y, unsigned z, unsigned width);
 
 	};
 }
