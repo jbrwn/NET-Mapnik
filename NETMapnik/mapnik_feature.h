@@ -13,7 +13,7 @@ namespace NETMapnik
 	public:
 		~Feature();
 
-		System::Int32 Id();
+		System::Int64 Id();
 		array<System::Double>^ Extent();
 		System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Attributes();
 		Geometry^ Geometry();

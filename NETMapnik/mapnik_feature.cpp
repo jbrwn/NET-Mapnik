@@ -29,7 +29,7 @@ namespace NETMapnik
 			delete _feature;
 	}
 
-	System::Int32 Feature::Id()
+	System::Int64 Feature::Id()
 	{
 		return (*_feature)->id();
 	}

@@ -36,7 +36,7 @@ namespace NETMapnik
 
 		void operator() (mapnik::value_integer val) const
 		{
-			_ds->Add(_key, gcnew mapnik::value_integer(val));
+			_ds->Add(_key, gcnew long long(val));
 		}
 
 		void operator() (double val) const
