@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "mapnik_projection.h"
-#include "NET_box_utils.h"
+#include "utils.h"
 
 #include <memory>
 #include <mapnik\box2d.hpp>

@@ -2,7 +2,7 @@
 #include "mapnik_geometry.h"
 #include "mapnik_projection.h"
 #include "proj_transform_adapter.h"
-#include "NET_box_utils.h"
+#include "utils.h"
 
 // mapnik
 #include <mapnik\feature.hpp>

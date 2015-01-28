@@ -3,11 +3,10 @@
 #include "mapnik_grid.h"
 #include "mapnik_image.h"
 #include "mapnik_vector_tile.h"
-#include "mapnik_value_converter.h"
+#include "utils.h"
 #include "NET_options_parser.h"
 #include "mapnik_color.h"
 #include "mapnik_layer.h"
-#include "NET_box_utils.h"
 #include "mapnik_featureset.h"
 
 #include <memory>

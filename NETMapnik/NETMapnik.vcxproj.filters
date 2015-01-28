@@ -29,9 +29,6 @@
     <ClInclude Include="mapnik_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mapnik_value_converter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NET_options_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,9 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mapnik_datasource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NET_box_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mapnik_featureset.h">
@@ -80,6 +74,9 @@
     <ClInclude Include="mapnik.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -113,9 +110,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapnik_datasource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NET_box_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapnik_featureset.cpp">

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "mapnik_layer.h"
 #include "mapnik_datasource.h"
-#include "mapnik_value_converter.h"
+#include "utils.h"
 
 #include <memory>
 

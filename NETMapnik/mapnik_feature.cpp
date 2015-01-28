@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "mapnik_feature.h"
-#include "NET_box_utils.h"
-#include "mapnik_value_converter.h"
+#include "utils.h"
 #include "mapnik_geometry.h"
 
 #include <memory>

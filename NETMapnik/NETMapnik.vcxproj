@@ -175,13 +175,12 @@
     <ClInclude Include="mapnik_memory_datasource.h" />
     <ClInclude Include="mapnik_palette.h" />
     <ClInclude Include="mapnik_projection.h" />
-    <ClInclude Include="mapnik_value_converter.h" />
     <ClInclude Include="mapnik_vector_tile.h" />
-    <ClInclude Include="NET_box_utils.h" />
     <ClInclude Include="NET_grid_utils.h" />
     <ClInclude Include="NET_options_parser.h" />
     <ClInclude Include="proj_transform_adapter.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\mapnik-vector-tile\src\vector_tile.pb.cc">
@@ -206,7 +205,6 @@
     <ClCompile Include="mapnik_palette.cpp" />
     <ClCompile Include="mapnik_projection.cpp" />
     <ClCompile Include="mapnik_vector_tile.cpp" />
-    <ClCompile Include="NET_box_utils.cpp" />
     <ClCompile Include="NET_options_parser.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

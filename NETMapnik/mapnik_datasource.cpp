@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "mapnik_datasource.h"
 #include "mapnik_featureset.h"
-#include "mapnik_value_converter.h"
-#include "NET_box_utils.h"
+#include "utils.h"
 #include "ds_emitter.h"
 
 // mapnik

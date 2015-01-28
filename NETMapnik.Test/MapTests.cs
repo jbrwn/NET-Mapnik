@@ -57,7 +57,7 @@ namespace NETMapnik.Test
             m.Load(@".\data\params.xml");
             Dictionary<string, object> prms = m.Parameters;
             Assert.AreEqual("wat up", (string)prms["words"]);
-            Assert.AreEqual(1, (int)prms["num"]);
+            Assert.AreEqual(1, (long)prms["num"]);
             Assert.AreEqual(.123, (double)prms["decimal"]);
         }
 
@@ -77,7 +77,7 @@ namespace NETMapnik.Test
 
             Dictionary<string, object> rtnPrms = m.Parameters;
             Assert.AreEqual("wat up", (string)rtnPrms["words"]);
-            Assert.AreEqual(1, (int)rtnPrms["num"]);
+            Assert.AreEqual(1, (long)rtnPrms["num"]);
             Assert.AreEqual(.123, (double)rtnPrms["decimal"]);
         }
 
@@ -165,17 +165,17 @@ namespace NETMapnik.Test
 
             Dictionary<string, object> expected = new Dictionary<string, object>()
             {
-                {"AREA", 915896},
+                {"AREA", 915896L},
                 {"FIPS", "US"},
                 {"ISO2", "US"},
                 {"ISO3", "USA"},
                 {"LAT", 39.622},
                 {"LON", -98.606},
                 {"NAME", "United States"},
-                {"POP2005", 299846449},
-                {"REGION", 19},
-                {"SUBREGION", 21},
-                {"UN", 840 }
+                {"POP2005", 299846449L},
+                {"REGION", 19L},
+                {"SUBREGION", 21L},
+                {"UN", 840L }
             };
 
             IEnumerable<MapQueryResult> r;
@@ -253,17 +253,17 @@ namespace NETMapnik.Test
 
             Dictionary<string, object> expected = new Dictionary<string, object>()
             {
-                {"AREA", 915896},
+                {"AREA", 915896L},
                 {"FIPS", "US"},
                 {"ISO2", "US"},
                 {"ISO3", "USA"},
                 {"LAT", 39.622},
                 {"LON", -98.606},
                 {"NAME", "United States"},
-                {"POP2005", 299846449},
-                {"REGION", 19},
-                {"SUBREGION", 21},
-                {"UN", 840 }
+                {"POP2005", 299846449L},
+                {"REGION", 19L},
+                {"SUBREGION", 21L},
+                {"UN", 840L }
             };
 
             IEnumerable<MapQueryResult> r;

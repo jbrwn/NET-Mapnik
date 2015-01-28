@@ -26,17 +26,17 @@ namespace NETMapnik.Test
             Dictionary<string, object> attr = new Dictionary<string, object>(feature.Attributes());
             Dictionary<string, object> expectedAttr = new Dictionary<string, object>()
             {
-                {"AREA", 44},
+                {"AREA", 44L},
                 {"FIPS", "AC"},
                 {"ISO2", "AG"},
                 {"ISO3", "ATG"},
                 {"LAT", 17.078},
                 {"LON", -61.783},
                 {"NAME", "Antigua and Barbuda"},
-                {"POP2005", 83039},
-                {"REGION", 19},
-                {"SUBREGION", 29},
-                {"UN", 28}
+                {"POP2005", 83039L},
+                {"REGION", 19L},
+                {"SUBREGION", 29L},
+                {"UN", 28L}
             };
             CollectionAssert.AreEquivalent(attr, expectedAttr);
 
