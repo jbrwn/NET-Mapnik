@@ -13,8 +13,8 @@ namespace NETMapnik
 	public ref class Grid
 	{
 	public:
-		Grid(System::UInt32 width, System::UInt32 height);
-		Grid(System::UInt32 width, System::UInt32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
+		Grid(System::Int32 width, System::Int32 height);
+		Grid(System::Int32 width, System::Int32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		~Grid();
 
 		property System::String^ Key

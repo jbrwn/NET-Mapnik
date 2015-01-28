@@ -14,12 +14,12 @@
 
 namespace NETMapnik
 {
-	Grid::Grid(System::UInt32 width, System::UInt32 height)
+	Grid::Grid(System::Int32 width, System::Int32 height)
 	{
 		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, "__id__", 1));
 	}
 
-	Grid::Grid(System::UInt32 width, System::UInt32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	Grid::Grid(System::Int32 width, System::Int32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
 		// defaults
 		System::String^ key = "__id__";
