@@ -38,7 +38,7 @@ on_success:
     }
     else
     {
-       $version = $version[0] + "." + $version[1] + "." + $version[2] + "-prerelease" + $version[3].PadLeft(5,'0')
+       $version = $version[0] + "." + $version[1] + "." + $version[2] + "-pre" + $version[3].PadLeft(5,'0')
     }
     nuget pack .\$id.nuspec -NonInteractive -Version $version -Properties id=$id
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
