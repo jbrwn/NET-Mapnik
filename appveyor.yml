@@ -31,7 +31,7 @@ test_script:
 on_success:
 - ps: |
     $id = "mapnik" + $(if ($env:Platform -eq "x64") {".x64"})
-	$version = $env:APPVEYOR_BUILD_VERSION.Split(".")
+    $version = $env:APPVEYOR_BUILD_VERSION.Split(".")
     if ($env:APPVEYOR_REPO_TAG)
     {
         $version = $version[0] + "." + $version[1] + "." + $version[2]
