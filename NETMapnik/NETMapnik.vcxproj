@@ -22,7 +22,7 @@
     <ProjectGuid>{B84651B2-ECBF-4DAD-B501-DA67268D99D3}</ProjectGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
-    <RootNamespace>mapnik_csharp</RootNamespace>
+    <RootNamespace>NETMapnik</RootNamespace>
     <ProjectName>NETMapnik</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

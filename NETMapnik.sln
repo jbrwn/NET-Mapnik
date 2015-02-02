@@ -9,22 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETMapnik.Test", "NETMapnik
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x64.ActiveCfg = Debug|x64
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x64.Build.0 = Debug|x64
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x86.ActiveCfg = Debug|Win32
-		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Debug|x86.Build.0 = Debug|Win32
 		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x64.ActiveCfg = Release|x64
 		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x64.Build.0 = Release|x64
 		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x86.ActiveCfg = Release|Win32
 		{B84651B2-ECBF-4DAD-B501-DA67268D99D3}.Release|x86.Build.0 = Release|Win32
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|x64.ActiveCfg = Debug|x64
-		{A4E32E59-A200-45A6-89B6-982342112748}.Debug|x86.ActiveCfg = Debug|x86
 		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x64.ActiveCfg = Release|x64
 		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x64.Build.0 = Release|x64
 		{A4E32E59-A200-45A6-89B6-982342112748}.Release|x86.ActiveCfg = Release|x86
