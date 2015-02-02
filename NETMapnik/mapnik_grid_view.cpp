@@ -85,13 +85,9 @@ namespace NETMapnik
 		bool add_features = true;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<unsigned int>("Resolution", resolution);
-		optionsParser->TryGet<bool>("AddFeatures", add_features);
-		System::String^ f;
-		if (optionsParser->TryGet<System::String^>("Format", f))
-		{
-			format = msclr::interop::marshal_as<std::string>(f);
-		}
+		optionsParser->TryGetUInt32("Resolution", resolution);
+		optionsParser->TryGetBoolean("AddFeatures", add_features);
+		optionsParser->TryGetString("Format", format);
 
 		return grid_encode(*(*_grid_view), format, add_features, resolution);
 	}

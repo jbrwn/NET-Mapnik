@@ -22,13 +22,13 @@ namespace NETMapnik
 	Grid::Grid(System::Int32 width, System::Int32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
 		// defaults
-		System::String^ key = "__id__";
+		std::string key = "__id__";
 		int resolution = 1;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<System::String^>("Key", key);
-		optionsParser->TryGet<int>("Resolution", resolution);
-		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, msclr::interop::marshal_as<std::string>(key), resolution));
+		optionsParser->TryGetString("Key", key);
+		optionsParser->TryGetInt32("Resolution", resolution);
+		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, key, resolution));
 	}
 
 	Grid::~Grid()
@@ -113,13 +113,9 @@ namespace NETMapnik
 		bool add_features = true;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<unsigned int>("Resolution", resolution);
-		optionsParser->TryGet<bool>("AddFeatures", add_features);
-		System::String^ f;
-		if (optionsParser->TryGet<System::String^>("Format", f))
-		{
-			format = msclr::interop::marshal_as<std::string>(f);
-		}
+		optionsParser->TryGetUInt32("Resolution", resolution);
+		optionsParser->TryGetBoolean("AddFeatures", add_features);
+		optionsParser->TryGetString("Format", format);
 
 		return grid_encode(*(*_grid), format, add_features, resolution);
 	}

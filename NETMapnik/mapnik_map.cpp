@@ -593,11 +593,11 @@ namespace NETMapnik
 		
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("BufferSize", buffer_size);
-		optionsParser->TryGet<double>("Scale", scale_factor);
-		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
+		optionsParser->TryGetInt32("BufferSize", buffer_size);
+		optionsParser->TryGetDouble("Scale", scale_factor);
+		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
+		optionsParser->TryGetUInt32("OffsetX", offset_x);
+		optionsParser->TryGetUInt32("OffsetY", offset_y);
 
 		try
 		{
@@ -642,11 +642,11 @@ namespace NETMapnik
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("BufferSize", buffer_size);
-		optionsParser->TryGet<double>("Scale", scale_factor);
-		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
+		optionsParser->TryGetInt32("BufferSize", buffer_size);
+		optionsParser->TryGetDouble("Scale", scale_factor);
+		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
+		optionsParser->TryGetUInt32("OffsetX", offset_x);
+		optionsParser->TryGetUInt32("OffsetY", offset_y);
 
 		std::vector<mapnik::layer> const& layers = (*_map)->layers();
 
@@ -735,18 +735,14 @@ namespace NETMapnik
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("BufferSize", buffer_size);
-		optionsParser->TryGet<double>("Scale", scale_factor);
-		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
-		optionsParser->TryGet<unsigned>("Tolernace", tolerance);
-		optionsParser->TryGet<unsigned>("PathMultiplier", path_multiplier);
-
-		System::String^ format;
-		if (optionsParser->TryGet<System::String^>("ImageFormat", format))
-			image_format = msclr::interop::marshal_as<std::string>(format);
-
+		optionsParser->TryGetInt32("BufferSize", buffer_size);
+		optionsParser->TryGetDouble("Scale", scale_factor);
+		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
+		optionsParser->TryGetUInt32("OffsetX", offset_x);
+		optionsParser->TryGetUInt32("OffsetY", offset_y);
+		optionsParser->TryGetUInt32("Tolernace", tolerance);
+		optionsParser->TryGetUInt32("PathMultiplier", path_multiplier);
+		optionsParser->TryGetString("ImageFormat", image_format);
 		System::String^ scaling;
 		if (optionsParser->TryGet<System::String^>("ImageScaling", scaling))
 		{

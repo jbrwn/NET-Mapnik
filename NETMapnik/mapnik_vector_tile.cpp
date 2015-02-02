@@ -196,13 +196,13 @@ namespace NETMapnik
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("BufferSize", buffer_size);
-		optionsParser->TryGet<double>("Scale", scale_factor);
-		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
-		optionsParser->TryGet<unsigned>("OffsetX", offset_x);
-		optionsParser->TryGet<unsigned>("OffsetY", offset_y);
-		optionsParser->TryGet<unsigned>("Tolernace", tolerance);
-		optionsParser->TryGet<unsigned>("PathMultiplier", path_multiplier);
+		optionsParser->TryGetInt32("BufferSize", buffer_size);
+		optionsParser->TryGetDouble("Scale", scale_factor);
+		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
+		optionsParser->TryGetUInt32("OffsetX", offset_x);
+		optionsParser->TryGetUInt32("OffsetY", offset_y);
+		optionsParser->TryGetUInt32("Tolernace", tolerance);
+		optionsParser->TryGetUInt32("PathMultiplier", path_multiplier);
 
 		try
 		{
@@ -353,12 +353,8 @@ namespace NETMapnik
 		unsigned tile_w = _width;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<double>("Tolerance", tolerance);
-		System::String^ managedLayer;
-		if (optionsParser->TryGet<System::String^>("Layer", managedLayer))
-		{
-			layer_name = msclr::interop::marshal_as<std::string>(managedLayer);
-		}
+		optionsParser->TryGetDouble("Tolerance", tolerance);
+		optionsParser->TryGetString("Layer", layer_name);
 
 		System::Collections::Generic::List<VectorQueryResult^>^ arr = gcnew System::Collections::Generic::List<VectorQueryResult^>();
 		mapnik::projection wgs84("+init=epsg:4326", true);
@@ -828,8 +824,8 @@ namespace NETMapnik
 		unsigned path_multiplier = 16;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<unsigned>("Tolerance", tolerance);
-		optionsParser->TryGet<unsigned>("PathMultiplier", path_multiplier);
+		optionsParser->TryGetUInt32("Tolerance", tolerance);
+		optionsParser->TryGetUInt32("PathMultiplier", path_multiplier);
 
 		try
 		{
@@ -1019,14 +1015,14 @@ namespace NETMapnik
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("BufferSize", buffer_size);
-		optionsParser->TryGet<double>("Scale", scale_factor);
-		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
-		if (optionsParser->TryGet<int>("Z", z))
+		optionsParser->TryGetInt32("BufferSize", buffer_size);
+		optionsParser->TryGetDouble("Scale", scale_factor);
+		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
+		if (optionsParser->TryGetInt32("Z", z))
 			zxy_override = true;
-		if (optionsParser->TryGet<int>("X", x))
+		if (optionsParser->TryGetInt32("X", x))
 			zxy_override = true;
-		if (optionsParser->TryGet<int>("Y", y))
+		if (optionsParser->TryGetInt32("Y", y))
 			zxy_override = true;
 
 		try
@@ -1104,14 +1100,14 @@ namespace NETMapnik
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("BufferSize", buffer_size);
-		optionsParser->TryGet<double>("Scale", scale_factor);
-		optionsParser->TryGet<double>("ScaleDenominator", scale_denominator);
-		if (optionsParser->TryGet<int>("Z", z))
+		optionsParser->TryGetInt32("BufferSize", buffer_size);
+		optionsParser->TryGetDouble("Scale", scale_factor);
+		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
+		if (optionsParser->TryGetInt32("Z", z))
 			zxy_override = true;
-		if (optionsParser->TryGet<int>("X", x))
+		if (optionsParser->TryGetInt32("X", x))
 			zxy_override = true;
-		if (optionsParser->TryGet<int>("Y", y))
+		if (optionsParser->TryGetInt32("Y", y))
 			zxy_override = true;
 		std::vector<mapnik::layer> const& layers = m->layers();
 		System::String^ layer;

@@ -58,7 +58,7 @@ namespace NETMapnik.Test
             m.Render(g2);
             var options = new Dictionary<string, object>()
             {
-                { "Resolution", 1U } 
+                { "Resolution", 1 }
             };
             data = (List<string>)g1.Encode(options)["grid"];
             Assert.AreEqual(256, data.Count());

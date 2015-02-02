@@ -213,13 +213,13 @@ namespace NETMapnik
 			// get options
 			NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
 			int comp_op;
-			if (optionsParser->TryGet<int>("CompOp", comp_op))
+			if (optionsParser->TryGetInt32("CompOp", comp_op))
 			{
 				mode = static_cast<mapnik::composite_mode_e>(comp_op);
 			}
 			optionsParser->TryGet<float>("Opacity", opacity);
-			optionsParser->TryGet<int>("Dx", dx);
-			optionsParser->TryGet<int>("Dy", dy);
+			optionsParser->TryGetInt32("Dx", dx);
+			optionsParser->TryGetInt32("Dy", dy);
 			System::String^ image_filters;
 			if (optionsParser->TryGet<System::String^>("ImageFilters", image_filters))
 			{
@@ -285,8 +285,8 @@ namespace NETMapnik
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGet<int>("Threshold", threshold);
-		optionsParser->TryGet<bool>("Alpha", alpha);
+		optionsParser->TryGetInt32("Threshold", threshold);
+		optionsParser->TryGetBoolean("Alpha", alpha);
 
 		// do work
 		image_ptr img2 = image->NativeObject();
