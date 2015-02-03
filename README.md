@@ -1,5 +1,6 @@
 NET-Mapnik
 ==========
+[![Build status](https://ci.appveyor.com/api/projects/status/grs29ai58nr6i34s?svg=true)](https://ci.appveyor.com/project/jbrwn/net-mapnik)
 
 .NET bindings for [mapnik](https://github.com/mapnik/mapnik).
 
@@ -10,8 +11,8 @@ Requirements
 
 Visual C++ 2015 Redistributable
 
-https://github.com/kernelsanders/vcredist/raw/master/2015Preview/vcredist_x86.exe
-https://github.com/kernelsanders/vcredist/raw/master/2015Preview/vcredist_x64.exe
+https://github.com/jbrwn/vcredist/raw/master/2015Preview/vcredist_x86.exe
+https://github.com/jbrwn/vcredist/raw/master/2015Preview/vcredist_x64.exe
 
 Install
 -------
