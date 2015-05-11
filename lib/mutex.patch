@@ -1,5 +1,7 @@
---- mutex.bak	Fri Dec 05 07:23:10 2014
-+++ mutex	Sat Dec 06 18:51:37 2014
+diff --git a/mutex b/mutex
+index 6284123..56d0d65 100644
+--- a/mutex
++++ b/mutex
 @@ -5,7 +5,9 @@
  #ifndef RC_INVOKED
  
@@ -9,4 +11,4 @@
 + #endif /* _CLR_NATIVE_THREADS */
   #endif /* _M_CEE */
  
- #include <thr/xthread>
+ #include <thread>

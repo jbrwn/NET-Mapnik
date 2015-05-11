@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <mapnik\image_data.hpp>
-#include <mapnik\image_view.hpp>
+#include <mapnik\image.hpp>
+#include <mapnik\image_view_any.hpp>
 
 namespace NETMapnik
 {
@@ -11,7 +11,7 @@ namespace NETMapnik
 	ref class Color;
 	ref class Palette;
 
-	typedef std::shared_ptr<mapnik::image_view<mapnik::image_data_rgba8>> image_view_ptr;
+	typedef std::shared_ptr<mapnik::image_view_any> image_view_ptr;
 
 	public ref class ImageView
 	{

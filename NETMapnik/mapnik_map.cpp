@@ -17,12 +17,11 @@
 #include <mapnik\box2d.hpp>       
 #include <mapnik\color.hpp>         
 #include <mapnik\attribute.hpp>       
-#include <mapnik\datasource.hpp>        
-#include <mapnik\graphics.hpp>  
+#include <mapnik\datasource.hpp>         
 #include <mapnik\grid\grid_view.hpp>
 #include <mapnik\grid\grid_renderer.hpp>
 #include <mapnik\grid\grid_util.hpp>
-#include <mapnik\image_data.hpp>        
+#include <mapnik\image.hpp>        
 #include <mapnik\image_util.hpp>        
 #include <mapnik\layer.hpp>            
 #include <mapnik\load_map.hpp>   
@@ -126,10 +125,7 @@ namespace NETMapnik
 	void Map::AspectFixMode::set(NETMapnik::AspectFixMode value)
 	{
 		int enumValue = static_cast<int>(value);
-		if (enumValue < (*_map)->aspect_fix_mode_MAX)
-			(*_map)->set_aspect_fix_mode(static_cast<mapnik::Map::aspect_fix_mode>(enumValue));
-		else
-			throw gcnew System::Exception("AspectFixMode is invalid");
+		(*_map)->set_aspect_fix_mode(static_cast<mapnik::Map::aspect_fix_mode>(enumValue));
 	}
 
 	//Extent
@@ -256,7 +252,7 @@ namespace NETMapnik
 
 	System::Boolean Map::RegisterFonts(System::String ^ path)
 	{
-		return (*_map)->register_fonts(msclr::interop::marshal_as<std::string>(path));
+		return RegisterFonts(path, false);
 	}
 
 	System::Boolean Map::RegisterFonts(System::String ^ path, System::Boolean recurse)
@@ -362,6 +358,7 @@ namespace NETMapnik
 			{
 				mapnik::featureset_ptr fs;
 				if (geo_coords)
+
 				{
 					fs = (*_map)->query_point(layer_idx, x, y);
 				}
@@ -447,6 +444,11 @@ namespace NETMapnik
 				double d = safe_cast<double>(managedValue);
 				params[key] = d;
 			}
+			else if (managedValue->GetType() == System::Boolean::typeid)
+			{
+				bool b = safe_cast<boolean>(managedValue);
+				params[key] = b;
+			}
 		}
 		(*_map)->set_extra_parameters(params);
 	}
@@ -459,16 +461,11 @@ namespace NETMapnik
 		{
 			return gcnew Layer(layers[index]);
 		}
-		else
-		{
-			throw gcnew System::ArgumentOutOfRangeException("invalid layer index");
-		}
-		
+		throw gcnew System::ArgumentOutOfRangeException("invalid layer index");
 	}
 
 	Layer^ Map::GetLayer(System::String^ name)
 	{
-		bool found = false;
 		unsigned int idx(0);
 		std::string layer_name = msclr::interop::marshal_as<std::string>(name);
 		std::vector<mapnik::layer> const& layers = (*_map)->layers();
@@ -476,21 +473,17 @@ namespace NETMapnik
 		{
 			if (lyr.name() == layer_name)
 			{
-				found = true;
 				return gcnew Layer(layers[idx]);
 			}
 			++idx;
 		}
-		if (!found)
-		{
-			throw gcnew System::Exception(System::String::Format("Layer name {0} not found",name));
-		}
+		throw gcnew System::Exception(System::String::Format("Layer name {0} not found",name));
 	}
 
 	//AddLayer
 	void Map::AddLayer(Layer^ layer)
 	{
-		(*_map)->MAPNIK_ADD_LAYER(*layer->NativeObject());
+		(*_map)->add_layer(*layer->NativeObject());
 	}
 
 	//Layers
@@ -577,6 +570,45 @@ namespace NETMapnik
 		}
 	}
 
+	struct agg_renderer_visitor
+	{
+		agg_renderer_visitor(mapnik::Map const& m,
+			mapnik::request const& req,
+			mapnik::attributes const& vars,
+			double scale_factor,
+			unsigned offset_x,
+			unsigned offset_y,
+			double scale_denominator)
+			: m_(m),
+			req_(req),
+			vars_(vars),
+			scale_factor_(scale_factor),
+			offset_x_(offset_x),
+			offset_y_(offset_y),
+			scale_denominator_(scale_denominator) {}
+
+		void operator() (mapnik::image_rgba8 & pixmap)
+		{
+			mapnik::agg_renderer<mapnik::image_rgba8> ren(m_, req_, vars_, pixmap, scale_factor_, offset_x_, offset_y_);
+			ren.apply(scale_denominator_);
+		}
+
+		template <typename T>
+		void operator() (T &)
+		{
+			throw std::runtime_error("This image type is not currently supported for rendering.");
+		}
+
+	private:
+		mapnik::Map const& m_;
+		mapnik::request const& req_;
+		mapnik::attributes const& vars_;
+		double scale_factor_;
+		unsigned offset_x_;
+		unsigned offset_y_;
+		double scale_denominator_;
+	};
+
 	void Map::Render(Image^ image)
 	{
 		Render(image, gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>());
@@ -604,16 +636,18 @@ namespace NETMapnik
 			image_ptr i = image->NativeObject();
 			mapnik::request m_req((*_map)->width(), (*_map)->height(), (*_map)->get_current_extent());
 			m_req.set_buffer_size(buffer_size);
-			mapnik::agg_renderer<mapnik::image_32> ren(
+			
+			agg_renderer_visitor visit(
 				*(*_map),
 				m_req,
 				variables,
-				*i,
 				scale_factor,
 				offset_x,
-				offset_y
+				offset_y,
+				scale_denominator
 			);
-			ren.apply(scale_denominator);
+			mapnik::util::apply_visitor(visit, *i);
+
 		}
 		catch (const std::exception& ex)
 		{
@@ -677,14 +711,14 @@ namespace NETMapnik
 		{
 			for each(System::String^ name in fields)
 			{
-				g->add_property_name(msclr::interop::marshal_as<std::string>(name));
+				g->add_field(msclr::interop::marshal_as<std::string>(name));
 			}
 		}
 
 		try
 		{
 			// copy property names
-			std::set<std::string> attributes = g->property_names();
+			std::set<std::string> attributes = g->get_fields();
 			// todo - make this a static constant
 			std::string known_id_key = "__id__";
 			if (attributes.find(known_id_key) != attributes.end())
@@ -728,10 +762,11 @@ namespace NETMapnik
 		double scale_denominator = 0.0;
 		unsigned offset_x = 0;
 		unsigned offset_y = 0;
-		unsigned tolerance = 1;
+		double area_threshold = 0.1;
 		unsigned path_multiplier = 16;
 		std::string image_format = "jpeg";
 		mapnik::scaling_method_e scaling_method = mapnik::SCALING_NEAR;
+		double simplify_distance = 0.0;
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
@@ -740,7 +775,7 @@ namespace NETMapnik
 		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
 		optionsParser->TryGetUInt32("OffsetX", offset_x);
 		optionsParser->TryGetUInt32("OffsetY", offset_y);
-		optionsParser->TryGetUInt32("Tolernace", tolerance);
+		optionsParser->TryGetDouble("AreaThreshold", area_threshold);
 		optionsParser->TryGetUInt32("PathMultiplier", path_multiplier);
 		optionsParser->TryGetString("ImageFormat", image_format);
 		System::String^ scaling;
@@ -752,6 +787,7 @@ namespace NETMapnik
 				throw gcnew System::ArgumentException("ImageScaling must be a valid scaling (e.g 'bilinear')", "ImageScaling");
 			scaling_method = *method;
 		}
+		optionsParser->TryGetDouble("SimplifyDistance", simplify_distance);
 
 		typedef mapnik::vector_tile_impl::backend_pbf backend_type;
 		typedef mapnik::vector_tile_impl::processor<backend_type> renderer_type;
@@ -769,11 +805,11 @@ namespace NETMapnik
 				scale_factor,
 				offset_x,
 				offset_y,
-				tolerance,
+				area_threshold,
 				image_format,
 				scaling_method
 			);
-
+			ren.set_simplify_distance(simplify_distance);
 			ren.apply(scale_denominator);
 			tile->Painted(ren.painted());
 		}

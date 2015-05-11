@@ -6,13 +6,17 @@ NET-Mapnik
 
 For example usage take a look at the [tests](NETMapnik.Test).
 
+API
+---
+NET-Mapnik is a port of the [nod-mapnik](https://github.com/mapnik/node-mapnik) bindings for mapnik and conforms to the same API.
+
 Requirements
 ------------
 
 Visual C++ 2015 Redistributable
 
-https://github.com/jbrwn/vcredist/raw/master/2015Preview/vcredist_x86.exe
-https://github.com/jbrwn/vcredist/raw/master/2015Preview/vcredist_x64.exe
+https://github.com/jbrwn/vcredist/raw/master/2015RC/vcredist_x86.exe
+https://github.com/jbrwn/vcredist/raw/master/2015RC/vcredist_x64.exe
 
 Install
 -------
@@ -30,10 +34,8 @@ Build Instrucitons
 ------------------
 
 Requirements:
-  - Visual Studio 2015
+  - Visual Studio 2015 RC
   - [Build dependencies](lib/readme.md)
 
 Build:
-  - Open NETMapnik.sln in Visual Studio 2015
-  - Set build to release
-  - Build solution
+```MSBuild NETMapnik.sln```

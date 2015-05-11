@@ -1,12 +1,34 @@
 #pragma once
 
+#include <mapnik\image_compositing.hpp>
+#include <mapnik\pixel_types.hpp>
+
 #include <memory>
 
-#include <mapnik\graphics.hpp>
-#include <mapnik\image_compositing.hpp>
+
+namespace mapnik {
+	struct image_any;
+	//enum image_dtype : std::uint8_t;
+}
 
 namespace NETMapnik
 {
+	public enum class ImageType : int
+	{
+		Null = mapnik::image_dtype_null,
+		Rgba8 = mapnik::image_dtype_rgba8,
+		Gray8 = mapnik::image_dtype_gray8,
+		Gray8s = mapnik::image_dtype_gray8s,
+		Gray16 = mapnik::image_dtype_gray16,
+		Gray16s = mapnik::image_dtype_gray16s,
+		Gray32 = mapnik::image_dtype_gray32,
+		Gray32s = mapnik::image_dtype_gray32s,
+		Gray32f = mapnik::image_dtype_gray32f,
+		Gray64 = mapnik::image_dtype_gray64,
+		Gray64s = mapnik::image_dtype_gray64s,
+		Gray64f = mapnik::image_dtype_gray64f
+	};
+
 	public enum class CompositeOp : int
 	{
 		Clear = mapnik::clear,
@@ -53,19 +75,14 @@ namespace NETMapnik
 	ref class Palette;
 	ref class ImageView;
 
-	typedef std::shared_ptr<mapnik::image_32> image_ptr;
+	typedef std::shared_ptr<mapnik::image_any> image_ptr;
 
 	public ref class Image
 	{
 	public:
 		Image(System::Int32 width, System::Int32 height);
+		Image(System::Int32 width, System::Int32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options);
 		~Image();
-
-		property Color^ Background
-		{
-			Color^ get();
-			void set(Color^ value);
-		}
 
 		Color^ GetPixel(System::Int32 x, System::Int32 y);
 		void SetPixel(System::Int32 x, System::Int32 y, Color^ value);

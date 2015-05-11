@@ -16,19 +16,17 @@ namespace NETMapnik
 {
 	Grid::Grid(System::Int32 width, System::Int32 height)
 	{
-		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, "__id__", 1));
+		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, "__id__"));
 	}
 
 	Grid::Grid(System::Int32 width, System::Int32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
 		// defaults
 		std::string key = "__id__";
-		int resolution = 1;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
 		optionsParser->TryGetString("Key", key);
-		optionsParser->TryGetInt32("Resolution", resolution);
-		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, key, resolution));
+		_grid = new grid_ptr(std::make_shared<mapnik::grid>(width, height, key));
 	}
 
 	Grid::~Grid()
@@ -81,7 +79,7 @@ namespace NETMapnik
 
 	System::Collections::Generic::IEnumerable<System::String^>^ Grid::Fields()
 	{
-		std::set<std::string> const& a = (*_grid)->property_names();
+		std::set<std::string> const& a = (*_grid)->get_fields();
 		std::set<std::string>::const_iterator itr = a.begin();
 		std::set<std::string>::const_iterator end = a.end();
 		System::Collections::Generic::List<System::String^>^ l = gcnew System::Collections::Generic::List<System::String^>();
@@ -113,7 +111,13 @@ namespace NETMapnik
 		bool add_features = true;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGetUInt32("Resolution", resolution);
+		if (optionsParser->TryGetUInt32("Resolution", resolution))
+		{
+			if (resolution == 0)
+			{
+				throw gcnew System::ArgumentException("Resolution cannot be 0", "Resolution");
+			}	
+		}
 		optionsParser->TryGetBoolean("AddFeatures", add_features);
 		optionsParser->TryGetString("Format", format);
 

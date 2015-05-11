@@ -12,8 +12,11 @@ namespace NETMapnik
 	{
 	public:
 		Color(System::String^ color);
+		Color(System::String^ color, System::Boolean premultiplied);
 		Color(System::Int32 r, System::Int32 g, System::Int32 b);
+		Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Boolean premultiplied);
 		Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Int32 a);
+		Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Int32 a, System::Boolean premultiplied);
 		~Color();
 
 		property System::Int32 R
@@ -38,6 +41,12 @@ namespace NETMapnik
 		{
 			System::Int32 get();
 			void set(System::Int32);
+		}
+
+		property System::Boolean Premultiplied
+		{
+			System::Boolean get();
+			void set(System::Boolean);
 		}
 
 		 System::String^ ToString() override;

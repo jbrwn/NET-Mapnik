@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "mapnik_geometry.h"
 #include "mapnik_projection.h"
-#include "proj_transform_adapter.h"
 #include "utils.h"
 
 // mapnik
+#include <mapnik\datasource.hpp>
+#include <mapnik\geometry_reprojection.hpp>
 #include <mapnik\feature.hpp>
 #include <mapnik\util\geometry_to_geojson.hpp>
 #include <mapnik\util\geometry_to_wkt.hpp>
@@ -34,7 +35,7 @@ namespace NETMapnik
 	System::String^ Geometry::ToWKT()
 	{
 		std::string wkt;
-		if (!mapnik::util::to_wkt(wkt, (*_geom)->paths()))
+		if (!mapnik::util::to_wkt(wkt, (*_geom)->get_geometry()))
 		{
 			throw gcnew System::Exception("Failed to generate WKT");
 		}
@@ -43,16 +44,30 @@ namespace NETMapnik
 
 	array<System::Byte>^ Geometry::ToWKB()
 	{
-		mapnik::util::wkb_buffer_ptr wkb = mapnik::util::to_wkb((*_geom)->paths(), mapnik::util::wkbNDR);
+		mapnik::util::wkb_buffer_ptr wkb = mapnik::util::to_wkb((*_geom)->get_geometry(), mapnik::wkbNDR);
+		if (!wkb)
+		{
+			throw gcnew System::Exception("Failed to generate WKB - geometry likely null");
+		}
 		array<System::Byte>^ data = gcnew array<System::Byte>(wkb->size());
 		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&wkb->buffer()[0]), data, 0, wkb->size());
 		return data;
 	}
 
+	bool to_geojson_projected(std::string & json,
+		mapnik::geometry::geometry<double> const& geom,
+		mapnik::proj_transform const& prj_trans)
+	{
+		unsigned int n_err = 0;
+		mapnik::geometry::geometry<double> projected_geom = mapnik::geometry::reproject_copy(geom, prj_trans, n_err);
+		if (n_err > 0) return false;
+		return mapnik::util::to_geojson(json, projected_geom);
+	}
+
 	System::String^ Geometry::ToJSON()
 	{
 		std::string json;
-		if (!mapnik::util::to_geojson(json, (*_geom)->paths()))
+		if (!mapnik::util::to_geojson(json, (*_geom)->get_geometry()))
 		{
 			throw gcnew System::Exception("Failed to generate GeoJSON");
 		}
@@ -63,15 +78,8 @@ namespace NETMapnik
 	{
 		std::string json;
 		mapnik::proj_transform const& prj_trans = *transform->NativeObject();
-		NETMapnik::proj_transform_container projected_paths;
-		for (auto & geom : (*_geom)->paths())
-		{
-			projected_paths.push_back(new NETMapnik::proj_transform_path_type(geom, prj_trans));
-		}
-		using sink_type = std::back_insert_iterator<std::string>;
-		static const mapnik::json::multi_geometry_generator_grammar<sink_type, NETMapnik::proj_transform_container> proj_grammar;
-		sink_type sink(json);
-		if (!boost::spirit::karma::generate(sink, proj_grammar, projected_paths))
+		mapnik::geometry::geometry<double> const& geom = (*_geom)->get_geometry();
+		if (!to_geojson_projected(json, geom, prj_trans))
 		{
 			throw gcnew System::Exception("Failed to generate GeoJSON");
 		}

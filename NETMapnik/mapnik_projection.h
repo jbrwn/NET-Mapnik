@@ -12,6 +12,7 @@ namespace NETMapnik
 	{
 	public:
 		Projection(System::String^ name);
+		Projection(System::String^ name, System::Boolean lazy);
 		~Projection();
 		array<System::Double>^ Forward(System::Double x, System::Double y);
 		array<System::Double>^ Forward(System::Double minx, System::Double miny, System::Double maxx, System::Double maxy);

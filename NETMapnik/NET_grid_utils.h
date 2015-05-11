@@ -34,7 +34,7 @@ namespace NETMapnik
 		{
 			std::uint16_t idx = 0;
 			array<wchar_t>^ line = gcnew array<wchar_t>(array_size);
-			typename T::value_type const* row = data.getRow(y);
+			typename T::value_type const* row = data.get_row(y);
 			for (unsigned x = 0; x < data.width(); ++x)
 			{
 				typename T::value_type feature_id = row[x];
@@ -94,7 +94,7 @@ namespace NETMapnik
 		{
 			std::uint16_t idx = 0;
 			array<wchar_t>^ line = gcnew array<wchar_t>(array_size);
-			mapnik::grid::value_type const* row = grid_type.getRow(y);
+			mapnik::grid::value_type const* row = grid_type.get_row(y);
 			for (unsigned x = 0; x < grid_type.width(); x = x + resolution)
 			{
 				typename T::value_type feature_id = row[x];
@@ -144,7 +144,7 @@ namespace NETMapnik
 			return;
 		}
 
-		std::set<std::string> const& attributes = grid_type.property_names();
+		std::set<std::string> const& attributes = grid_type.get_fields();
 		typename T::feature_type::const_iterator feat_end = g_features.end();
 		for (std::vector<mapnik::grid::lookup_type>::const_iterator iter = key_order.begin(), stop = key_order.end(); iter != stop; ++iter)
 		{

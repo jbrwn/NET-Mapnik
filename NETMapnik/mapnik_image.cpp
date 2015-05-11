@@ -1,24 +1,27 @@
 #include "stdafx.h"
+
+// mapnik
+#include <mapnik\color.hpp>
+#include <mapnik\image.hpp>
+#include <mapnik\image_any.hpp>
+#include <mapnik\image_reader.hpp>
+#include <mapnik\image_util.hpp>
+#include <mapnik\image_copy.hpp>
+
+#include <mapnik\image_compositing.hpp>
+#include <mapnik\image_filter_types.hpp>
+#include <mapnik\image_filter.hpp> 
+
 #include "mapnik_image.h"
 #include "mapnik_color.h"
 #include "mapnik_palette.h"
 #include "mapnik_image_view.h"
 #include "NET_options_parser.h"
 
-#include <memory>
-
-// mapnik
-#include <mapnik\color.hpp>
-#include <mapnik\graphics.hpp>
-#include <mapnik\image_data.hpp>
-#include <mapnik\image_reader.hpp>
-#include <mapnik\image_util.hpp>
-#include <mapnik\image_compositing.hpp>
-#include <mapnik\image_filter_types.hpp>
-#include <mapnik\image_filter.hpp> 
-
 // boost
 #include <boost\optional\optional.hpp>
+
+#include <memory>
 
 #include <msclr\marshal_cppstd.h>
 
@@ -26,7 +29,29 @@ namespace NETMapnik
 {
 	Image::Image(System::Int32 width, System::Int32 height)
 	{
-		_img = new image_ptr(std::make_shared<mapnik::image_32>(width, height));
+		_img = new image_ptr(std::make_shared<mapnik::image_any>(width, height));
+	} 
+	Image::Image(System::Int32 width, System::Int32 height, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
+	{
+		mapnik::image_dtype dtype = mapnik::image_dtype_rgba8;
+		bool initialize = true;
+		bool premultiplied = false;
+		bool painted = false;
+		
+		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
+		int type;
+		if (optionsParser->TryGetInt32("Type", type))
+		{
+			dtype = static_cast<mapnik::image_dtype>(type);
+			if (dtype >= mapnik::image_dtype::IMAGE_DTYPE_MAX)
+			{
+				throw gcnew System::Exception("Image 'type' must be a valid image type");
+			}
+		}
+		optionsParser->TryGetBoolean("Initialize", initialize);
+		optionsParser->TryGetBoolean("Premultiplied", premultiplied);
+		optionsParser->TryGetBoolean("Painted", painted);
+		_img = new image_ptr(std::make_shared<mapnik::image_any>(width, height, dtype, initialize, premultiplied, painted));
 	}
 
 	Image::Image(image_ptr img)
@@ -45,20 +70,6 @@ namespace NETMapnik
 	image_ptr Image::NativeObject()
 	{
 		return *_img;
-	}
-
-	Color^ Image::Background::get()
-	{
-		boost::optional<mapnik::color> const& bg = (*_img)->get_background();
-		if (!bg)
-			return nullptr;
-		return gcnew Color(*bg);
-	}
-
-	void Image::Background::set(Color^ value)
-	{
-		color_ptr c = value->NativeObject();
-		(*_img)->set_background(*c);
 	}
 
 	void Image::Save(System::String^ path)
@@ -80,7 +91,7 @@ namespace NETMapnik
 
 		try
 		{
-			mapnik::save_to_file((*_img)->data(), unmanagedPath, unmanagedFormat);
+			mapnik::save_to_file(*(*_img), unmanagedPath, unmanagedFormat);
 		}
 		catch (const std::exception& ex)
 		{
@@ -95,7 +106,7 @@ namespace NETMapnik
 
 		try
 		{
-			std::string s = save_to_string((*_img)->data(), unmanagedFormat);
+			std::string s = save_to_string(*(*_img), unmanagedFormat);
 			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
 			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
 			return data;
@@ -113,7 +124,7 @@ namespace NETMapnik
 		palette_ptr p = palette->NativeObject();
 		try
 		{
-			std::string s = save_to_string((*_img)->data(), unmanagedFormat,*p);
+			std::string s = save_to_string(*(*_img), unmanagedFormat,*p);
 			array<System::Byte>^ data = gcnew array<System::Byte>(s.size());
 			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr(&s[0]), data, 0, s.size());
 			return data;
@@ -127,57 +138,33 @@ namespace NETMapnik
 
 	Color^ Image::GetPixel(System::Int32 x, System::Int32 y)
 	{
-		mapnik::image_data_rgba8 const& data = (*_img)->data();
-		if (x >= 0 && x < static_cast<int>(data.width())
-			&& y >= 0 && y < static_cast<int>(data.height()))
+		if (x >= 0 && x < static_cast<int>((*_img)->width())
+			&& y >= 0 && y < static_cast<int>((*_img)->height()))
 		{
-			unsigned pixel = data(x, y);
-			unsigned r = pixel & 0xff;
-			unsigned g = (pixel >> 8) & 0xff;
-			unsigned b = (pixel >> 16) & 0xff;
-			unsigned a = (pixel >> 24) & 0xff;
-			return gcnew Color(mapnik::color(r, g, b, a));
+			mapnik::color val = mapnik::get_pixel<mapnik::color>(*(*_img), x, y);
+			return gcnew Color(val);
 		}
 		return nullptr;
 	}
+
 	void Image::SetPixel(System::Int32 x, System::Int32 y, Color^ value)
 	{
-		mapnik::image_data_rgba8 & data = (*_img)->data();
-		if (x < static_cast<int>(data.width()) && y < static_cast<int>(data.height()))
+		if(x < 0 || x >= static_cast<int>((*_img)->width()) || y < 0 || y >= static_cast<int>((*_img)->height()))
 		{
-			data(x, y) = value->NativeObject()->rgba();
-			return;
+			throw gcnew System::Exception("Invalid pixel requested");
 		}
-		throw gcnew System::Exception("invalid pixel requested");
+		mapnik::set_pixel(*(*_img), x, y, *value->NativeObject());
+		return;
+
 	}
 	void Image::SetGrayScaleToAlpha()
 	{
-		(*_img)->set_grayscale_to_alpha();
+		mapnik::set_grayscale_to_alpha(*(*_img));
 	}
 
 	void Image::SetGrayScaleToAlpha(Color^ color)
 	{
-		mapnik::image_data_rgba8 & data = (*_img)->data();
-		for (unsigned int y = 0; y < data.height(); ++y)
-		{
-			unsigned int* row_from = data.getRow(y);
-			for (unsigned int x = 0; x < data.width(); ++x)
-			{
-				unsigned rgba = row_from[x];
-				// TODO - big endian support
-				unsigned r = rgba & 0xff;
-				unsigned g = (rgba >> 8) & 0xff;
-				unsigned b = (rgba >> 16) & 0xff;
-
-				// magic numbers for grayscale
-				unsigned a = (int)((r * .3) + (g * .59) + (b * .11));
-
-				row_from[x] = (a << 24) |
-					(color->NativeObject()->blue() << 16) |
-					(color->NativeObject()->green() << 8) |
-					(color->NativeObject()->red());
-			}
-		}
+		mapnik::set_grayscale_to_alpha(*(*_img), *color->NativeObject());
 	}
 
 	System::Int32 Image::Width()
@@ -234,41 +221,59 @@ namespace NETMapnik
 			// do work
 			if (filters.size() > 0)
 			{
-				mapnik::filter::filter_visitor<mapnik::image_32> visitor(*(image->NativeObject()));
+				mapnik::filter::filter_visitor<mapnik::image_any> visitor(*(image->NativeObject()));
 				for (mapnik::filter::filter_type const& filter_tag : filters)
 				{
 					mapnik::util::apply_visitor(visitor, filter_tag);
 				}
 			}
+			bool demultiply_im1 = mapnik::premultiply_alpha(*(*_img));
+			bool demultiply_im2 = mapnik::premultiply_alpha(*image->NativeObject());
+
 			mapnik::composite(
-				(*_img)->data(), 
-				image->NativeObject()->data(), 
+				*(*_img), 
+				*image->NativeObject(), 
 				mode, 
 				opacity, 
 				dx,
 				dy
 			);
-			return gcnew Image(*_img);
+			if (demultiply_im1)
+			{
+				mapnik::demultiply_alpha(*(*_img));
+			}
+			if (demultiply_im2)
+			{
+				mapnik::demultiply_alpha(*image->NativeObject());
+			}
 		}
 		catch (std::exception const& ex)
 		{
 			throw gcnew System::Exception(msclr::interop::marshal_as<System::String^>(ex.what()));
 		}
+		return gcnew Image(*_img);
 	}
 
 	void Image::Premultiply()
 	{
-		(*_img)->premultiply();
+		mapnik::premultiply_alpha(*(*_img));
 	}
 
 	void Image::Demultiply()
 	{
-		(*_img)->demultiply();
+		mapnik::demultiply_alpha(*(*_img));
 	}
 
 	void Image::Clear()
 	{
-		(*_img)->clear();
+		try
+		{
+			mapnik::fill(*(*_img), 0);
+		}
+		catch (std::exception const& ex)
+		{
+			throw gcnew System::Exception(msclr::interop::marshal_as<System::String^>(ex.what()));
+		}
 	}
 
 	System::Int32 Image::Compare(Image ^ image)
@@ -281,7 +286,6 @@ namespace NETMapnik
 		// defaults
 		int threshold = 16;
 		bool alpha = true;
-		unsigned difference = 0;
 
 		// get options
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
@@ -291,42 +295,17 @@ namespace NETMapnik
 		// do work
 		image_ptr img2 = image->NativeObject();
 		if ((*_img)->width() != img2->width() ||
-			(*_img)->height() != img2->height()) {
+			(*_img)->height() != img2->height()) 
+		{
 			throw gcnew System::Exception("image dimensions do not match");
 		}
-		mapnik::image_data_rgba8 const& data = (*_img)->data();
-		mapnik::image_data_rgba8 const& data2 = img2->data();
-		for (unsigned int y = 0; y < data.height(); ++y)
+
+		unsigned diff =  mapnik::compare(*(*_img), *img2, threshold, alpha);
+		if (diff > INT_MAX)
 		{
-			const unsigned int* row_from = data.getRow(y);
-			const unsigned int* row_from2 = data2.getRow(y);
-			for (unsigned int x = 0; x < data.width(); ++x)
-			{
-				unsigned rgba = row_from[x];
-				unsigned rgba2 = row_from2[x];
-				unsigned r = rgba & 0xff;
-				unsigned g = (rgba >> 8) & 0xff;
-				unsigned b = (rgba >> 16) & 0xff;
-				unsigned r2 = rgba2 & 0xff;
-				unsigned g2 = (rgba2 >> 8) & 0xff;
-				unsigned b2 = (rgba2 >> 16) & 0xff;
-				if (std::abs(static_cast<int>(r - r2)) > threshold ||
-					std::abs(static_cast<int>(g - g2)) > threshold ||
-					std::abs(static_cast<int>(b - b2)) > threshold) {
-					++difference;
-					continue;
-				}
-				if (alpha) {
-					unsigned a = (rgba >> 24) & 0xff;
-					unsigned a2 = (rgba2 >> 24) & 0xff;
-					if (std::abs(static_cast<int>(a - a2)) > threshold) {
-						++difference;
-						continue;
-					}
-				}
-			}
+			throw gcnew System::OverflowException("Difference is greater than int32 max");
 		}
-		return difference;
+		return static_cast<System::Int32>(diff);
 	}
 
 	Image^ Image::Open(System::String ^ path)
@@ -340,8 +319,7 @@ namespace NETMapnik
 				std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(filename, *type));
 				if (reader.get())
 				{
-					std::shared_ptr<mapnik::image_32> image_ptr(new mapnik::image_32(reader->width(), reader->height()));
-					reader->read(0, 0, image_ptr->data());
+					std::shared_ptr<mapnik::image_any> image_ptr = std::make_shared<mapnik::image_any>(reader->read(0, 0, reader->width(), reader->height()));
 					return gcnew Image(image_ptr);
 				}
 				throw gcnew System::Exception("Failed to load: " + path);
@@ -362,8 +340,7 @@ namespace NETMapnik
 			std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(reinterpret_cast<char*>(pBytes), bytes->Length));
 			if (reader.get())
 			{
-				std::shared_ptr<mapnik::image_32> image_ptr(new mapnik::image_32(reader->width(), reader->height()));
-				reader->read(0, 0, image_ptr->data());
+				std::shared_ptr<mapnik::image_any> image_ptr = std::make_shared<mapnik::image_any>(reader->read(0, 0, reader->width(), reader->height()));
 				return gcnew Image(image_ptr);
 			}
 			throw gcnew System::Exception("Failed to load from buffer");

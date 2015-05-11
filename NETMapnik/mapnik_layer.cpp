@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "mapnik_layer.h"
 #include "mapnik_datasource.h"
+#include "mapnik_memory_datasource.h"
 #include "utils.h"
 
 #include <memory>
@@ -9,6 +10,7 @@
 #include <mapnik\datasource.hpp>
 #include <mapnik\layer.hpp>
 #include <mapnik\params.hpp>
+#include <mapnik\memory_datasource.hpp>
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
@@ -68,7 +70,7 @@ namespace NETMapnik
 		System::Collections::Generic::List<System::String^>^  s = gcnew System::Collections::Generic::List<System::String^>();
 		for (unsigned i = 0; i < style_names.size(); ++i)
 		{
-			s->Add(msclr::interop::marshal_as<System::String^>((style_names[i].c_str())));
+			s->Add(msclr::interop::marshal_as<System::String^>((style_names[i])));
 		}
 		return s;
 	}
@@ -91,6 +93,7 @@ namespace NETMapnik
 		}
 		return nullptr;
 	}
+
 	void Layer::Datasource::set(NETMapnik::Datasource^ value)
 	{
 		(*_layer)->set_datasource(value->NativeObject());
@@ -100,41 +103,14 @@ namespace NETMapnik
 	System::Collections::Generic::IDictionary<System::String^, System::Object^>^ Layer::Describe()
 	{
 		System::Collections::Generic::Dictionary<System::String^, System::Object^>^ description = gcnew System::Collections::Generic::Dictionary<System::String^, System::Object^>();
-		if ((*_layer)->name() != "")
-		{
-			description["name"] = msclr::interop::marshal_as<System::String^>((*_layer)->name().c_str());
-		}
 
-		if ((*_layer)->srs() != "")
-		{
-			description["srs"] = msclr::interop::marshal_as<System::String^>((*_layer)->srs().c_str());
-		}
-
-		if (!(*_layer)->active())
-		{
-			description["status"] = (*_layer)->active();
-		}
-
-		if ((*_layer)->clear_label_cache())
-		{
-			description["clear_label_cache"] = (*_layer)->clear_label_cache();
-		}
-
-		if ((*_layer)->min_zoom() > 0)
-		{
-			description["minzoom"] = (*_layer)->min_zoom();
-		}
-
-		if ((*_layer)->max_zoom() != (std::numeric_limits<double>::max)())
-		{
-			description["maxzoom"] = (*_layer)->max_zoom();
-		}
-
-		if ((*_layer)->queryable())
-		{
-			description["queryable"] = (*_layer)->queryable();
-		}
-
+		description["name"] = msclr::interop::marshal_as<System::String^>((*_layer)->name());
+		description["srs"] = msclr::interop::marshal_as<System::String^>((*_layer)->srs());
+		description["status"] = (*_layer)->active();
+		description["clear_label_cache"] = (*_layer)->clear_label_cache();
+		description["minzoom"] = (*_layer)->min_zoom();
+		description["maxzoom"] = (*_layer)->max_zoom();
+		description["queryable"] = (*_layer)->queryable();
 		description["styles"] = Styles;
 
 		mapnik::datasource_ptr datasource = (*_layer)->datasource();

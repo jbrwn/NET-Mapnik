@@ -17,16 +17,6 @@ namespace NETMapnik.Test
             Assert.AreEqual(i.Width(), 256);
             Assert.AreEqual(i.Height(), 256);
             Assert.IsFalse(i.Painted());
-            Assert.IsNull(i.Background);
-        }
-
-        [TestMethod]
-        public void Image_GetSetBackground()
-        {
-            Image i = new Image(256, 256);
-            Assert.IsNull(i.Background);
-            i.Background = new Color("black");
-            Assert.AreEqual(i.Background.ToString(), new Color("black").ToString());
         }
 
         [TestMethod]
@@ -43,8 +33,10 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_SetGrayScaleToAlpha()
         {
+            Map m = new Map(256, 256);
             Image i = new Image(256, 256);
-            i.Background = new Color("white");
+            m.Background = new Color("white");
+            m.Render(i);
             i.SetGrayScaleToAlpha();
             Color c = i.GetPixel(0, 0);
             Assert.AreEqual(c.R, 255);
@@ -52,7 +44,8 @@ namespace NETMapnik.Test
             Assert.AreEqual(c.B, 255);
             Assert.AreEqual(c.A, 255);
 
-            i.Background = new Color("black");
+            m.Background = new Color("black");
+            m.Render(i);
             i.SetGrayScaleToAlpha();
             Color c1 = i.GetPixel(0, 0);
             Assert.AreEqual(c1.R, 255);
@@ -71,8 +64,10 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_Open()
         {
+            Map m = new Map(10, 10);
             Image i1 = new Image(10, 10);
-            i1.Background = new Color("green");
+            m.Background = new Color("green");
+            m.Render(i1);
 
             Image i2 = Image.Open(@".\data\10x10green.png");
             Assert.AreEqual(i1.Compare(i2), 0);
@@ -81,9 +76,10 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_FromBytes()
         {
+            Map m = new Map(10, 10);
             Image i1 = new Image(10, 10);
-            i1.Background = new Color("green");
-
+            m.Background = new Color("green");
+            m.Render(i1);
 
             byte[] buffer = File.ReadAllBytes(@".\data\10x10green.png");
             Image i2 = Image.FromBytes(buffer);
@@ -93,8 +89,10 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_Save()
         {
+            Map m = new Map(10, 10);
             Image i1 = new Image(10, 10);
-            i1.Background = new Color("green");
+            m.Background = new Color("green");
+            m.Render(i1);
             string filename = @".\data\tmp\" + Guid.NewGuid().ToString() + ".png";
             i1.Save(filename);
 
@@ -107,8 +105,10 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_Encode()
         {
+            Map m = new Map(10, 10);
             Image i1 = new Image(10, 10);
-            i1.Background = new Color("green");
+            m.Background = new Color("green");
+            m.Render(i1);
             byte[] bytes1 = i1.Encode("png");
             byte[] bytes2 = File.ReadAllBytes(@".\data\10x10green.png");
             CollectionAssert.AreEqual(bytes1, bytes2);
@@ -135,6 +135,8 @@ namespace NETMapnik.Test
         [TestMethod]
         public void Image_Compare()
         {
+            Map m1 = new Map(256, 256);
+            Map m2 = new Map(256, 256);
             Image i1 = new Image(256, 256);
             Image i2 = new Image(256, 256);
             Assert.AreEqual(i1.Compare(i2), 0);
@@ -142,18 +144,24 @@ namespace NETMapnik.Test
             i1.SetPixel(0, 0, new Color("white"));
             Assert.AreEqual(i1.Compare(i2), 1);
 
-            i1.Background = new Color("black");
-            Assert.AreEqual(i1.Compare(i2), i1.Width() * i1.Height());
+            m1.Background = new Color("black");
+            m1.Render(i1);
+            Assert.AreEqual(i1.Width() * i1.Height(), i1.Compare(i2));
 
             //test options
+            m1.Background= new Color(100, 100, 100, 255);
+            m1.Render(i1);
+            i2 = new Image(256, 256);
+            m2.Background = new Color(100,100,100,100);
+            m2.Render(i2);
             Dictionary<string, object> options;
-            i1.Background= new Color(255, 255, 255, 255);
-            i2.Background = new Color(255, 255, 255, 0);
             options = new Dictionary<string, object> { { "Alpha", false } };
             Assert.AreEqual(i1.Compare(i2, options), 0);
 
-            i1.Background = new Color(255, 255, 255);
-            i2.Background = new Color(255, 255, 255);
+            m1.Background = new Color(255, 255, 255);
+            m1.Render(i1);
+            m2.Background = new Color(255, 255, 255);
+            m2.Render(i2);
             i2.SetPixel(0, 0, new Color(250, 250, 250));
             options = new Dictionary<string, object> { { "Threshold", 5 } };
             Assert.AreEqual(i1.Compare(i2, options), 0);

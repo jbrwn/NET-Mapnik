@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NETMapnik.Test</RootNamespace>
     <AssemblyName>NETMapnik.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,16 +92,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ImageTests.cs" />
+    <Compile Include="ImageViewTests.cs" />
     <Compile Include="MapTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ImageTests.cs" />
     <Compile Include="ColorTest.cs" />
     <Compile Include="LayerTest.cs" />
     <Compile Include="DatasourceTests.cs" />
     <Compile Include="FeatureTests.cs" />
     <Compile Include="GeometryTests.cs" />
     <Compile Include="PaletteTests.cs" />
-    <Compile Include="ImageViewTests.cs" />
     <Compile Include="ProjectionTests.cs" />
     <Compile Include="GridViewTests.cs" />
     <Compile Include="GridTests.cs" />
@@ -112,10 +113,9 @@
   <ItemGroup>
     <ProjectReference Include="..\NETMapnik\NETMapnik.vcxproj">
       <Project>{b84651b2-ecbf-4dad-b501-da67268d99d3}</Project>
-      <Name>NETMapnik %28Visual Studio 2010%29</Name>
+      <Name>NETMapnik</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="data\9.112.195.pbf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -198,8 +198,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /y /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\*.dll $(ProjectDir)$(OutDir)
-xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\libs\mapnik $(ProjectDir)$(OutDir)mapnik
+    <PostBuildEvent>xcopy /y /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\lib\*.dll $(ProjectDir)$(OutDir)
+xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\lib\mapnik $(ProjectDir)$(OutDir)mapnik
 xcopy /y /e /i /d $(ProjectDir)..\lib\$(Platform)\mapnik-sdk\share $(ProjectDir)$(OutDir)share</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
