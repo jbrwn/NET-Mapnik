@@ -8,7 +8,7 @@
     <!--<licenseUrl></licenseUrl>-->
     <projectUrl>https://github.com/jbrwn/NET-Mapnik</projectUrl>
     <description>.NET bindings for the mapnik tile rendering library</description>
-    <releaseNotes>Requires Visual C++ Redistributable for Visual Studio 2015 Preview</releaseNotes>
+    <releaseNotes>Requires Visual C++ Redistributable for Visual Studio 2015 RC</releaseNotes>
     <tags>mapnik</tags>
   </metadata>
   <files>
