@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NETMapnik;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace NETMapnik.Test
 {
@@ -129,7 +131,7 @@ namespace NETMapnik.Test
         [TestMethod]
         public void VectorTile_GeoJSON()
         {
-            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "shape.input"));
+            Mapnik.RegisterDatasource(Path.Combine(Mapnik.Paths["InputPlugins"], "geojson.input"));
             string json = @"{""type"":""FeatureCollection"",""name"":""layer"",""features"":[{""type"":""Feature"",""geometry"":{""type"":""Point"",""coordinates"":[-121.9921875,47.9899216674142]},""properties"":{""name"":""geojson data""}}]}";
             VectorTile v = new VectorTile(0, 0, 0);
             v.AddGeoJSON(json, "layer");
@@ -140,11 +142,20 @@ namespace NETMapnik.Test
             CollectionAssert.AreEquivalent(new List<string>() { "layer" }, v.Names().ToList());
 
             //ToGeoJSON
-            string actual1 = v.ToGeoJSON("layer");
-            string actual2 = v.ToGeoJSON(0);
-            Assert.AreEqual(json, actual1);
-            Assert.AreEqual(json, actual2);
-
+            dynamic expected = JObject.Parse(json);
+            var results = new List<JObject>()
+            {
+                JObject.Parse(v.ToGeoJSON("layer")),
+                JObject.Parse(v.ToGeoJSON(0))
+            };
+            foreach (dynamic actual in results)
+            {
+                Assert.AreEqual(expected.FeatureCollection, actual.FeatureCollection);
+                Assert.AreEqual(expected.features[0].properties.name, actual.features[0].properties.name);
+                Assert.AreEqual(expected.features[0].geometry.type, actual.features[0].geometry.type);
+                Assert.AreEqual(expected.features[0].geometry.coordinates[0], actual.features[0].geometry.coordinates[0]);
+                Assert.AreEqual(expected.features[0].geometry.coordinates[1], actual.features[0].geometry.coordinates[1]);
+            }
         }
 
         [TestMethod]

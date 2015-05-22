@@ -6,11 +6,10 @@
 #include <memory>
 
 // mapnik
-#include <mapnik\util\variant.hpp>
 #include <mapnik\feature_factory.hpp>
 #include <mapnik\json\feature_parser.hpp>
-#include <mapnik\json\feature_generator_grammar.hpp>
 #include <mapnik\value_types.hpp>
+#include <mapnik\util\feature_to_geojson.hpp>
 
 // microsoft
 #include <msclr\marshal_cppstd.h>
@@ -63,11 +62,8 @@ namespace NETMapnik
 
 	System::String^ Feature::ToJSON()
 	{
-		typedef std::back_insert_iterator<std::string> sink_type;
-		static const mapnik::json::feature_generator_grammar<sink_type, mapnik::feature_impl> grammar;
 		std::string json;
-		sink_type sink(json);
-		if (!boost::spirit::karma::generate(sink, grammar,*(*_feature)))
+		if (!mapnik::util::to_geojson(json,*(*_feature)))
 		{
 			throw gcnew System::Exception("Failed to generate GeoJSON");
 		}

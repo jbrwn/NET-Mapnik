@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B84651B2-ECBF-4DAD-B501-DA67268D99D3}</ProjectGuid>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>NETMapnik</RootNamespace>
     <ProjectName>NETMapnik</ProjectName>
@@ -114,14 +114,14 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;_WINDOWS;BOOST_ALL_NO_LIB;BOOST_MSVC_ENABLE_2014_JUN_CTP;BOOST_VARIANT_DO_NOT_USE_VARIADIC_TEMPLATES;HAVE_JPEG;HAVE_PNG;HAVE_WEBP;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;SVG_RENDERER;_CLR_NATIVE_THREADS;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;HAVE_CAIRO;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\x86\mapnik-sdk\includes\libxml2;..\lib\x86\mapnik-sdk\includes\google;..\lib\x86\mapnik-sdk\includes\freetype2;..\lib\x86\mapnik-sdk\includes\cairo;..\lib\x86\mapnik-sdk\includes\mapnik\agg;..\lib\x86\mapnik-sdk\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\x86\mapnik-sdk\include\libxml2;..\lib\x86\mapnik-sdk\include\google;..\lib\x86\mapnik-sdk\include\freetype2;..\lib\x86\mapnik-sdk\include\cairo;..\lib\x86\mapnik-sdk\include\mapnik\agg;..\lib\x86\mapnik-sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>mapnik.lib;libpng16.lib;zlib.lib;harfbuzz.lib;libwebp_dll.lib;libjpeg.lib;icuuc.lib;icuin.lib;cairo.lib;libboost_system-vc140-mt-1_57.lib;libxml2_a.lib;ws2_32.lib;libprotobuf-lite.lib;mapnik-wkt.lib;mapnik-json.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib\x86\mapnik-sdk\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\x86\mapnik-sdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -136,14 +136,15 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NOMINMAX;_WINDOWS;BOOST_ALL_NO_LIB;BOOST_MSVC_ENABLE_2014_JUN_CTP;BOOST_VARIANT_DO_NOT_USE_VARIADIC_TEMPLATES;HAVE_JPEG;HAVE_PNG;HAVE_WEBP;HAVE_TIFF;MAPNIK_USE_PROJ4;BOOST_REGEX_HAS_ICU;GRID_RENDERER;SVG_RENDERER;_CLR_NATIVE_THREADS;MAPNIK_THREADSAFE;BIGINT;HAVE_LIBXML2;HAVE_CAIRO;LIBXML_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\x64\mapnik-sdk\includes\libxml2;..\lib\x64\mapnik-sdk\includes\google;..\lib\x64\mapnik-sdk\includes\freetype2;..\lib\x64\mapnik-sdk\includes\cairo;..\lib\x64\mapnik-sdk\includes\mapnik\agg;..\lib\x64\mapnik-sdk\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\mapnik-vector-tile\src;..\lib\x64\mapnik-sdk\include\libxml2;..\lib\x64\mapnik-sdk\include\google;..\lib\x64\mapnik-sdk\include\freetype2;..\lib\x64\mapnik-sdk\include\cairo;..\lib\x64\mapnik-sdk\include\mapnik\agg;..\lib\x64\mapnik-sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>mapnik.lib;libpng16.lib;zlib.lib;harfbuzz.lib;libwebp_dll.lib;libjpeg.lib;icuuc.lib;icuin.lib;cairo.lib;libboost_system-vc140-mt-1_57.lib;libxml2_a.lib;ws2_32.lib;libprotobuf-lite.lib;mapnik-wkt.lib;mapnik-json.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib\x64\mapnik-sdk\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\x64\mapnik-sdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateMapFile>false</GenerateMapFile>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -178,7 +179,6 @@
     <ClInclude Include="mapnik_vector_tile.h" />
     <ClInclude Include="NET_grid_utils.h" />
     <ClInclude Include="NET_options_parser.h" />
-    <ClInclude Include="proj_transform_adapter.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
@@ -188,7 +188,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="json_proj_transform_grammar.cpp" />
     <ClCompile Include="mapnik.cpp" />
     <ClCompile Include="mapnik_color.cpp" />
     <ClCompile Include="mapnik_datasource.cpp" />

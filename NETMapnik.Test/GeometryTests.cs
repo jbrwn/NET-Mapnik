@@ -33,7 +33,7 @@ namespace NETMapnik.Test
             Datasource ds = new Datasource(options);
             Feature f = ds.Featureset().Next();
 
-            string expected = "Polygon((1 1,1 2,2 2,2 1,1 1))";
+            string expected = "POLYGON((1 1,1 2,2 2,2 1,1 1))";
             Assert.AreEqual(expected, f.Geometry().ToWKT());
 
         }

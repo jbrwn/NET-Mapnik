@@ -12,11 +12,14 @@
 namespace NETMapnik
 {
 	Projection::Projection(System::String^ name)
+		: Projection(name, false) {}
+	
+	Projection::Projection(System::String^ name, System::Boolean lazy)
 	{
 		try
 		{	
 			std::string unmanagedName = msclr::interop::marshal_as<std::string>(name);
-			_proj = new proj_ptr(std::make_shared<mapnik::projection>(unmanagedName));
+			_proj = new proj_ptr(std::make_shared<mapnik::projection>(unmanagedName, lazy));
 		}
 		catch (const std::exception& ex)
 		{

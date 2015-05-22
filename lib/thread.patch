@@ -1,0 +1,14 @@
+diff --git a/thread b/thread
+index c309623..630a281 100644
+--- a/thread
++++ b/thread
+@@ -5,7 +5,9 @@
+ #ifndef RC_INVOKED
+ 
+  #ifdef _M_CEE
++ #ifndef _CLR_NATIVE_THREADS
+   #error <thread> is not supported when compiling with /clr or /clr:pure.
++ #endif /* _CLR_NATIVE_THREADS */
+  #endif /* _M_CEE */
+ 
+ #include <exception>

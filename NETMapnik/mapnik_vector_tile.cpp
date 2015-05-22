@@ -5,14 +5,13 @@
 #include "mapnik_grid.h"
 #include "mapnik_feature.h"
 #include "NET_options_parser.h"
-#include "proj_transform_adapter.h"
 
 #include <mapnik\map.hpp>
 #include <mapnik\layer.hpp>
 #include <mapnik\geom_util.hpp>
 #include <mapnik\version.hpp>
 #include <mapnik\request.hpp>
-#include <mapnik\graphics.hpp>
+#include <mapnik\image_any.hpp>
 #include <mapnik\feature.hpp>
 #include <mapnik\projection.hpp>
 #include <mapnik\featureset.hpp>
@@ -23,9 +22,10 @@
 #include <mapnik\scale_denominator.hpp>
 #include <mapnik\util\geometry_to_geojson.hpp>
 #include <mapnik\feature_kv_iterator.hpp>
-#include <mapnik\json\geometry_generator_grammar.hpp>
-#include <mapnik\json\properties_generator_grammar.hpp>
 #include <mapnik\datasource_cache.hpp>
+#include <mapnik\util\feature_to_geojson.hpp>
+#include <mapnik\geometry_reprojection.hpp>
+#include <mapnik\hit_test_filter.hpp>
 
 #include <google\protobuf\io\coded_stream.h>
 #include "vector_tile_datasource.hpp"
@@ -39,105 +39,129 @@
 
 #include <msclr\marshal_cppstd.h>
 
-namespace NETMapnik
-{
-	template <typename PathType>
-	double path_to_point_distance(PathType & path, double x, double y)
+namespace detail {
+
+	struct p2p_distance
 	{
-		double x0 = 0;
-		double y0 = 0;
-		double distance = -1;
-		path.rewind(0);
-		MAPNIK_GEOM_TYPE geom_type = static_cast<MAPNIK_GEOM_TYPE>(path.type());
-		switch (geom_type)
+		p2p_distance(double x, double y)
+			: x_(x),
+			y_(y) {}
+
+		double operator() (mapnik::geometry::geometry_empty const&) const
 		{
-		case MAPNIK_POINT:
+			return -1;
+		}
+
+		double operator() (mapnik::geometry::point<double> const& geom) const
 		{
-			unsigned command;
-			bool first = true;
-			while (mapnik::SEG_END != (command = path.vertex(&x0, &y0)))
+			return mapnik::distance(geom.x, geom.y, x_, y_);
+		}
+		double operator() (mapnik::geometry::multi_point<double> const& geom) const
+		{
+			double distance = -1;
+			for (auto const& pt : geom)
 			{
-				if (command == mapnik::SEG_CLOSE) continue;
-				if (first)
-				{
-					distance = mapnik::distance(x, y, x0, y0);
-					first = false;
-					continue;
-				}
-				double d = mapnik::distance(x, y, x0, y0);
-				if (d < distance) distance = d;
+				double dist = operator()(pt);
+				if (dist >= 0 && (distance < 0 || dist < distance)) distance = dist;
 			}
 			return distance;
-			break;
 		}
-		case MAPNIK_POLYGON:
+		double operator() (mapnik::geometry::line_string<double> const& geom) const
 		{
-			double x1 = 0;
-			double y1 = 0;
-			bool inside = false;
-			unsigned command = path.vertex(&x0, &y0);
-			if (command == mapnik::SEG_END) return distance;
-			while (mapnik::SEG_END != (command = path.vertex(&x1, &y1)))
+			double distance = -1;
+			std::size_t num_points = geom.num_points();
+			if (num_points > 1)
 			{
-				if (command == mapnik::SEG_CLOSE) continue;
-				if (command == mapnik::SEG_MOVETO)
+				for (std::size_t i = 1; i < num_points; ++i)
 				{
-					x0 = x1;
-					y0 = y1;
-					continue;
+					auto const& pt0 = geom[i - 1];
+					auto const& pt1 = geom[i];
+					double dist = mapnik::point_to_segment_distance(x_, y_, pt0.x, pt0.y, pt1.x, pt1.y);
+					if (dist >= 0 && (distance < 0 || dist < distance)) distance = dist;
 				}
-				if ((((y1 <= y) && (y < y0)) ||
-					((y0 <= y) && (y < y1))) &&
-					(x < (x0 - x1) * (y - y1) / (y0 - y1) + x1))
+			}
+			return distance;
+		}
+		double operator() (mapnik::geometry::multi_line_string<double> const& geom) const
+		{
+			double distance = -1;
+			for (auto const& line : geom)
+			{
+				double dist = operator()(line);
+				if (dist >= 0 && (distance < 0 || dist < distance)) distance = dist;
+			}
+			return distance;
+		}
+		double operator() (mapnik::geometry::polygon<double> const& geom) const
+		{
+			auto const& exterior = geom.exterior_ring;
+			std::size_t num_points = exterior.num_points();
+			if (num_points < 4) return -1;
+			bool inside = false;
+			for (std::size_t i = 1; i < num_points; ++i)
+			{
+				auto const& pt0 = exterior[i - 1];
+				auto const& pt1 = exterior[i];
+				// todo - account for tolerance
+				if (mapnik::detail::pip(pt0.x, pt0.y, pt1.x, pt1.y, x_, y_))
 				{
 					inside = !inside;
 				}
-				x0 = x1;
-				y0 = y1;
 			}
-			return inside ? 0 : -1;
-			break;
-		}
-		case MAPNIK_LINESTRING:
-		{
-			double x1 = 0;
-			double y1 = 0;
-			bool first = true;
-			unsigned command = path.vertex(&x0, &y0);
-			if (command == mapnik::SEG_END) return distance;
-			while (mapnik::SEG_END != (command = path.vertex(&x1, &y1)))
+			if (!inside) return -1;
+			for (auto const& ring : geom.interior_rings)
 			{
-				if (command == mapnik::SEG_CLOSE) continue;
-				if (command == mapnik::SEG_MOVETO)
+				std::size_t num_interior_points = ring.size();
+				if (num_interior_points < 4)
 				{
-					x0 = x1;
-					y0 = y1;
 					continue;
 				}
-				if (first)
+				for (std::size_t j = 1; j < num_interior_points; ++j)
 				{
-					distance = mapnik::point_to_segment_distance(x, y, x0, y0, x1, y1);
-					first = false;
+					auto const& pt0 = ring[j - 1];
+					auto const& pt1 = ring[j];
+					if (mapnik::detail::pip(pt0.x, pt0.y, pt1.x, pt1.y, x_, y_))
+					{
+						inside = !inside;
+					}
 				}
-				else
-				{
-					double d = mapnik::point_to_segment_distance(x, y, x0, y0, x1, y1);
-					if (d >= 0 && d < distance) distance = d;
-				}
-				x0 = x1;
-				y0 = y1;
+			}
+			return inside ? 0 : -1;
+		}
+		double operator() (mapnik::geometry::multi_polygon<double> const& geom) const
+		{
+			double distance = -1;
+			for (auto const& poly : geom)
+			{
+				double dist = operator()(poly);
+				if (dist >= 0 && (distance < 0 || dist < distance)) distance = dist;
 			}
 			return distance;
-			break;
 		}
-		default:
+		double operator() (mapnik::geometry::geometry_collection<double> const& collection) const
+		{
+			double distance = -1;
+			for (auto const& geom : collection)
+			{
+				double dist = mapnik::util::apply_visitor((*this), geom);
+				if (dist >= 0 && (distance < 0 || dist < distance)) distance = dist;
+			}
 			return distance;
-			break;
 		}
-		return distance;
-	}
 
+		double x_;
+		double y_;
+	};
 
+}
+
+double path_to_point_distance(mapnik::geometry::geometry<double> const& geom, double x, double y)
+{
+	return mapnik::util::apply_visitor(detail::p2p_distance(x, y), geom);
+}
+
+namespace NETMapnik
+{
 	VectorTile::VectorTile(System::Int32 z, System::Int32 x, System::Int32 y)
 	{
 		_tile = new vector_tile::Tile();
@@ -187,11 +211,11 @@ namespace NETMapnik
 	{
 		// set defaults
 		unsigned path_multiplier = 16;
-		int buffer_size = 0;
+		int buffer_size = 1;
 		double scale_factor = 1.0;
 		unsigned offset_x = 0;
 		unsigned offset_y = 0;
-		unsigned tolerance = 1;
+		double area_threshold = 0.1;
 		double scale_denominator = 0.0;
 
 		// get options
@@ -201,34 +225,39 @@ namespace NETMapnik
 		optionsParser->TryGetDouble("ScaleDenominator", scale_denominator);
 		optionsParser->TryGetUInt32("OffsetX", offset_x);
 		optionsParser->TryGetUInt32("OffsetY", offset_y);
-		optionsParser->TryGetUInt32("Tolernace", tolerance);
+		optionsParser->TryGetDouble("AreaThreshold", area_threshold);
 		optionsParser->TryGetUInt32("PathMultiplier", path_multiplier);
 
 		try
 		{
-			mapnik::box2d<double> max_extent(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+			vector_tile::Tile new_tiledata;
 			std::string merc_srs("+init=epsg:3857");
-
-			for each (VectorTile^ vTile in vTiles)
+			mapnik::box2d<double> max_extent(-20037508.34, -20037508.34, 20037508.34, 20037508.34);
+			if (_width <= 0 || _height <= 0)
 			{
-				//get native tile object
-				vector_tile::Tile const *vt = vTile->NativeObject();
+				throw gcnew System::ArgumentOutOfRangeException("Vector tile width and height must be great than zero");
+			}
+			for each (VectorTile^ vt in vTiles)
+			{
+				if (vt->Width() <= 0 || vt->Height() <= 0)
+				{
+					throw gcnew System::ArgumentOutOfRangeException("Vector tile width and height must be great than zero");
+				}
 
-				if (_z == vTile->_z &&
-					_x == vTile->_x &&
-					_y == vTile->_y)
+				if (_z == vt->_z &&
+					_x == vt->_x &&
+					_y == vt->_y)
 				{
 					// merge 
-					_tile->MergeFrom(*vt);
+					_tile->MergeFrom(*vt->NativeObject());
 				}
 				else
 				{
+					new_tiledata.Clear();
 					// set up to render to new vtile
 					typedef mapnik::vector_tile_impl::backend_pbf backend_type;
 					typedef mapnik::vector_tile_impl::processor<backend_type> renderer_type;
-					vector_tile::Tile new_tiledata;
-					backend_type backend(new_tiledata,
-						path_multiplier);
+					backend_type backend(new_tiledata, path_multiplier);
 
 					// get mercator extent of target tile
 					mapnik::vector_tile_impl::spherical_mercator merc(_width);
@@ -243,29 +272,30 @@ namespace NETMapnik
 					map.set_maximum_extent(max_extent);
 
 					// source tile properties
-					unsigned x = vTile->_x;
-					unsigned y = vTile->_y;
-					unsigned z = vTile->_y;
-					unsigned width = vTile->_width;
+					unsigned x = vt->_x;
+					unsigned y = vt->_y;
+					unsigned z = vt->_y;
+					unsigned width = vt->_width;
 
-					unsigned num_layers = vt->layers_size();
+					vector_tile::Tile const& tiledata = *vt->NativeObject();
+					unsigned num_layers = tiledata.layers_size();
 					if (num_layers > 0)
 					{
-						for (int i = 0; i < vt->layers_size(); ++i)
+						for (int i = 0; i < tiledata.layers_size(); ++i)
 						{
-							vector_tile::Tile_Layer const& layer = vt->layers(i);
+							vector_tile::Tile_Layer const& layer = tiledata.layers(i);
 							mapnik::layer lyr(layer.name(), merc_srs);
-							MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+							std::shared_ptr<mapnik::vector_tile_impl::tile_datasource> ds = std::make_shared<
 								mapnik::vector_tile_impl::tile_datasource>(
 								layer,
-								x,//vTile->_x,
-								y,//vTile->_y,
-								z,//vTile->_z,
-								width//vTile->_width
+								x,//vt->_x,
+								y,//vt->_y,
+								z,//vt->_z,
+								width//vt->_width
 								);
 							ds->set_envelope(m_req.get_buffered_extent());
 							lyr.set_datasource(ds);
-							map.MAPNIK_ADD_LAYER(lyr);
+							map.add_layer(lyr);
 						}
 						renderer_type ren(backend,
 							map,
@@ -273,7 +303,7 @@ namespace NETMapnik
 							scale_factor,
 							offset_x,
 							offset_y,
-							tolerance);
+							area_threshold);
 						ren.apply(scale_denominator);
 
 						//merge
@@ -295,7 +325,7 @@ namespace NETMapnik
 		for (int i = 0; i < _tile->layers_size(); ++i)
 		{
 			vector_tile::Tile_Layer const& layer = _tile->layers(i);
-			names->Add(msclr::interop::marshal_as<System::String^>(layer.name().c_str()));
+			names->Add(msclr::interop::marshal_as<System::String^>(layer.name()));
 		}
 		return names;
 	}
@@ -342,6 +372,11 @@ namespace NETMapnik
 
 	System::Collections::Generic::IEnumerable<VectorQueryResult^>^ VectorTile::Query(double lon, double lat, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ options)
 	{
+		if (_width <= 0 || _height <= 0)
+		{
+			throw gcnew System::ArgumentOutOfRangeException("Can not query a vector tile with width or height of zero");
+		}
+
 		double tolerance = 0.0; // meters
 		std::string layer_name("");
 		double x = lon;
@@ -381,7 +416,7 @@ namespace NETMapnik
 			if (layer_idx > -1)
 			{
 				vector_tile::Tile_Layer const& layer = _tile->layers(layer_idx);
-				MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+				std::shared_ptr<mapnik::vector_tile_impl::tile_datasource> ds = std::make_shared<
 					mapnik::vector_tile_impl::tile_datasource>(
 					layer,
 					tile_x,
@@ -395,23 +430,9 @@ namespace NETMapnik
 					mapnik::feature_ptr feature;
 					while ((feature = fs->next()))
 					{
-						double distance = -1;
-						for (mapnik::geometry_type const& geom : feature->paths())
-						{
-							double d = path_to_point_distance(geom, x, y);
-							if (d >= 0)
-							{
-								if (distance >= 0)
-								{
-									if (d < distance) distance = d;
-								}
-								else
-								{
-									distance = d;
-								}
-							}
-						}
-						if (distance >= 0)
+						auto const& geom = feature->get_geometry();
+						double distance = path_to_point_distance(geom, x, y);
+						if (distance >= 0 && distance <= tolerance)
 						{
 							VectorQueryResult^ res = gcnew VectorQueryResult(
 								msclr::interop::marshal_as<System::String^>(layer.name()),
@@ -428,9 +449,8 @@ namespace NETMapnik
 		{
 			for (int i = 0; i < _tile->layers_size(); ++i)
 			{
-
 				vector_tile::Tile_Layer const& layer = _tile->layers(i);
-				MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+				std::shared_ptr<mapnik::vector_tile_impl::tile_datasource> ds = std::make_shared<
 					mapnik::vector_tile_impl::tile_datasource>(
 					layer,
 					tile_x,
@@ -444,23 +464,9 @@ namespace NETMapnik
 					mapnik::feature_ptr feature;
 					while ((feature = fs->next()))
 					{
-						double distance = -1;
-						for (mapnik::geometry_type const& geom : feature->paths())
-						{
-							double d = path_to_point_distance(geom, x, y);
-							if (d >= 0)
-							{
-								if (distance >= 0)
-								{
-									if (d < distance) distance = d;
-								}
-								else
-								{
-									distance = d;
-								}
-							}
-						}
-						if (distance >= 0)
+						auto const& geom = feature->get_geometry();
+						double distance = path_to_point_distance(geom, x, y);
+						if (distance >= 0 && distance <= tolerance)
 						{
 							VectorQueryResult^ res = gcnew VectorQueryResult(
 								msclr::interop::marshal_as<System::String^>(layer.name()),
@@ -737,8 +743,7 @@ namespace NETMapnik
 			x,
 			y,
 			z,
-			width,
-			true);
+			width);
 		mapnik::projection wgs84("+init=epsg:4326", true);
 		mapnik::projection merc("+init=epsg:3857", true);
 		mapnik::proj_transform prj_trans(merc, wgs84);
@@ -749,17 +754,10 @@ namespace NETMapnik
 			q.add_property_name(item.get_name());
 		}
 		mapnik::featureset_ptr fs = ds.features(q);
-		if (!fs)
+		bool first = true;
+		if (fs)
 		{
-			return false;
-		}
-		else
-		{
-			using sink_type = std::back_insert_iterator<std::string>;
-			static const mapnik::json::properties_generator_grammar<sink_type, mapnik::feature_impl> prop_grammar;
-			static const mapnik::json::multi_geometry_generator_grammar<sink_type, proj_transform_container> proj_grammar;
 			mapnik::feature_ptr feature;
-			bool first = true;
 			while ((feature = fs->next()))
 			{
 				if (first)
@@ -770,44 +768,19 @@ namespace NETMapnik
 				{
 					result += "\n,";
 				}
-				result += "{\"type\":\"Feature\",\"geometry\":";
-				if (feature->paths().empty())
+				std::string feature_str;
+				mapnik::feature_impl feature_new(feature->context(), feature->id());
+				feature_new.set_data(feature->get_data());
+				unsigned int n_err = 0;
+				feature_new.set_geometry(mapnik::geometry::reproject_copy(feature->get_geometry(), prj_trans, n_err));
+				if (!mapnik::util::to_geojson(feature_str, feature_new))
 				{
-					result += "null";
+					throw std::runtime_error("Failed to generate GeoJSON geometry");
 				}
-				else
-				{
-					std::string geometry;
-					sink_type sink(geometry);
-					proj_transform_container projected_paths;
-					for (auto & geom : feature->paths())
-					{
-						projected_paths.push_back(new proj_transform_path_type(geom, prj_trans));
-					}
-					if (boost::spirit::karma::generate(sink, proj_grammar, projected_paths))
-					{
-						result += geometry;
-					}
-					else
-					{
-						throw std::runtime_error("Failed to generate GeoJSON geometry");
-					}
-				}
-				result += ",\"properties\":";
-				std::string properties;
-				sink_type sink(properties);
-				if (boost::spirit::karma::generate(sink, prop_grammar, *feature))
-				{
-					result += properties;
-				}
-				else
-				{
-					throw std::runtime_error("Failed to generate GeoJSON properties");
-				}
-				result += "}";
+				result += feature_str;
 			}
-			return !first;
 		}
+		return !first;
 	}
 
 
@@ -820,11 +793,13 @@ namespace NETMapnik
 	{
 		std::string geojson_string = msclr::interop::marshal_as<std::string>(json);
 		std::string geojson_name = msclr::interop::marshal_as<std::string>(layer);
-		unsigned tolerance = 1;
+		double area_threshold = 0.1;
+		double simplify_distance = 0.0;
 		unsigned path_multiplier = 16;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGetUInt32("Tolerance", tolerance);
+		optionsParser->TryGetDouble("AreaThreshold", area_threshold);
+		optionsParser->TryGetDouble("SimplifyDistance", simplify_distance);
 		optionsParser->TryGetUInt32("PathMultiplier", path_multiplier);
 
 		try
@@ -840,20 +815,19 @@ namespace NETMapnik
 			mapnik::request m_req(map.width(), map.height(), map.get_current_extent());
 			m_req.set_buffer_size(8);
 			mapnik::parameters p;
-			// TODO - use mapnik core GeoJSON parser
-			p["type"] = "ogr";
-			p["file"] = geojson_string;
-			p["layer_by_index"] = "0";
+			p["type"] = "geojson";
+			p["inline"] = geojson_string;
 			mapnik::layer lyr(geojson_name, "+init=epsg:4326");
 			lyr.set_datasource(mapnik::datasource_cache::instance().create(p));
-			map.MAPNIK_ADD_LAYER(lyr);
+			map.add_layer(lyr);
 			renderer_type ren(backend,
 				map,
 				m_req,
 				1,
 				0,
 				0,
-				tolerance);
+				area_threshold);
+			ren.set_simplify_distance(simplify_distance);
 			ren.apply();
 			_painted = ren.painted();
 		}
@@ -965,7 +939,7 @@ namespace NETMapnik
 					if (lyr.name() == layer.name())
 					{
 						mapnik::layer lyr_copy(lyr);
-						MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+						std::shared_ptr<mapnik::vector_tile_impl::tile_datasource> ds = std::make_shared<
 							mapnik::vector_tile_impl::tile_datasource>(
 							layer,
 							x,
@@ -1058,16 +1032,24 @@ namespace NETMapnik
 			std::vector<mapnik::layer> const& layers = m->layers();
 
 			//render
-			mapnik::agg_renderer<mapnik::image_32> ren(
-				*m,
-				m_req,
-				variables,
-				*i,
-				scale_factor
-			);
-			ren.start_map_processing(*m);
-			process_layers(ren, m_req, map_proj, layers, scale_denom,*_tile,_z,_x,_y,_width, map_extent);
-			ren.end_map_processing(*m);
+			if (i->is<mapnik::image_rgba8>())
+			{
+				mapnik::image_rgba8 & im_data = mapnik::util::get<mapnik::image_rgba8>(*i);
+				mapnik::agg_renderer<mapnik::image_rgba8> ren(
+					*m,
+					m_req,
+					variables,
+					im_data,
+					scale_factor
+				);
+				ren.start_map_processing(*m);
+				process_layers(ren, m_req, map_proj, layers, scale_denom, *_tile, _z, _x, _y, _width, map_extent);
+				ren.end_map_processing(*m);
+			}
+			else
+			{
+				throw gcnew System::Exception("This image type is not currently supported for rendering.");
+			}
 		}
 		catch (const std::exception& ex)
 		{
@@ -1140,7 +1122,7 @@ namespace NETMapnik
 		{
 			for each(System::String^ name in fields)
 			{
-				g->add_property_name(msclr::interop::marshal_as<std::string>(name));
+				g->add_field(msclr::interop::marshal_as<std::string>(name));
 			}
 		}
 
@@ -1207,7 +1189,7 @@ namespace NETMapnik
 					}
 
 					// copy property names
-					std::set<std::string> attributes = g->property_names();
+					std::set<std::string> attributes = g->get_fields();
 					// todo - make this a static constant
 					std::string known_id_key = "__id__";
 					if (attributes.find(known_id_key) != attributes.end())
@@ -1226,7 +1208,7 @@ namespace NETMapnik
 					unsigned tile_z = _z;
 					unsigned tile_w = _width;
 					mapnik::layer lyr_copy(lyr);
-					MAPNIK_SHARED_PTR<mapnik::vector_tile_impl::tile_datasource> ds = MAPNIK_MAKE_SHARED<
+					std::shared_ptr<mapnik::vector_tile_impl::tile_datasource> ds = std::make_shared<
 						mapnik::vector_tile_impl::tile_datasource>(
 						layer,
 						tile_x,

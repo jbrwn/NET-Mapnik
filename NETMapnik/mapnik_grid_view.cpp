@@ -36,10 +36,10 @@ namespace NETMapnik
 	{
 		if ((*_grid_view)->width() > 0 && (*_grid_view)->height() > 0)
 		{
-			mapnik::grid_view::value_type first_pixel = (*_grid_view)->getRow(0)[0];
+			mapnik::grid_view::value_type first_pixel = (*_grid_view)->get_row(0)[0];
 			for (unsigned y = 0; y < (*_grid_view)->height(); ++y)
 			{
-				mapnik::grid_view::value_type const * row = (*_grid_view)->getRow(y);
+				mapnik::grid_view::value_type const * row = (*_grid_view)->get_row(y);
 				for (unsigned x = 0; x < (*_grid_view)->width(); ++x)
 				{
 					if (first_pixel != row[x])
@@ -57,7 +57,7 @@ namespace NETMapnik
 	{
 		if (x < (*_grid_view)->width() && y < (*_grid_view)->height())
 		{
-			mapnik::grid_view::value_type pixel = (*_grid_view)->getRow(y)[x];
+			mapnik::grid_view::value_type pixel = (*_grid_view)->get_row(y)[x];
 			return pixel;
 		}
 		throw gcnew System::ArgumentOutOfRangeException("Pixel coordinate out of range");
@@ -85,7 +85,13 @@ namespace NETMapnik
 		bool add_features = true;
 
 		NET_options_parser^ optionsParser = gcnew NET_options_parser(options);
-		optionsParser->TryGetUInt32("Resolution", resolution);
+		if (optionsParser->TryGetUInt32("Resolution", resolution))
+		{
+			if (resolution == 0)
+			{
+				throw gcnew System::ArgumentException("Resolution cannot be 0", "Resolution");
+			}
+		}
 		optionsParser->TryGetBoolean("AddFeatures", add_features);
 		optionsParser->TryGetString("Format", format);
 

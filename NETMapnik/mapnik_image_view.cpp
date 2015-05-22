@@ -8,8 +8,8 @@
 
 #include <mapnik\color.hpp>   
 #include <mapnik\image_view.hpp> 
+#include <mapnik\image_view_any.hpp>
 #include <mapnik\image_util.hpp>
-#include <mapnik\graphics.hpp>
 
 #include <msclr\marshal_cppstd.h>
 
@@ -18,7 +18,7 @@ namespace NETMapnik
 	ImageView::ImageView(Image^ image, unsigned x, unsigned y, unsigned w, unsigned h)
 	{
 		image_ptr p = image->NativeObject();
-		_img_view = new image_view_ptr(std::make_shared<mapnik::image_view<mapnik::image_data_rgba8>>(p->get_view(x, y, w, h)));
+		_img_view = new image_view_ptr(std::make_shared<mapnik::image_view_any>(mapnik::create_view(*p,x,y,w,h)));
 	}
 
 	ImageView::~ImageView()
@@ -36,23 +36,12 @@ namespace NETMapnik
 
 	System::Boolean ImageView::IsSolid()
 	{
+		System::Boolean b = false;
 		if ((*_img_view)->width() > 0 && (*_img_view)->height() > 0)
 		{
-			mapnik::image_view<mapnik::image_data_rgba8>::pixel_type const* first_row = (*_img_view)->getRow(0);
-			mapnik::image_view<mapnik::image_data_rgba8>::pixel_type const first_pixel = first_row[0];
-			for (unsigned y = 0; y < (*_img_view)->height(); ++y)
-			{
-				mapnik::image_view<mapnik::image_data_rgba8>::pixel_type const * row = (*_img_view)->getRow(y);
-				for (unsigned x = 0; x < (*_img_view)->width(); ++x)
-				{
-					if (first_pixel != row[x])
-					{
-						return false;
-					}
-				}
-			}
+			b = mapnik::is_solid(*(*_img_view));
 		}
-		return true;
+		return b;
 	}
 
 
@@ -61,13 +50,8 @@ namespace NETMapnik
 		if (x >= 0 && x < static_cast<int>((*_img_view)->width())
 			&& y >= 0 && y < static_cast<int>((*_img_view)->height()))
 		{
-			mapnik::image_view<mapnik::image_data_rgba8>::pixel_type const * row = (*_img_view)->getRow(y);
-			mapnik::image_view<mapnik::image_data_rgba8>::pixel_type const pixel = row[x];
-			unsigned r = pixel & 0xff;
-			unsigned g = (pixel >> 8) & 0xff;
-			unsigned b = (pixel >> 16) & 0xff;
-			unsigned a = (pixel >> 24) & 0xff;
-			return gcnew Color(mapnik::color(r, g, b, a));
+			mapnik::color val = mapnik::get_pixel<mapnik::color>(*(*_img_view), x, y);
+			return gcnew Color(val);
 		}
 		return nullptr;
 	}

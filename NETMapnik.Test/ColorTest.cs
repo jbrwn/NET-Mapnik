@@ -22,6 +22,7 @@ namespace NETMapnik.Test
             Assert.AreEqual(c.G, 0);
             Assert.AreEqual(c.B, 0);
             Assert.AreEqual(c.A, 255);
+            Assert.IsFalse(c.Premultiplied);
             Assert.AreEqual(c.Hex(), "#ff0000");
             Assert.AreEqual(c.ToString(), "rgb(255,0,0)");
         }
@@ -34,6 +35,7 @@ namespace NETMapnik.Test
             Assert.AreEqual(c.G, 0);
             Assert.AreEqual(c.B, 0);
             Assert.AreEqual(c.A, 255);
+            Assert.IsFalse(c.Premultiplied);
             Assert.AreEqual(c.Hex(), "#ff0000");
             Assert.AreEqual(c.ToString(), "rgb(255,0,0)");
         }
@@ -46,6 +48,7 @@ namespace NETMapnik.Test
             Assert.AreEqual(c.G, 0);
             Assert.AreEqual(c.B, 0);
             Assert.AreEqual(c.A, 255);
+            Assert.IsFalse(c.Premultiplied);
             Assert.AreEqual(c.Hex(), "#ff0000");
             Assert.AreEqual(c.ToString(), "rgb(255,0,0)");
         }
@@ -59,7 +62,20 @@ namespace NETMapnik.Test
             Assert.AreEqual(c.B, 0);
             Assert.AreEqual(c.A, 255);
             Assert.AreEqual(c.Hex(), "#ff0000");
+            Assert.IsFalse(c.Premultiplied);
             Assert.AreEqual(c.ToString(), "rgb(255,0,0)");
+        }
+
+        [TestMethod]
+        public void Color_Premultiply()
+        {
+            Color c = new Color(128,128,128,true);
+            Assert.AreEqual(c.R, 128);
+            Assert.AreEqual(c.G, 128);
+            Assert.AreEqual(c.B, 128);
+            Assert.AreEqual(c.A, 255);
+            Assert.IsTrue(c.Premultiplied);
+            Assert.AreEqual(c.ToString(), "rgb(128,128,128)");
         }
     }
 }

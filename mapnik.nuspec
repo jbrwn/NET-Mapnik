@@ -13,8 +13,8 @@
   </metadata>
   <files>
     <file src="Win32\Release\NETMapnik.dll" target="lib\net45" />
-    <file src="lib\x86\mapnik-sdk\libs\*.dll"  target="native\" />
-    <file src="lib\x86\mapnik-sdk\libs\mapnik\"  target="native\mapnik" />
+    <file src="lib\x86\mapnik-sdk\lib\*.dll"  target="native\" />
+    <file src="lib\x86\mapnik-sdk\lib\mapnik\"  target="native\mapnik" />
     <file src="lib\x86\mapnik-sdk\share\"  target="native\share" />
     <file src="mapnik.props" target="build\net45" />
   </files>

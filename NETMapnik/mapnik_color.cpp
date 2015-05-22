@@ -13,11 +13,14 @@ namespace NETMapnik
 {
 
 	Color::Color(System::String^ color)
+		: Color(color, false) {}
+
+	Color::Color(System::String^ color, System::Boolean premultiplied)
 	{
 		std::string unmanagedColor = msclr::interop::marshal_as<std::string>(color);
 		try
 		{
-			_color = new color_ptr(std::make_shared<mapnik::color>(unmanagedColor));
+			_color = new color_ptr(std::make_shared<mapnik::color>(unmanagedColor, premultiplied));
 		}
 		catch (const std::exception& ex)
 		{
@@ -27,10 +30,17 @@ namespace NETMapnik
 	}
 
 	Color::Color(System::Int32 r, System::Int32 g, System::Int32 b)
+		: Color(r, g, b, false) {}
+
+	Color::Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Boolean premultiplied)
 	{
+		if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255)
+		{
+			throw gcnew System::ArgumentOutOfRangeException("color value out of range");
+		}
 		try
 		{
-			_color = new color_ptr(std::make_shared<mapnik::color>(r, g, b));
+			_color = new color_ptr(std::make_shared<mapnik::color>(r, g, b, 255, premultiplied));
 		}
 		catch (const std::exception& ex)
 		{
@@ -40,10 +50,17 @@ namespace NETMapnik
 	}
 	
 	Color::Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Int32 a)
+		: Color(r, g, b, a, false) {}
+
+	Color::Color(System::Int32 r, System::Int32 g, System::Int32 b, System::Int32 a, System::Boolean premultiplied)
 	{
+		if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255)
+		{
+			throw gcnew System::ArgumentOutOfRangeException("color value out of range");
+		}
 		try
 		{
-			_color = new color_ptr(std::make_shared<mapnik::color>(r, g, b, a));
+			_color = new color_ptr(std::make_shared<mapnik::color>(r, g, b, a, premultiplied));
 		}
 		catch (const std::exception& ex)
 		{
@@ -114,6 +131,16 @@ namespace NETMapnik
 	void Color::A::set(System::Int32 value)
 	{
 		(*_color)->set_alpha(value);
+	}
+
+	System::Boolean Color::Premultiplied::get()
+	{
+		return (*_color)->get_premultiplied();
+	}
+
+	void Color::Premultiplied::set(System::Boolean value)
+	{
+		(*_color)->set_premultiplied(value);
 	}
 
 	System::String^ Color::ToString()

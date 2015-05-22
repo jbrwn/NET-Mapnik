@@ -24,8 +24,28 @@ namespace NETMapnik
 		for each (System::Collections::Generic::KeyValuePair<System::String^, System::Object^>^ kvp in options)
 		{
 			std::string key = msclr::interop::marshal_as<std::string>(kvp->Key);
-			std::string value = msclr::interop::marshal_as<std::string>(System::Convert::ToString(kvp->Value));
-			params[key] = value;
+			System::Object^ managedValue = kvp->Value;
+
+			if (managedValue->GetType() == System::Int32::typeid)
+			{
+				int i = safe_cast<int>(managedValue);
+				params[key] = static_cast<mapnik::value_integer>(i);
+			}
+			else if (managedValue->GetType() == System::Double::typeid)
+			{
+				double d = safe_cast<double>(managedValue);
+				params[key] = d;
+			}
+			else if (managedValue->GetType() == System::Boolean::typeid)
+			{
+				bool b = safe_cast<boolean>(managedValue);
+				params[key] = b;
+			}
+			else
+			{
+				std::string value = msclr::interop::marshal_as<std::string>(System::Convert::ToString(kvp->Value));
+				params[key] = value;
+			}
 		}
 		params["type"] = "memory";
 
@@ -118,12 +138,10 @@ namespace NETMapnik
 
 	void MemoryDatasource::Add(double x, double y, System::Collections::Generic::IDictionary<System::String^, System::Object^>^ properties)
 	{
-		mapnik::geometry_type * pt = new mapnik::geometry_type(mapnik::geometry_type::types::Point);
-		pt->move_to(x, y);
 		mapnik::context_ptr ctx = std::make_shared<mapnik::context_type>();
 		mapnik::feature_ptr feature(mapnik::feature_factory::create(ctx, _feature_id));
 		++_feature_id;
-		feature->add_geometry(pt);
+		feature->set_geometry(mapnik::geometry::point<double>(x, y));
 		if (properties != nullptr)
 		{
 			for each (System::Collections::Generic::KeyValuePair<System::String^, System::Object^>^ kvp in properties)

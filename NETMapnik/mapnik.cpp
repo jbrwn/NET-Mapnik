@@ -64,7 +64,7 @@ namespace NETMapnik
 	System::Collections::Generic::IEnumerable<System::String^>^ Mapnik::Fonts()
 	{
 		System::Collections::Generic::List<System::String^>^ a = gcnew System::Collections::Generic::List<System::String^>();
-		std::vector<std::string> const& names = mapnik::freetype_engine::face_names();
+		auto names = mapnik::freetype_engine::face_names();
 		for (unsigned i = 0; i < names.size(); ++i)
 		{
 			a->Add(msclr::interop::marshal_as<System::String^>(names[i]));
@@ -75,7 +75,7 @@ namespace NETMapnik
 	System::Collections::Generic::IDictionary<System::String^, System::String^>^ Mapnik::FontFiles()
 	{
 		System::Collections::Generic::Dictionary<System::String^, System::String^>^ d = gcnew System::Collections::Generic::Dictionary<System::String^, System::String^>(System::StringComparer::InvariantCultureIgnoreCase);
-		std::map<std::string, std::pair<int, std::string> > const& mapping = mapnik::freetype_engine::get_mapping();
+		auto mapping = mapnik::freetype_engine::get_mapping();
 		for (auto const& kv : mapping)
 		{
 			d->Add(msclr::interop::marshal_as<System::String^>(kv.first), msclr::interop::marshal_as<System::String^>(kv.second.second.c_str()));
