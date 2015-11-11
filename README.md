@@ -8,7 +8,7 @@ For example usage take a look at the [tests](NETMapnik.Test).
 
 API
 ---
-NET-Mapnik is a port of the [nod-mapnik](https://github.com/mapnik/node-mapnik) bindings for mapnik and conforms to the same API.
+NET-Mapnik is a port of the [node-mapnik](https://github.com/mapnik/node-mapnik) bindings for mapnik and conforms to the same API.
 
 Requirements
 ------------
