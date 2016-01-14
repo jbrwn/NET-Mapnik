@@ -28,6 +28,8 @@ install:
     
     7z x .\mapnik-win-sdk.7z -o".\lib\$env:Platform" | FIND /V "ing  "
     
+    ls 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\\..\..\VC\Include/thread'
+    
     git apply --directory=$Env:VS140COMNTOOLS\..\..\VC\Include .\lib\mutex.patch 2> $null
     
     git apply --directory=$Env:VS140COMNTOOLS\..\..\VC\Include .\lib\thread.patch 2> $null
