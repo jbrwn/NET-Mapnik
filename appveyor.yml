@@ -27,8 +27,6 @@ install:
     
     7z x .\mapnik-win-sdk.7z -o".\lib\$env:Platform" | FIND /V "ing  "
     
-    Get-ChildItem Env:
-    
     git apply --directory=$Env:VS140COMNTOOLS\..\..\VC\Include .\lib\mutex.patch
     
     git apply --directory=$Env:VS140COMNTOOLS\..\..\VC\Include .\lib\thread.patch
