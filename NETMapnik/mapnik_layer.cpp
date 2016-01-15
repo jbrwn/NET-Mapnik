@@ -64,11 +64,11 @@ namespace NETMapnik
 		(*_layer)->set_srs(msclr::interop::marshal_as<std::string>(value));
 	}
 
-	bool Layer::CacheFeatures::get()
+	System::Boolean Layer::CacheFeatures::get()
 	{
 		return (*_layer)->cache_features();
 	}
-	void Layer::CacheFeatures::set(bool value)
+	void Layer::CacheFeatures::set(System::Boolean value)
 	{
 		(*_layer)->set_cache_features(value);
 	}
