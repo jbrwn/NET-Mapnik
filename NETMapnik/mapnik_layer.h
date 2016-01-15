@@ -31,6 +31,12 @@ namespace NETMapnik
 			void set(System::String^ value);
 		}
 
+		property System::Boolean CacheFeatures
+		{
+			System::Boolean get();
+			void set(System::Boolean value);
+		}
+
 		property System::Collections::Generic::IEnumerable<System::String^>^ Styles
 		{
 			System::Collections::Generic::IEnumerable<System::String^>^ get();

@@ -64,6 +64,15 @@ namespace NETMapnik
 		(*_layer)->set_srs(msclr::interop::marshal_as<std::string>(value));
 	}
 
+	System::Boolean Layer::CacheFeatures::get()
+	{
+		return (*_layer)->cache_features();
+	}
+	void Layer::CacheFeatures::set(System::Boolean value)
+	{
+		(*_layer)->set_cache_features(value);
+	}
+
 	System::Collections::Generic::IEnumerable<System::String^>^  Layer::Styles::get()
 	{
 		std::vector<std::string> const& style_names = (*_layer)->styles();
