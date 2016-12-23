@@ -5,23 +5,23 @@
     </None>
     <None Include="$(MsBuildThisFileDirectory)\..\..\native\mapnik\input\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>mapnik\input\%(FileName).%(Extension)</Link>
+      <Link>mapnik\input\%(FileName)%(Extension)</Link>
     </None>
     <None Include="$(MsBuildThisFileDirectory)\..\..\native\mapnik\fonts\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>mapnik\fonts\%(FileName).%(Extension)</Link>
+      <Link>mapnik\fonts\%(FileName)%(Extension)</Link>
     </None>
     <None Include="$(MsBuildThisFileDirectory)\..\..\native\share\gdal\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>share\gdal\%(FileName).%(Extension)</Link>
+      <Link>share\gdal\%(FileName)%(Extension)</Link>
     </None>
     <None Include="$(MsBuildThisFileDirectory)\..\..\native\share\icu\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>share\icu\%(FileName).%(Extension)</Link>
+      <Link>share\icu\%(FileName)%(Extension)</Link>
     </None>
     <None Include="$(MsBuildThisFileDirectory)\..\..\native\share\proj\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>share\proj\%(FileName).%(Extension)</Link>
+      <Link>share\proj\%(FileName)%(Extension)</Link>
     </None>
   </ItemGroup>
 </Project>
